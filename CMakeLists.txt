@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(RAYLIB_DIR raylib)
 add_subdirectory(${RAYLIB_DIR})
 
+include_directories(external)
 
 file(GLOB_RECURSE SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/code/game.cpp

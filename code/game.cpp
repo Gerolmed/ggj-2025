@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
+#include "stb_image.h"
+#define STB_DS_IMPLEMENTATION
+#include "stb_ds.h"
 
 #include "raylib.h"
 
