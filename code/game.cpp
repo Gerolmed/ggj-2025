@@ -4,6 +4,7 @@
 #define STB_DS_IMPLEMENTATION
 #include "stb_ds.h"
 
+#include "game.h"
 #include "raylib.h"
 #include "player.cpp"
 
