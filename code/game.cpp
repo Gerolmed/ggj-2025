@@ -22,6 +22,8 @@ i32 main()
     InitWindow(1600, 900, "Divegame");
     SetTargetFPS(60);
 
+    Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
+
     Room room = {};
     for (u32 x = 0; x < 20; ++x)
     {
