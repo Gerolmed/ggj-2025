@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "raylib.h"
+
 typedef uint8_t u8;
 typedef uint32_t u32;
 typedef int32_t i32;
@@ -16,7 +18,17 @@ struct Room
     Tile tiles[20 * 15];
 };
 
-int main()
+i32 main()
 {
-    printf("FUCK\n");
+    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
+    InitWindow(1600, 900, "Divegame");
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+        ClearBackground(WHITE);
+        DrawRectangle(100, 100, 100, 100, RED);  
+        EndDrawing();
+    }
 }
