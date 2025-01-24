@@ -21,3 +21,6 @@ game_temp.dll
 cmake-build-debug
 target
 assets/levels/backups
+
+.idea
+cmake-build-debug-visual-studio
