@@ -1,25 +1,19 @@
 #include <stdio.h>
 #include <stdint.h>
+#include "stb_image.h"
+#define STB_DS_IMPLEMENTATION
+#include "stb_ds.h"
 
+#include "game.h"
 #include "raylib.h"
+#include "player.cpp"
 
-typedef uint8_t u8;
-typedef uint32_t u32;
-typedef int32_t i32;
+#include "loader.cpp"
 
-#define ROOM_WIDTH 20
-#define ROOM_HEIGHT 15
-#define TILE_SIZE 100
-
-enum Tile
+enum SceneMode
 {
-    Tile_Empty,
-    Tile_Wall,
-};
-
-struct Room
-{
-    Tile tiles[ROOM_WIDTH * ROOM_HEIGHT];
+    SCENE_MODE_TEST_DEFAULT,
+    SCENE_MODE_TEST_PLAYER,
 };
 
 i32 main()
@@ -45,8 +39,20 @@ i32 main()
         }
     }
 
+    Room level = load_room();
+    SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
+
     while (!WindowShouldClose())
     {
+        if (IsKeyPressed(KEY_F1))
+        {
+            sceneMode = SCENE_MODE_TEST_DEFAULT;
+        } 
+        else if (IsKeyPressed(KEY_F2))
+        {
+            sceneMode = SCENE_MODE_TEST_PLAYER;
+        }
+
         BeginDrawing();
         ClearBackground(WHITE);
 
@@ -59,6 +65,15 @@ i32 main()
                     DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);  
                 }
             }
+        }
+
+        switch (sceneMode)
+        {
+            case SCENE_MODE_TEST_DEFAULT:
+                break;
+            case SCENE_MODE_TEST_PLAYER:
+                test_player_loop();
+                break;
         }
 
         EndDrawing();
