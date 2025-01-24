@@ -45,7 +45,7 @@ i32 main()
                 DrawRectangle(100, 100, 100, 100, RED);
                 break;
             case SCENE_MODE_TEST_PLAYER:
-                test_player_loop();
+                test_player_loop(nullptr);
                 break;
         }
         EndDrawing();
