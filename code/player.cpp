@@ -114,6 +114,21 @@ void check_collisions(Player* player, GameState* state){
             i--;
         }
     }
+
+     //Bubble Collisions
+    for(i32 i = 0 ; i < arrlen(state->room.projectiles); i++){
+        ProjectileBubble bubble = state->room.projectiles[i];
+        if(!bubble.can_collide_with_player) continue;
+
+        SphericalCollider bubble_collider = {bubble.position, bubble.radius};
+
+        if(intersects(&player_collider, &bubble_collider))
+        {
+            player->knockback_velocity = bubble.velocity;
+            arrdel(state->room.projectiles,i);
+            i--;
+        }
+    }
 }
 
 

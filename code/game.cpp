@@ -17,6 +17,7 @@
 #include "player.cpp"
 #include "pufferfish.cpp"
 #include "sharkfish.cpp"
+#include "jellyfish.cpp"
 
 #include "loader.cpp"
 
@@ -61,10 +62,14 @@ i32 main()
     models[Model_Fish].transform = models[Model_Fish].transform * MatrixTranslate(0, 1, 0.6);
 
     models[Model_Spike] = LoadModel("asset/3d/pufferfish/spike.glb");
+
     models[Model_Bubble] = LoadModel("asset/3d/bubble/Bubble.glb");
 
     models[Model_Shark] = LoadModel("asset/3d/shark/shark.glb");
     models[Model_Shark].transform = models[Model_Shark].transform * MatrixTranslate(0, 1, 0.6);
+
+    models[Model_Jelly] = LoadModel("asset/3d/jellyfish/jellyfish.glb");
+    models[Model_Jelly].transform = models[Model_Jelly].transform * MatrixTranslate(0, 1, 0.6);
  
     {
         i32 anim_count;
@@ -164,6 +169,16 @@ i32 main()
 
             RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1);
         }
+
+        for (u32 i = 0; i < level->jellyfish_count; ++i)
+        {
+            Jellyfish* fish = &level->jellyfishs[i];
+            if(fish->dead) continue;
+            jellyfish_update(fish, &state);
+
+            RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish));
+        }
+
 
 
         for (u32 i = 0; i < arrlen(level->projectiles); i++)

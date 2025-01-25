@@ -36,8 +36,10 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
         ProjectileBubble* bubble = &bubble_array[i];
         SphericalCollider bubble_collider = SphericalCollider(bubble->position, bubble->radius);
         if(intersects(&fish_collider, &bubble_collider)){
-            bubble->velocity = Vector2Scale(bubble->velocity,-1);
-            bubble->position = Vector2Add(bubble->position, Vector2Scale(bubble->velocity,GetFrameTime()));
+            if(!bubble->can_collide_with_player){
+                bubble->velocity = Vector2Scale(bubble->velocity,-1);
+                bubble->can_collide_with_player = true;
+            }
         }
     }
 
@@ -71,7 +73,6 @@ void shark_update(Sharkfish* fish, GameState* state){
             fish->knockback_velocity = Vector2Subtract(fish->knockback_velocity, friction);
         }
     }
-
 
     pursue_player(fish,state);
     shark_check_collision(fish,state);

@@ -27,17 +27,23 @@ Room load_room(i32 room_id){
                 transition_tile->new_room_id = curr[2];
                 room.transition_tile_count++;
             }
-            else if(curr[0] = 255 && curr[1] == 0 & curr[2] == 0){
+            else if(curr[0] == 255 && curr[1] == 0 & curr[2] == 0){
                 Pufferfish* pufferfish = &room.pufferfishs[room.pufferfish_count];
                 pufferfish->position = Vector2(x, y);
                 pufferfish->health = 16;
                 room.pufferfish_count++;
             }
-            else if(curr[0] = 100 && curr[1] == 100 && curr[2] == 100){
+            else if(curr[0] == 100 && curr[1] == 100 && curr[2] == 100){
                 Sharkfish* sharkfish = &room.sharkfishs[room.sharkfish_count];
                 sharkfish->position = Vector2(x,y);
                 sharkfish->health = 3;
                 room.sharkfish_count++;
+            }
+            else if(curr[0] == 0 && curr[1] == 255 && curr[2] == 255){
+                Jellyfish* jellyfish = &room.jellyfishs[room.jellyfish_count];
+                jellyfish->position = Vector2(x,y);
+                jellyfish->health = 25;
+                room.jellyfish_count++;
             }
             else{
                 room.tiles[ROOM_WIDTH * y + x] = Tile_Empty;

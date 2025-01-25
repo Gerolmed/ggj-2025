@@ -91,11 +91,23 @@ struct Sharkfish
     Vector2 dash_direction;
 };
 
+struct Jellyfish
+{
+    Vector2 position;
+    float size;
+    float rotation;
+    i32 health;
+    bool dead;
+
+    i32 behavior_frame;
+};
+
 struct ProjectileBubble{
     Vector2 position;
     f32 radius;
     Vector2 velocity;
     i32 damage;
+    bool can_collide_with_player;
 };
 
 f32 SPIKE_RADIUS = 0.1;
@@ -119,6 +131,9 @@ struct Room
     i32 sharkfish_count;
     Sharkfish sharkfishs[16];
 
+    i32 jellyfish_count;
+    Jellyfish jellyfishs[16];
+
     ProjectileBubble *projectiles = NULL;
 
     ProjectileSpike *spikes = NULL;
@@ -133,6 +148,7 @@ enum ModelType
     Model_Spike,
     Model_Bubble,
     Model_Shark,
+    Model_Jelly,
 
     Model_Count
 };
