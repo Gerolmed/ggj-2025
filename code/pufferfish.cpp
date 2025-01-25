@@ -37,6 +37,9 @@ void fish_check_collision(Pufferfish* fish, Room* level){
 
 
 void fish_update(Pufferfish* fish, Room* level){
+    if(fish->dead){
+        return;
+    }
     fish_pursue_player();
     fish_check_collision(fish, level);
 }

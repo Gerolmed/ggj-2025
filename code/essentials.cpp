@@ -144,6 +144,8 @@ struct GameState
 
     Room room;
 
+    Player player;
+
 
 };
 

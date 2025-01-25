@@ -84,7 +84,7 @@ void execute_player_loop(Player* player, Room* level)
         Vector2 position = get_current_bubble_position(player);
         Vector2 direction = Vector2Normalize(mouse_direction);
 
-        printf("Shooting projectile");
+        //Shooting projectile
         ProjectileBubble projectile;
         projectile.position = player->position;
         projectile.radius = player->charge_value * 10;

@@ -62,8 +62,10 @@ i32 main()
     }
     model.transform = model.transform * MatrixTranslate(0,1,0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
 
-    Player player = {};
-    configure_player(&player);
+    Player *player = &state.player;
+    configure_player(player);
+
+    
 
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
 
@@ -75,7 +77,10 @@ i32 main()
 
     Texture2D wall_texture = LoadTexture("asset/wall_base.png");
 
-    Room level = load_room(0);
+    Room *level = &state.room;
+    *level = load_room(0);
+    
+
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
     f32 camera_pos_x = TILE_SIZE_HIGH * ROOM_WIDTH / 2;
@@ -106,19 +111,20 @@ i32 main()
         //RenderEntity(Model_Toad, {2, 2}, 0);
         //RenderEntity(Model_Toad, {3, 5}, 00);
 
-        execute_player_loop(&player, &level);
+        execute_player_loop(player, level);
 
-        for(u32 i = 0; i < level.pufferfish_count; ++i)
+        for(u32 i = 0; i < level->pufferfish_count; ++i)
         {
-            Pufferfish* fish = &level.pufferfishs[i];
-            fish_update(fish, &level);
+            Pufferfish* fish = &level->pufferfishs[i];
+            fish_update(fish, level);
 
             RenderEntity(Model_Toad, Vector2(fish->position.x, fish->position.y), 0);
         }
+        
 
-        for(u32 i = 0; i < arrlen(level.projectiles); i++)
+        for(u32 i = 0; i < arrlen(level->projectiles); i++)
         {
-            ProjectileBubble* projectile = &level.projectiles[i];
+            ProjectileBubble* projectile = &level->projectiles[i];
             projectile->position.x += GetFrameTime() * projectile->velocity.x;
             projectile->position.y += GetFrameTime() * projectile->velocity.y;
 
@@ -163,7 +169,7 @@ i32 main()
         {
             for (u32 y = 0; y < ROOM_HEIGHT; ++y)
             {
-                if (level.tiles[x + y * ROOM_WIDTH])
+                if (level->tiles[x + y * ROOM_WIDTH])
                 {
                     //DrawRectangle(x * TILE_SIZE_LOW, y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, RED);  
                     
@@ -189,5 +195,7 @@ i32 main()
                        { 0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight() }, { 0, 0 }, 0, WHITE);
 
         EndDrawing();
+
+        
     }
 }
