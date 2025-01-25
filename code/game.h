@@ -17,7 +17,30 @@ enum Tile
     Tile_Wall,
 };
 
+struct TransitionTile
+{
+    i32 pos_x;
+    i32 pos_y;
+    i32 new_room_id;
+};
+
+struct Pufferfish
+{
+    Vector2 position;
+};
+
 struct Room
 {
+    i32 id;
+
     Tile tiles[ROOM_WIDTH * ROOM_HEIGHT];
+
+    i32 transition_tile_count;
+    TransitionTile transition_tiles[64];
+
+    i32 pufferfish_count;
+    Pufferfish pufferfishs[64];
+
+
+
 };
