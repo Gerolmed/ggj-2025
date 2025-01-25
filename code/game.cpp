@@ -14,6 +14,7 @@
 #include "essentials.cpp"
 #include "renderer.cpp"
 #include "player.cpp"
+#include "collision.cpp"
 #include "pufferfish.cpp"
 
 #include "loader.cpp"
@@ -80,7 +81,7 @@ i32 main()
     f32 camera_pos_x = TILE_SIZE_HIGH * ROOM_WIDTH / 2;
     f32 camera_pos_y = TILE_SIZE_HIGH * ROOM_HEIGHT / 2;
 
-    Camera model_camera = { 0 };
+   Camera model_camera = { 0 };
     model_camera.up = { 0.0f, -1.0f, 0.0f };
     model_camera.position = {-10, 10, 0};
     model_camera.target = {0, 0, 0};
