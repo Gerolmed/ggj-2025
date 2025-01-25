@@ -28,12 +28,23 @@ enum ModelType
     Model_Fish,
 };
 
-// void RenderEntity(ModelType model, Vector2 pos, f32 rot)
+void RenderEntity(ModelType model, Vector2 pos, f32 rot)
+{
+    assert(state.render_entities.count < lengthof(state.render_entities.entities));
+    EntityDraw *draw = state.render_entities.entities + state.render_entities.count++;
+    *draw  = {};
+
+    AllocateRenderSlot(draw);
+
+    draw->x = pos.x;
+    draw->y = pos.y;
+}
 
 void RenderAnimatedEntity(ModelType model, Vector2 pos, f32 rot, ModelAnimation *animation, u32 frame)
 {
     assert(state.render_entities.count < lengthof(state.render_entities.entities));
     EntityDraw *draw = state.render_entities.entities + state.render_entities.count++;
+    *draw = {};
 
     AllocateRenderSlot(draw);
 

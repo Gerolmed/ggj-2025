@@ -71,8 +71,8 @@ i32 main()
         }
 
         // Call render entity here...
-        RenderEntity({2, 2});
-        RenderEntity({3, 5});
+        RenderEntity(Model_Toad, {2, 2}, 0);
+        RenderEntity(Model_Toad, {3, 5}, 00);
 
         // Entities to entity buffer
         BeginTextureMode(entities_high);
