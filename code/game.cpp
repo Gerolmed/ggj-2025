@@ -77,29 +77,9 @@ i32 main()
         BeginTextureMode(entities_high);
         rlViewport(0, 0, 128, 128);
         ClearBackground(WHITE);
-<<<<<<< HEAD
-        for (u32 x = 0; x < ROOM_WIDTH; ++x)
-        {
-            for (u32 y = 0; y < ROOM_HEIGHT; ++y)
-            {
-                if (level.tiles[x + y * ROOM_WIDTH])
-                {
-                    printf("1");
-                    //DrawRectangle(x * TILE_SIZE_HIGH, y * TILE_SIZE_HIGH, TILE_SIZE_HIGH, TILE_SIZE_HIGH, RED); 
-                    //TODO: Get texture
-                    DrawTextureRec(wall_texture, { 0, 0, (f32)20/wall_texture.width, (f32)20/wall_texture.height }, { (float)x, (float)y }, WHITE); 
-                }else{
-                    printf("0");
-                }
-            }
-            printf("\n");
-        }
-        //DrawTexture(jason_texture, 0, 0, WHITE);
-=======
         BeginMode3D(camera);
         DrawModel(model, {}, 1, WHITE);
         EndMode3D();
->>>>>>> f02f96abbf0421239612c491ee4181597efcff4d
         EndTextureMode();
 
         BeginTextureMode(entities_low);
