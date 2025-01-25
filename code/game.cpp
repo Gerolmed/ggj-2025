@@ -99,7 +99,7 @@ i32 main()
     main_camera = {};
     main_camera.offset = {0, 0};
     main_camera.rotation = 0;
-    main_camera.target = {0, 0};
+    main_camera.target = {10, 10};
     main_camera.zoom = 1;
 
     while (!WindowShouldClose())
@@ -161,7 +161,6 @@ i32 main()
         EndMode3D();
         EndTextureMode();
 
-        BeginMode2D(main_camera);
 
         BeginTextureMode(entities_low);
         DrawTexturePro(entities_high.texture,
@@ -199,6 +198,7 @@ i32 main()
 
         EndTextureMode();
 
+        BeginMode2D(main_camera);
         // Render to swapchain
         BeginDrawing();
         ClearBackground(WHITE);
