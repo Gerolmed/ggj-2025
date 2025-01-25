@@ -77,9 +77,15 @@ i32 main()
     InitWindow(1600, 900, "Divegame");
     SetTargetFPS(60);
 
+    texture_ui_heart_full = LoadTexture("asset/ui/heart_full.png");
+    texture_ui_heart_half = LoadTexture("asset/ui/heart_half.png");
+    texture_ui_heart_empty = LoadTexture("asset/ui/heart_empty.png");
+    texture_ui_heart_temporary_full = LoadTexture("asset/ui/heart_temporary_full.png");
+    texture_ui_heart_temporary_half = LoadTexture("asset/ui/heart_temporary_half.png");
+
     // model.transform = model.transform * MatrixTranslate(0,1,1) * MatrixScale(1.0f, 1.0f, 1.0f);
     models[Model_Toad] = LoadModel("asset/3d/toad/Toad.glb");
-    models[Model_Toad].transform = models[Model_Toad].transform * MatrixTranslate(0, 1, 0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
+    models[Model_Toad].transform = models[Model_Toad].transform * MatrixTranslate(0, 0, 0) * MatrixScale(1.2f, 1.2f, 1.2f);
 
     models[Model_Fish] = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
     models[Model_Fish].transform = models[Model_Fish].transform * MatrixTranslate(0, 1, 0.6);
@@ -338,6 +344,9 @@ i32 main()
         DrawTexturePro(room_low.texture,
                        {0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height},
                        {0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight()}, {0, 0}, 0, WHITE);
+        
+        draw_player_hud(player);
+
         EndDrawing();
     }
 }

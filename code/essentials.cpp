@@ -53,6 +53,12 @@ enum PlayerAnim
 };
 ModelAnimation player_model_animations[4] = {};
 
+Texture texture_ui_heart_full;
+Texture texture_ui_heart_half;
+Texture texture_ui_heart_empty;
+Texture texture_ui_heart_temporary_full;
+Texture texture_ui_heart_temporary_half;
+
 
 struct Player
 {
@@ -62,7 +68,9 @@ struct Player
     Vector2 position;
     f32 rotation;
 
-    i32 health;
+    u32 temp_health;
+    u32 health;
+    u32 max_health;
 
     Vector2 knockback_velocity;
 

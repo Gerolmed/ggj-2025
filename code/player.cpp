@@ -2,7 +2,11 @@ void configure_player(Player* player)
 {
     *player = {};
     player->speed = 5;
-    player->health = 10;
+
+    player->max_health = 10;
+    player->health = player->max_health;
+    player->temp_health = 5;
+
     for (int i = 0; i < lengthof(player->bubbles); ++i)
     {
         player->bubbles[i] = Bubble{
@@ -11,6 +15,39 @@ void configure_player(Player* player)
             .max_scale = 1.5f,
         };
     }
+}
+
+void damage_player(Player *player, u32 amount)
+{
+    if (player->temp_health > 0)
+    {
+        if (amount > player->temp_health)
+        {
+            amount -= player->temp_health;
+            player->temp_health = 0;
+        } else
+        {
+            player->temp_health -= amount;
+            return;
+        }
+    }
+
+    if (amount > player->health)
+    {
+        player->health = 0;
+    } else
+    {
+        player->health -= amount;
+    }
+}
+void heal_player(Player *player, const u32 amount)
+{
+    player->health = fmax(player->health + amount, player->max_health);
+}
+
+void grant_temp_health_player(Player* player, u32 amount)
+{
+    player->temp_health += amount;
 }
 
 void try_change_player_anim(Player* player, PlayerAnim anim)
@@ -79,10 +116,10 @@ void check_collisions(Player* player, GameState* state){
 
         if(intersects(&player_collider, &fish_collider))
         {
-            player->health -= 1;
+            damage_player(player, 1);
             player->knockback_velocity = Vector2Scale(Vector2Normalize(Vector2Subtract(player->position,fish->position)),8);
             printf("Damaged player");
-            
+
         }
     }
 
@@ -94,7 +131,7 @@ void check_collisions(Player* player, GameState* state){
 
         if(intersects(&player_collider, &fish_collider))
         {
-            player->health -= 3;
+            damage_player(player, 3);
             player->knockback_velocity = Vector2Scale(Vector2Normalize(Vector2Subtract(player->position,fish->position)),15);
             printf("Damaged player");
         }
@@ -110,7 +147,7 @@ void check_collisions(Player* player, GameState* state){
         {
             printf("Damaged player");
             player->knockback_velocity = spike.direction * 10;
-            player->health -= 1;
+            damage_player(player, 1);
             arrdel(room->spikes,i);
             i--;
         }
@@ -233,7 +270,41 @@ void execute_player_loop(Player* player, GameState* state)
     update_charge_ball(player);
     update_player_animation(player);
 
-    player->animation = PlayerAnim_Walk;
     RenderAnimatedEntity(Model_Toad, player->position, 180 + player->rotation * 180/PI, 1, player_model_animations + player->animation, player->frame);
     // RenderEntity(Model_Toad, player->position, 0);
+}
+
+void draw_player_hud(const Player *player)
+{
+    Vector2 offset = {20, 20};
+    float scale = 6;
+    float sprite_size = texture_ui_heart_full.width * scale;
+    float padding = 2;
+
+    for (int i = 0; i < player->health / 2; i++)
+    {
+        DrawTextureEx(texture_ui_heart_full, offset, 0, scale, WHITE);
+        offset += {sprite_size + padding, 0};
+    }
+    for (int i = 0; i < player->health % 2; i++)
+    {
+        DrawTextureEx(texture_ui_heart_half, offset, 0, scale, WHITE);
+        offset += {sprite_size + padding, 0};
+    }
+    for (int i = 0; i < (player->max_health - player->health)/2; i++)
+    {
+        DrawTextureEx(texture_ui_heart_empty, offset, 0, scale, WHITE);
+        offset += {sprite_size + padding, 0};
+    }
+
+    for (int i = 0; i < player->temp_health / 2; i++)
+    {
+        DrawTextureEx(texture_ui_heart_temporary_full, offset, 0, scale, WHITE);
+        offset += {sprite_size + padding, 0};
+    }
+    for (int i = 0; i < player->temp_health % 2; i++)
+    {
+        DrawTextureEx(texture_ui_heart_temporary_half, offset, 0, scale, WHITE);
+        offset += {sprite_size + padding, 0};
+    }
 }
