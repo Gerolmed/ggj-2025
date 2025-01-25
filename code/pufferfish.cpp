@@ -1,7 +1,7 @@
 
 
 f32 fish_get_radius(Pufferfish* fish){
-    return ((f32)10/(10+fish->health));
+    return ((f32)7/(7+fish->health));
 }
 
 void fish_death(Pufferfish* fish, GameState* state){
