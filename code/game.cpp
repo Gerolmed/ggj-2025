@@ -74,7 +74,7 @@ i32 main()
         // Entities
         BeginTextureMode(entities_high);
         rlViewport(0, 0, 128, 128);
-        ClearBackground(WHITE);
+        ClearBackground(RED);
         BeginMode3D(camera);
         DrawModel(model, {}, 1, WHITE);
         EndMode3D();
@@ -104,6 +104,7 @@ i32 main()
 
         // Render to swapchain
         BeginDrawing();
+        ClearBackground(WHITE);
         DrawTexturePro(room_low.texture, 
                        { 0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height }, 
                        { 0, 0, (f32)1600, (f32)880 }, { 0, 0 }, 0, WHITE);
