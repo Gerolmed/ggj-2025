@@ -64,7 +64,7 @@ void update_charge_ball(Player* player)
 
 
 void check_collisions(Player* player, GameState* state){
-    SphericalCollider player_collider = SphericalCollider(player->position,10);
+    SphericalCollider player_collider = SphericalCollider(player->position,1);
 
     //Pufferfish Collisions
     for(i32 i = 0 ; i < state->room.pufferfish_count; i++){
