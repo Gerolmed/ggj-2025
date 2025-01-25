@@ -158,7 +158,7 @@ struct RenderEntities
     u8 tiles[128];
 
     u32 count;
-    EntityDraw entities[32];
+    EntityDraw entities[128];
 };
 
 struct AABB

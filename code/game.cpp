@@ -172,6 +172,12 @@ i32 main()
             projectile->position.x += GetFrameTime() * projectile->velocity.x;
             projectile->position.y += GetFrameTime() * projectile->velocity.y;
 
+            if(abs_squared(projectile->position) > 10000)
+            {
+                arrdel(level->projectiles, i);
+                i--;
+            }
+
             RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius);
             
         }
@@ -181,12 +187,18 @@ i32 main()
             ProjectileSpike* spike = &level->spikes[i];
             spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
             spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
+
+            if(abs_squared(spike->position) > 10000)
+            {
+                arrdel(level->spikes, i);
+                i--;
+            }
             RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1);
             
 
         }
 
-        // Entities to entity buffer
+        // Entities toaaaaaa entity buffer
         BeginTextureMode(entities_high);
         ClearBackground({});
 
