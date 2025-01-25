@@ -56,6 +56,7 @@ void update_player_animation(Player *player)
 void test_player_loop(Player *player)
 {
     player->last_shot_age += GetFrameTime();
+    //main_camera.target
 
     Vector2 mouse_screen_pos = GetMousePosition();
 
