@@ -86,9 +86,6 @@ i32 main()
 
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
-    f32 camera_pos_x = TILE_SIZE_HIGH * ROOM_WIDTH / 2;
-    f32 camera_pos_y = TILE_SIZE_HIGH * ROOM_HEIGHT / 2;
-
     Camera model_camera = {0};
     model_camera.up = {0.0f, -1.0f, 0.0f};
     model_camera.position = {-10, 10, 0};
@@ -99,8 +96,8 @@ i32 main()
     main_camera = {};
     main_camera.offset = {0, 0};
     main_camera.rotation = 0;
-    main_camera.target = {10, 10};
-    main_camera.zoom = 1;
+    main_camera.target = {0, 0};
+    main_camera.zoom = GetScreenWidth() / (f32) (ROOM_WIDTH * TILE_SIZE_LOW);
 
     while (!WindowShouldClose())
     {
@@ -169,7 +166,8 @@ i32 main()
         EndTextureMode();
 
         // ROOM
-        BeginTextureMode(room_low);
+        BeginDrawing();
+        BeginMode2D(main_camera);
         ClearBackground(WHITE);
 
 
@@ -196,18 +194,8 @@ i32 main()
                            {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
         }
 
-        EndTextureMode();
-
-        BeginMode2D(main_camera);
-        // Render to swapchain
-        BeginDrawing();
-        ClearBackground(WHITE);
-        DrawTexturePro(room_low.texture,
-                       {0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height},
-                       {0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight()}, {0, 0}, 0, WHITE);
-
+        EndMode2D();
         EndDrawing();
 
-        EndMode2D();
     }
 }
