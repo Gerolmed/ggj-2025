@@ -55,16 +55,16 @@ i32 main()
         // Render high texture
         BeginTextureMode(room_high);
         ClearBackground(WHITE);
-        // for (u32 x = 0; x < ROOM_WIDTH; ++x)
-        // {
-        //     for (u32 y = 0; y < ROOM_HEIGHT; ++y)
-        //     {
-        //         if (room.tiles[x + y * ROOM_WIDTH])
-        //         {
-        //             DrawRectangle(x * TILE_SIZE_HIGH, y * TILE_SIZE_HIGH, TILE_SIZE_HIGH, TILE_SIZE_HIGH, RED);  
-        //         }
-        //     }
-        // }
+        //for (u32 x = 0; x < ROOM_WIDTH; ++x)
+        //{
+        //    for (u32 y = 0; y < ROOM_HEIGHT; ++y)
+        //    {
+        //        if (level.tiles[x + y * ROOM_WIDTH])
+        //        {
+        //           DrawRectangle(x * TILE_SIZE_HIGH, y * TILE_SIZE_HIGH, TILE_SIZE_HIGH, TILE_SIZE_HIGH, RED);  
+        //        }
+        //    }
+        //}
         DrawTexture(jason_texture, 0, 0, WHITE);
         EndTextureMode();
 
