@@ -126,6 +126,12 @@ struct RenderEntities
     EntityDraw entities[32];
 };
 
+struct AABB
+{
+    Vector2 position;
+    Vector2 size;
+};
+
 struct SphericalCollider
 {
     Vector2 position;

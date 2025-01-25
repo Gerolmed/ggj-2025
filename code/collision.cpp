@@ -10,3 +10,4 @@ Vector2 vector2_sub(Vector2 v1, Vector2 v2){
 bool intersects(SphericalCollider* collider1, SphericalCollider* collider2){
     return abs_squared(vector2_sub(collider1->position, collider2->position)) < collider1->radius + collider2->radius;
 }
+

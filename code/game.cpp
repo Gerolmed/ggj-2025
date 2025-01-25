@@ -90,6 +90,7 @@ i32 main()
 
     while (!WindowShouldClose())
     {
+
         state.render_entities = {};
 
         if (IsKeyPressed(KEY_F1))
@@ -102,10 +103,32 @@ i32 main()
         }
 
         // Call render entity here...
-        RenderEntity(Model_Toad, {2, 2}, 0);
-        RenderEntity(Model_Toad, {3, 5}, 00);
+        //RenderEntity(Model_Toad, {2, 2}, 0);
+        //RenderEntity(Model_Toad, {3, 5}, 00);
 
-        execute_player_loop(&player);
+        execute_player_loop(&player, &level);
+
+        for(u32 i = 0; i < level.pufferfish_count; ++i)
+        {
+            Pufferfish* fish = &level.pufferfishs[i];
+            fish_update(fish, &level);
+
+            RenderEntity(Model_Toad, Vector2(fish->position.x, fish->position.y), 0);
+        }
+
+        for(u32 i = 0; i < arrlen(level.projectiles); i++)
+        {
+            ProjectileBubble* projectile = &level.projectiles[i];
+            projectile->position.x += GetFrameTime() * projectile->velocity.x;
+            projectile->position.y += GetFrameTime() * projectile->velocity.y;
+
+            RenderEntity(Model_Toad, Vector2(projectile->position.x, projectile->position.y), 0);
+            
+            //DrawRectangle(projectile->position.x, projectile->position.y, 
+            //   TILE_SIZE_LOW, TILE_SIZE_LOW, RED);
+            //DrawRectangle(projectile->position.x-projectile->radius, projectile->position.y-projectile->radius, 
+            //   2*projectile->radius, 2*projectile->radius,RED);
+        }
 
         // Entities to entity buffer
         BeginTextureMode(entities_high);

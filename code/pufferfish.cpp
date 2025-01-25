@@ -9,12 +9,19 @@ void fish_death(Pufferfish* fish){
     //TODO: Explode and spawn spike projectiles
 }
 
-void fish_check_collision(Pufferfish* fish, ProjectileBubble* bubble_array){
+void fish_pursue_player(){
+    //TODO
+}
+
+
+void fish_check_collision(Pufferfish* fish, Room* level){
     SphericalCollider fish_collider = SphericalCollider(fish->position, fish_get_radius(fish));
 
-    i32 array_length = arrlen(bubble_array);
 
-    for(i32 i = 0 ; i < array_length; i++){
+
+    //Bubble Projectile Collision
+    ProjectileBubble *bubble_array = level->projectiles;
+    for(i32 i = 0 ; i < arrlen(bubble_array); i++){
         ProjectileBubble bubble = bubble_array[i];
         SphericalCollider bubble_collider = SphericalCollider(bubble.position, bubble.radius);
         if(intersects(&fish_collider, &bubble_collider)){
@@ -29,4 +36,7 @@ void fish_check_collision(Pufferfish* fish, ProjectileBubble* bubble_array){
 }
 
 
-
+void fish_update(Pufferfish* fish, Room* level){
+    fish_pursue_player();
+    fish_check_collision(fish, level);
+}
