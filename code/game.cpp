@@ -16,6 +16,7 @@
 #include "collision.cpp"
 #include "player.cpp"
 #include "pufferfish.cpp"
+#include "sharkfish.cpp"
 
 #include "loader.cpp"
 
@@ -48,6 +49,9 @@ i32 main()
     models[Model_Spike] = LoadModel("asset/3d/pufferfish/spike.glb");
     models[Model_Bubble] = LoadModel("asset/3d/bubble/Bubble.glb");
 
+    models[Model_Shark] = LoadModel("asset/3d/shark/shark.glb");
+    models[Model_Shark].transform = models[Model_Shark].transform * MatrixTranslate(0, 1, 0.6);
+ 
     {
         i32 anim_count;
         ModelAnimation* animation_list = LoadModelAnimations("asset/3d/toad/Toad.glb", &anim_count);
@@ -138,6 +142,15 @@ i32 main()
             fish_update(fish, &state);
 
             RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish));
+        }
+
+        for (u32 i = 0; i < level->sharkfish_count; ++i)
+        {
+            Sharkfish* fish = &level->sharkfishs[i];
+            if(fish->dead) continue;
+            shark_update(fish, &state);
+
+            RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1);
         }
 
 
