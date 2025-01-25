@@ -175,9 +175,7 @@ i32 main()
 
         // Entities to entity buffer
         BeginTextureMode(entities_high);
-        rlDisableColorBlend();
-        ClearBackground(RED);
-        rlEnableColorBlend();
+        ClearBackground({});
 
         BeginMode3D(model_camera);
 
@@ -195,6 +193,7 @@ i32 main()
 
 
         BeginTextureMode(entities_low);
+        ClearBackground({});
         DrawTexturePro(entities_high.texture,
                        {0, 0, (f32)entities_high.texture.width, (f32)-entities_high.texture.height},
                        {0, 0, (f32)entities_low.texture.width, (f32)entities_low.texture.height}, {0, 0}, 0, WHITE);
@@ -255,6 +254,7 @@ i32 main()
             DrawTextureRec(entities_low.texture, {(f32)draw->atlas_x * 32, (f32)draw->atlas_y * 32, 32, 32},
                            {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
         }
+        printf("%u\n", state.render_entities.count);
 
         EndMode2D();
         EndDrawing();
