@@ -80,6 +80,11 @@ struct ProjectileBubble{
     i32 damage;
 };
 
+struct ProjectileSpike{
+    Vector2 position;
+    Vector2 direction;
+};
+
 struct Room
 {
     i32 id;
@@ -93,6 +98,8 @@ struct Room
     Pufferfish pufferfishs[64];
 
     ProjectileBubble *projectiles = NULL;
+
+    ProjectileSpike *spikes = NULL;
 
 
 };
