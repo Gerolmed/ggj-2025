@@ -175,6 +175,7 @@ void execute_player_loop(Player* player, GameState* state)
     update_charge_ball(player);
     update_player_animation(player);
 
+    player->animation = PlayerAnim_Walk;
     RenderAnimatedEntity(Model_Toad, player->position, 180 + player->rotation * 180/PI, 1, player_model_animations + player->animation, player->frame);
     // RenderEntity(Model_Toad, player->position, 0);
 }
