@@ -77,6 +77,14 @@ struct Pufferfish
     bool dead;
 };
 
+struct Sharkfish
+{
+    Vector2 position;
+    float rotation;
+    i32 health;
+    bool dead;
+};
+
 struct ProjectileBubble{
     Vector2 position;
     f32 radius;
@@ -102,6 +110,9 @@ struct Room
     i32 pufferfish_count;
     Pufferfish pufferfishs[64];
 
+    i32 sharkfish_count;
+    Sharkfish sharkfishs[16];
+
     ProjectileBubble *projectiles = NULL;
 
     ProjectileSpike *spikes = NULL;
@@ -115,6 +126,7 @@ enum ModelType
     Model_Fish,
     Model_Spike,
     Model_Bubble,
+    Model_Shark,
 
     Model_Count
 };

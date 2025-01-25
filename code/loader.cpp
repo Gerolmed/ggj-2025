@@ -33,6 +33,13 @@ Room load_room(i32 room_id){
                 pufferfish->health = 16;
                 room.pufferfish_count++;
             }
+            else if(curr[0] = 100 && curr[1] == 100 && curr[2] == 100){
+                printf("Loading in shark");
+                Sharkfish* sharkfish = &room.sharkfishs[room.sharkfish_count];
+                sharkfish->position = Vector2(x,y);
+                sharkfish->health = 2;
+                room.sharkfish_count++;
+            }
             else{
                 room.tiles[ROOM_WIDTH * y + x] = Tile_Empty;
             }
