@@ -108,6 +108,8 @@ enum ModelType
 {
     Model_Toad,
     Model_Fish,
+    Model_Spike,
+    Model_Bubble,
 
     Model_Count
 };

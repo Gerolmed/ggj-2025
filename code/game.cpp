@@ -39,6 +39,9 @@ i32 main()
 
     models[Model_Fish] = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
 
+    models[Model_Spike] = LoadModel("asset/3d/pufferfish/spike.glb");
+    models[Model_Bubble] = LoadModel("asset/3d/bubble/Bubble.glb");
+
     {
         i32 anim_count;
         ModelAnimation* animation_list = LoadModelAnimations("asset/3d/toad/Toad.glb", &anim_count);
@@ -138,7 +141,7 @@ i32 main()
             projectile->position.x += GetFrameTime() * projectile->velocity.x;
             projectile->position.y += GetFrameTime() * projectile->velocity.y;
 
-            RenderEntity(Model_Toad, Vector2(projectile->position.x, projectile->position.y), 0);
+            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0);
             
         }
         for(u32 i = 0; i < arrlen(level->spikes); i++)
@@ -147,7 +150,7 @@ i32 main()
             ProjectileSpike* spike = &level->spikes[i];
             spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
             spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
-            RenderEntity(Model_Toad, Vector2(spike->position.x, spike->position.y), 0);
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0);
             
 
         }

@@ -58,7 +58,7 @@ void update_charge_ball(Player* player)
     Vector2 position = get_current_bubble_position(player);
 
     // TODO: render ball?
-    RenderEntity(Model_Toad, position, 0);
+    RenderEntity(Model_Bubble, position, 0);
 }
 
 void execute_player_loop(Player* player, GameState* state)
