@@ -30,6 +30,7 @@ Room load_room(i32 room_id){
             else if(curr[0] = 255 && curr[1] == 0 & curr[2] == 0){
                 Pufferfish* pufferfish = &room.pufferfishs[room.pufferfish_count];
                 pufferfish->position = Vector2(x, y);
+                pufferfish->health = 16;
                 room.pufferfish_count++;
             }
             else{

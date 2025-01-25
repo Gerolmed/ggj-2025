@@ -6,13 +6,15 @@
 #include "stb_ds.h"
 
 #include "raylib.h"
+#include "raymath.h"
 #include "rlgl.h"
 
 #define lengthof(x) (sizeof(x) / sizeof(x[0]))
 
 #include "essentials.cpp"
-#include "game.h"
+#include "renderer.cpp"
 #include "player.cpp"
+#include "pufferfish.cpp"
 
 #include "loader.cpp"
 
@@ -21,40 +23,6 @@ enum SceneMode
     SCENE_MODE_TEST_DEFAULT,
     SCENE_MODE_TEST_PLAYER,
 };
-
-GameState state = {};
-
-void AllocateRenderSlot(EntityDraw *draw)
-{
-    for (u32 x = 0; x < state.render_entities.size; ++x)
-    {
-        for (u32 y = 0; y < state.render_entities.size; ++y)
-        {
-            u32 index = x + y * state.render_entities.size;
-
-            if (!state.render_entities.tiles[index])
-            {
-                state.render_entities.tiles[index] = 1;
-
-                draw->atlas_x = x;
-                draw->atlas_y = y;
-                return;
-            }
-        }
-    }
-
-    assert(0);
-}
-
-void RenderEntity()
-{
-    assert(state.render_entities.count < lengthof(state.render_entities.entities));
-    EntityDraw *draw = state.render_entities.entities + state.render_entities.count++;
-
-    draw->atlas_width = 1;
-    draw->atlas_height = 1;
-    AllocateRenderSlot(draw);
-}
 
 i32 main()
 {
@@ -68,15 +36,14 @@ i32 main()
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
 
     RenderEntities render_entities = {};
-    render_entities.size = 8;
-    RenderTexture entities_high = LoadRenderTexture(128 * render_entities.size, 128 * render_entities.size);
-    RenderTexture entities_low = LoadRenderTexture(32 * render_entities.size, 32 * render_entities.size);
+    RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
+    RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
 
     Texture2D jason_texture = LoadTexture("asset/jason_texture.png");
 
     Texture2D wall_texture = LoadTexture("asset/wall_base.png");
 
-    Room level = load_room(1);
+    Room level = load_room(0);
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
     f32 camera_pos_x = TILE_SIZE_HIGH * ROOM_WIDTH / 2;
@@ -102,7 +69,11 @@ i32 main()
             sceneMode = SCENE_MODE_TEST_PLAYER;
         }
 
-        // Entities
+        // Call render entity here...
+        RenderEntity(2, 2);
+        RenderEntity(3, 5);
+
+        // Entities to entity buffer
         BeginTextureMode(entities_high);
         ClearBackground(RED);
         BeginMode3D(camera);
@@ -111,7 +82,7 @@ i32 main()
         {
             EntityDraw *draw = state.render_entities.entities + i;
 
-            rlViewport(draw->altas_x * 128, draw->atlas_y * 128, 128, 128);
+            rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
             DrawModel(model, {}, 1, WHITE);
             DrawCube({0,0}, 1, 1, 1, WHITE);
         }
@@ -129,6 +100,8 @@ i32 main()
         BeginTextureMode(room_low);
         ClearBackground(WHITE);
 
+
+        //Render Wall
         for (u32 x = 0; x < ROOM_WIDTH; ++x)
         {
             for (u32 y = 0; y < ROOM_HEIGHT; ++y)
@@ -142,10 +115,11 @@ i32 main()
             }
         }
 
+        // Render entities into room
         for (u32 i = 0; i < state.render_entities.count; ++i)
         {
             EntityDraw *draw = state.render_entities.entities + i; 
-            DrawTextureRec(entities_low.texture, {draw->atlas_x * 32, draw->atlas_y * 32, 32, 32}, {0, 0}, WHITE);
+            DrawTextureRec(entities_low.texture, {(f32) draw->atlas_x * 32, (f32) draw->atlas_y * 32, 32, 32}, {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
         }
 
         EndTextureMode();
