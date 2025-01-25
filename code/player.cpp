@@ -1,43 +1,6 @@
 #include "raymath.h"
 
-struct Bubble
-{
-    // unscaled radius (of model)
-    float radius;
-    float min_scale;
-    float max_scale;
-};
 
-enum PlayerAnim
-{
-    PlayerAnim_Idle,
-    PlayerAnim_Walk,
-    PlayerAnim_Charge,
-    PlayerAnim_PostShoot,
-};
-
-ModelAnimation player_model_animations[4] = {};
-
-struct Player
-{
-    Bubble bubbles[6];
-    i32 current_bubble;
-
-    Vector2 position;
-    f32 rotation;
-
-    bool charging;
-
-    // value 0-1 incl
-    f32 charge_value;
-    f32 last_shot_age;
-
-    PlayerAnim animation;
-    i32 frame;
-
-    f32 speed;
-    f32 fire_delay;
-};
 
 void configure_player(Player* player)
 {

@@ -95,6 +95,8 @@ i32 main()
         BeginTextureMode(room_low);
         ClearBackground(WHITE);
 
+
+        //Render Wall
         for (u32 x = 0; x < ROOM_WIDTH; ++x)
         {
             for (u32 y = 0; y < ROOM_HEIGHT; ++y)
