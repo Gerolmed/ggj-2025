@@ -34,6 +34,8 @@ i32 main()
 
     Texture2D jason_texture = LoadTexture("asset/jason_texture.png");
 
+    Texture2D wall_texture = LoadTexture("asset/wall_base.png");
+
     Room level = load_room(1);
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
@@ -55,17 +57,23 @@ i32 main()
         // Render high texture
         BeginTextureMode(room_high);
         ClearBackground(WHITE);
-        //for (u32 x = 0; x < ROOM_WIDTH; ++x)
-        //{
-        //    for (u32 y = 0; y < ROOM_HEIGHT; ++y)
-        //    {
-        //        if (level.tiles[x + y * ROOM_WIDTH])
-        //        {
-        //           DrawRectangle(x * TILE_SIZE_HIGH, y * TILE_SIZE_HIGH, TILE_SIZE_HIGH, TILE_SIZE_HIGH, RED);  
-        //        }
-        //    }
-        //}
-        DrawTexture(jason_texture, 0, 0, WHITE);
+        for (u32 x = 0; x < ROOM_WIDTH; ++x)
+        {
+            for (u32 y = 0; y < ROOM_HEIGHT; ++y)
+            {
+                if (level.tiles[x + y * ROOM_WIDTH])
+                {
+                    printf("1");
+                    //DrawRectangle(x * TILE_SIZE_HIGH, y * TILE_SIZE_HIGH, TILE_SIZE_HIGH, TILE_SIZE_HIGH, RED); 
+                    //TODO: Get texture
+                    DrawTextureRec(wall_texture, { 0, 0, (f32)20/wall_texture.width, (f32)20/wall_texture.height }, { (float)x, (float)y }, WHITE); 
+                }else{
+                    printf("0");
+                }
+            }
+            printf("\n");
+        }
+        //DrawTexture(jason_texture, 0, 0, WHITE);
         EndTextureMode();
 
         // Render low texture
