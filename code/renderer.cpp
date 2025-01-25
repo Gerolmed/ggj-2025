@@ -22,12 +22,6 @@ void AllocateRenderSlot(EntityDraw *draw)
 
 // 
 
-enum ModelType
-{
-    Model_Toad,
-    Model_Fish,
-};
-
 void RenderEntity(ModelType model, Vector2 pos, f32 rot)
 {
     assert(state.render_entities.count < lengthof(state.render_entities.entities));
@@ -38,6 +32,8 @@ void RenderEntity(ModelType model, Vector2 pos, f32 rot)
 
     draw->x = pos.x;
     draw->y = pos.y;
+    draw->model = model;
+    draw->rot = rot;
 }
 
 void RenderAnimatedEntity(ModelType model, Vector2 pos, f32 rot, ModelAnimation *animation, u32 frame)
@@ -50,5 +46,9 @@ void RenderAnimatedEntity(ModelType model, Vector2 pos, f32 rot, ModelAnimation 
 
     draw->x = pos.x;
     draw->y = pos.y;
+    draw->model = model;
+    draw->rot = rot;
+    draw->animation = animation;
+    draw->frame = frame;
 }
 
