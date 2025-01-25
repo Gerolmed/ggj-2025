@@ -1,2 +1,2 @@
 
-Camera3D main_camera;
+Camera2D main_camera;
