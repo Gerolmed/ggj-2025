@@ -13,8 +13,8 @@
 
 #include "essentials.cpp"
 #include "renderer.cpp"
-#include "player.cpp"
 #include "collision.cpp"
+#include "player.cpp"
 #include "pufferfish.cpp"
 
 #include "loader.cpp"
@@ -57,6 +57,7 @@ i32 main()
     models[Model_Toad].transform = models[Model_Toad].transform * MatrixTranslate(0, 1, 0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
 
     models[Model_Fish] = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
+    models[Model_Fish].transform = models[Model_Fish].transform * MatrixTranslate(0, 1, 0.6);
 
     models[Model_Spike] = LoadModel("asset/3d/pufferfish/spike.glb");
     models[Model_Bubble] = LoadModel("asset/3d/bubble/Bubble.glb");
@@ -103,7 +104,6 @@ i32 main()
     RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
 
     tileset = LoadTexture("asset/tileset.png");
-    Texture2D wall_texture = LoadTexture("asset/wall_base.png");
 
     Room* level = &state.room;
     *level = load_room(0);
@@ -149,7 +149,7 @@ i32 main()
             if(fish->dead) continue;
             fish_update(fish, &state);
 
-            RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 0);
+            RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 0, 2*fish_get_radius(fish));
         }
 
 
@@ -159,23 +159,26 @@ i32 main()
             projectile->position.x += GetFrameTime() * projectile->velocity.x;
             projectile->position.y += GetFrameTime() * projectile->velocity.y;
 
-            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0);
+            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius);
             
         }
         for(u32 i = 0; i < arrlen(level->spikes); i++)
         {
-            i32 SPIKE_SPEED = 5;
+            i32 SPIKE_SPEED = 10;
             ProjectileSpike* spike = &level->spikes[i];
             spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
             spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
-            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0);
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1);
             
 
         }
 
         // Entities to entity buffer
         BeginTextureMode(entities_high);
+        rlDisableColorBlend();
         ClearBackground(RED);
+        rlEnableColorBlend();
+
         BeginMode3D(model_camera);
 
         for (u32 i = 0; i < state.render_entities.count; ++i)
@@ -183,7 +186,7 @@ i32 main()
             EntityDraw* draw = state.render_entities.entities + i;
 
             rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
-            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {1,1,1}, WHITE);
+            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, WHITE);
             // DrawCube({0,0}, 1, 1, 1, WHITE);
         }
 

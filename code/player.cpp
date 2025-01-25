@@ -2,6 +2,7 @@ void configure_player(Player* player)
 {
     *player = {};
     player->speed = 5;
+    player->health = 10;
     for (int i = 0; i < lengthof(player->bubbles); ++i)
     {
         player->bubbles[i] = Bubble{
@@ -58,11 +59,48 @@ void update_charge_ball(Player* player)
     Vector2 position = get_current_bubble_position(player);
 
     // TODO: render ball?
-    RenderEntity(Model_Bubble, position, 0);
+    RenderEntity(Model_Bubble, position, 0, player->charge_value * 2);
 }
+
+
+void check_collisions(Player* player, GameState* state){
+    SphericalCollider player_collider = SphericalCollider(player->position,1);
+
+    //Pufferfish Collisions
+    for(i32 i = 0 ; i < state->room.pufferfish_count; i++){
+        Pufferfish* fish = &state->room.pufferfishs[i];
+        if(fish->dead) continue;
+        SphericalCollider fish_collider = {fish->position, fish_get_radius(fish)};
+
+        if(intersects(&player_collider, &fish_collider))
+        {
+            player->health -= 1;
+            printf("Damaged player");
+            
+        }
+    }
+
+    //Spike Collisions
+    for(i32 i = 0 ; i < arrlen(state->room.spikes); i++){
+        ProjectileSpike spike = state->room.spikes[i];
+
+        SphericalCollider spike_collider = {spike.position, SPIKE_RADIUS};
+
+        if(intersects(&player_collider, &spike_collider))
+        {
+            printf("Damaged player");
+            player->health -= 1;
+            arrdel(state->room.spikes,i);
+            i--;
+        }
+    }
+}
+
 
 void execute_player_loop(Player* player, GameState* state)
 {
+    check_collisions(player,state);
+
     player->last_shot_age += GetFrameTime();
 
     const Vector2 mouse_screen_pos = GetMousePosition();
@@ -92,9 +130,9 @@ void execute_player_loop(Player* player, GameState* state)
         //Shooting projectile
         ProjectileBubble projectile;
         projectile.position = position;
-        projectile.radius = player->charge_value * 10;
-        projectile.damage = projectile.radius;
-        projectile.velocity = direction * 3;
+        projectile.radius = player->charge_value*2;
+        projectile.damage = player->charge_value*10;
+        projectile.velocity = direction * 10;
         arrput(state->room.projectiles, projectile);
 
         player->current_bubble = ++player->current_bubble % lengthof(player->bubbles);
@@ -133,6 +171,6 @@ void execute_player_loop(Player* player, GameState* state)
     update_charge_ball(player);
     update_player_animation(player);
 
-    RenderAnimatedEntity(Model_Toad, player->position, player->rotation, player_model_animations + player->animation, player->frame);
+    RenderAnimatedEntity(Model_Toad, player->position, player->rotation, 1, player_model_animations + player->animation, player->frame);
     // RenderEntity(Model_Toad, player->position, 0);
 }

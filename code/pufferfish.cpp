@@ -53,7 +53,7 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
     ProjectileSpike *spikes_array = level->spikes;
     for(i32 i = 0 ; i < arrlen(spikes_array); i++){
         ProjectileSpike spike = spikes_array[i];
-        SphericalCollider spike_collider = SphericalCollider(spike.position, 0.1);
+        SphericalCollider spike_collider = SphericalCollider(spike.position, SPIKE_RADIUS);
         if(intersects(&fish_collider, &spike_collider)){
             fish->health = 0;
             arrdel(spikes_array,i);
