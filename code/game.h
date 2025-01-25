@@ -8,7 +8,8 @@ typedef float f32;
 
 #define ROOM_WIDTH 20
 #define ROOM_HEIGHT 15
-#define TILE_SIZE 100
+#define TILE_SIZE_HIGH 80
+#define TILE_SIZE_LOW 20
 
 enum Tile
 {
