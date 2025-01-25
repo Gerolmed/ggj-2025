@@ -34,7 +34,7 @@ i32 main()
 
     Texture2D jason_texture = LoadTexture("asset/jason_texture.png");
 
-    Room level = load_room();
+    Room level = load_room(1);
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
     Camera camera = { 0 };
