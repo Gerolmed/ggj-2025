@@ -93,6 +93,9 @@ struct EntityDraw
 
     f32 x;
     f32 y;
+
+    ModelAnimation *animation;
+    u32 frame;
 };
 
 struct RenderEntities

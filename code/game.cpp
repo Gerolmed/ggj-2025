@@ -30,8 +30,9 @@ i32 main()
     InitWindow(1600, 900, "Divegame");
     SetTargetFPS(60);
 
-    // Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
+    // model.transform = model.transform * MatrixTranslate(0,1,1) * MatrixScale(1.0f, 1.0f, 1.0f);
     Model model = LoadModel("asset/3d/toad/Toad.glb");
+    model.transform = model.transform * MatrixTranslate(0,1,0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
 
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
 
@@ -49,12 +50,12 @@ i32 main()
     f32 camera_pos_x = TILE_SIZE_HIGH * ROOM_WIDTH / 2;
     f32 camera_pos_y = TILE_SIZE_HIGH * ROOM_HEIGHT / 2;
 
-    Camera camera = { 0 };
-    camera.up = { 0.0f, 1.0f, 0.0f };
-    camera.position = {-10, 0, 0};
-    camera.target = {0, 0, 0};
-    camera.fovy = 5.0f;
-    camera.projection = CAMERA_ORTHOGRAPHIC;
+    Camera model_camera = { 0 };
+    model_camera.up = { 0.0f, -1.0f, 0.0f };
+    model_camera.position = {-10, 10, 0};
+    model_camera.target = {0, 0, 0};
+    model_camera.fovy = 5.0f;
+    model_camera.projection = CAMERA_ORTHOGRAPHIC;
 
     while (!WindowShouldClose())
     {
@@ -70,20 +71,20 @@ i32 main()
         }
 
         // Call render entity here...
-        RenderEntity(2, 2);
-        RenderEntity(3, 5);
+        RenderEntity({2, 2});
+        RenderEntity({3, 5});
 
         // Entities to entity buffer
         BeginTextureMode(entities_high);
         ClearBackground(RED);
-        BeginMode3D(camera);
+        BeginMode3D(model_camera);
 
         for (u32 i = 0; i < state.render_entities.count; ++i)
         {
             EntityDraw *draw = state.render_entities.entities + i;
 
             rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
-            DrawModel(model, {}, 1, WHITE);
+            DrawModelEx(model, {}, {0,1,0}, GetTime() * 360, {1,1,1}, WHITE);
             DrawCube({0,0}, 1, 1, 1, WHITE);
         }
 
