@@ -79,6 +79,7 @@ void check_collisions(Player* player, GameState* state){
         if(intersects(&player_collider, &fish_collider))
         {
             player->health -= 1;
+            player->knockback_velocity = Vector2Scale(Vector2Normalize(Vector2Subtract(player->position,fish->position)),8);
             printf("Damaged player");
             
         }
@@ -93,10 +94,10 @@ void check_collisions(Player* player, GameState* state){
         if(intersects(&player_collider, &fish_collider))
         {
             player->health -= 3;
+            player->knockback_velocity = Vector2Scale(Vector2Normalize(Vector2Subtract(player->position,fish->position)),15);
             printf("Damaged player");
         }
     }
-
 
     //Spike Collisions
     for(i32 i = 0 ; i < arrlen(state->room.spikes); i++){
@@ -107,6 +108,7 @@ void check_collisions(Player* player, GameState* state){
         if(intersects(&player_collider, &spike_collider))
         {
             printf("Damaged player");
+            player->knockback_velocity = spike.direction * 10;
             player->health -= 1;
             arrdel(state->room.spikes,i);
             i--;
@@ -118,6 +120,19 @@ void check_collisions(Player* player, GameState* state){
 void execute_player_loop(Player* player, GameState* state)
 {
     check_collisions(player,state);
+
+     //Process knockback velocity
+    if(player->knockback_velocity.x != 0 || player->knockback_velocity.y != 0)
+    {
+        player->position = Vector2Add(player->position, Vector2Scale(player->knockback_velocity, GetFrameTime()));
+        Vector2 friction = Vector2Scale(Vector2Normalize(player->knockback_velocity), 10* GetFrameTime());
+        if(abs_squared(friction) > abs_squared(player->knockback_velocity)){
+            player->knockback_velocity = {0,0};
+        }else{
+            player->knockback_velocity = Vector2Subtract(player->knockback_velocity, friction);
+        }
+    }
+
 
     player->last_shot_age += GetFrameTime();
 

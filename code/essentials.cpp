@@ -54,6 +54,8 @@ struct Player
 
     i32 health;
 
+    Vector2 knockback_velocity;
+
     bool charging;
 
     // value 0-1 incl
@@ -83,6 +85,7 @@ struct Sharkfish
     float rotation;
     i32 health;
     bool dead;
+    Vector2 knockback_velocity;
 
     i32 behavior_frame;
     Vector2 dash_direction;
