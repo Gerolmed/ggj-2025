@@ -86,13 +86,22 @@ struct Room
 
 };
 
+enum ModelType
+{
+    Model_Toad,
+    Model_Fish,
+};
+
 struct EntityDraw
 {
     u32 atlas_x;
     u32 atlas_y;
+    
+    ModelType model;
 
     f32 x;
     f32 y;
+    f32 rot;
 
     ModelAnimation *animation;
     u32 frame;
