@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <assert.h>
 #include "stb_image.h"
 #define STB_DS_IMPLEMENTATION
 #include "stb_ds.h"
 
 #include "raylib.h"
 #include "rlgl.h"
+
+#define lengthof(x) (sizeof(x) / sizeof(x[0]))
 
 #include "essentials.cpp"
 #include "game.h"
@@ -19,14 +22,14 @@ enum SceneMode
     SCENE_MODE_TEST_PLAYER,
 };
 
-struct RenderEntities
-{
-    u32 size;
-    u8 used[128];
-};
+GameState state = {};
 
-void AllocateRenderEntity()
+void RenderEntity()
 {
+    assert(state.render_entities.entity_count < lengthof(state.render_entities.entities));
+
+    EntityDraw *draw = state.render_entities.entities + state.render_entities.entity_count++;
+    memset(draw, 0, sizeof(*draw));
 }
 
 i32 main()
@@ -100,6 +103,9 @@ i32 main()
         //     }
         // }
         // DrawTexture(jason_texture, 0, 0, WHITE);
+
+        DrawTextureRec(entities_low.texture, {0, 0, 32, 32}, {0, 0}, WHITE);
+
         EndTextureMode();
 
         // Render to swapchain
@@ -108,8 +114,6 @@ i32 main()
         DrawTexturePro(room_low.texture, 
                        { 0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height }, 
                        { 0, 0, (f32)1600, (f32)880 }, { 0, 0 }, 0, WHITE);
-
-        DrawTextureRec(entities_high.texture, {0, 0, 128, 128}, {0, 0}, WHITE);
 
         switch (sceneMode)
         {

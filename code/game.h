@@ -44,3 +44,25 @@ struct Room
 
 
 };
+
+struct EntityDraw
+{
+    u32 x;
+    u32 y;
+    u32 width;
+    u32 height;
+};
+
+struct RenderEntities
+{
+    u32 size;
+    u8 used[128];
+
+    u32 entity_count;
+    EntityDraw entities[32];
+};
+
+struct GameState
+{
+    RenderEntities render_entities;
+};
