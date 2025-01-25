@@ -57,6 +57,8 @@ void test_player_loop(Player *player)
 {
     player->last_shot_age += GetFrameTime();
 
+    Vector2 mouse_screen_pos = GetMousePosition();
+
 
     if (player->last_shot_age > player->fire_delay && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
