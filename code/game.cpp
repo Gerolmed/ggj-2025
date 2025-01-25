@@ -24,12 +24,36 @@ enum SceneMode
 
 GameState state = {};
 
+void AllocateRenderSlot(EntityDraw *draw)
+{
+    for (u32 x = 0; x < state.render_entities.size; ++x)
+    {
+        for (u32 y = 0; y < state.render_entities.size; ++y)
+        {
+            u32 index = x + y * state.render_entities.size;
+
+            if (!state.render_entities.tiles[index])
+            {
+                state.render_entities.tiles[index] = 1;
+
+                draw->atlas_x = x;
+                draw->atlas_y = y;
+                return;
+            }
+        }
+    }
+
+    assert(0);
+}
+
 void RenderEntity()
 {
-    assert(state.render_entities.entity_count < lengthof(state.render_entities.entities));
+    assert(state.render_entities.count < lengthof(state.render_entities.entities));
+    EntityDraw *draw = state.render_entities.entities + state.render_entities.count++;
 
-    EntityDraw *draw = state.render_entities.entities + state.render_entities.entity_count++;
-    memset(draw, 0, sizeof(*draw));
+    draw->atlas_width = 1;
+    draw->atlas_height = 1;
+    AllocateRenderSlot(draw);
 }
 
 i32 main()
@@ -38,8 +62,8 @@ i32 main()
     InitWindow(1600, 900, "Divegame");
     SetTargetFPS(60);
 
-    Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
-    // Model model = LoadModel("asset/3d/toad/Toad.glb");
+    // Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
+    Model model = LoadModel("asset/3d/toad/Toad.glb");
 
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
 
@@ -67,6 +91,8 @@ i32 main()
 
     while (!WindowShouldClose())
     {
+        state.render_entities = {};
+
         if (IsKeyPressed(KEY_F1))
         {
             sceneMode = SCENE_MODE_TEST_DEFAULT;
@@ -78,11 +104,18 @@ i32 main()
 
         // Entities
         BeginTextureMode(entities_high);
-        rlViewport(0, 0, 128, 128);
         ClearBackground(RED);
         BeginMode3D(camera);
-        DrawModel(model, {}, 1, WHITE);
-        DrawCube({0,0}, 1, 1, 1, WHITE);
+
+        for (u32 i = 0; i < state.render_entities.count; ++i)
+        {
+            EntityDraw *draw = state.render_entities.entities + i;
+
+            rlViewport(draw->altas_x * 128, draw->atlas_y * 128, 128, 128);
+            DrawModel(model, {}, 1, WHITE);
+            DrawCube({0,0}, 1, 1, 1, WHITE);
+        }
+
         EndMode3D();
         EndTextureMode();
 
@@ -109,7 +142,11 @@ i32 main()
             }
         }
 
-        DrawTextureRec(entities_low.texture, {0, 0, 32, 32}, {0, 0}, WHITE);
+        for (u32 i = 0; i < state.render_entities.count; ++i)
+        {
+            EntityDraw *draw = state.render_entities.entities + i; 
+            DrawTextureRec(entities_low.texture, {draw->atlas_x * 32, draw->atlas_y * 32, 32, 32}, {0, 0}, WHITE);
+        }
 
         EndTextureMode();
 

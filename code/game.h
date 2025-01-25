@@ -96,9 +96,9 @@ struct EntityDraw
 struct RenderEntities
 {
     u32 size;
-    u8 used[128];
+    u8 tiles[128];
 
-    u32 entity_count;
+    u32 count;
     EntityDraw entities[32];
 };
 
