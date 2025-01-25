@@ -1,6 +1,3 @@
-#include "raymath.h"
-
-
 
 void configure_player(Player* player)
 {

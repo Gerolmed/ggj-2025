@@ -6,12 +6,12 @@
 #include "stb_ds.h"
 
 #include "raylib.h"
+#include "raymath.h"
 #include "rlgl.h"
 
 #define lengthof(x) (sizeof(x) / sizeof(x[0]))
 
 #include "essentials.cpp"
-#include "game.h"
 #include "player.cpp"
 
 #include "loader.cpp"
