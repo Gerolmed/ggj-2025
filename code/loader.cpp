@@ -25,6 +25,11 @@ Room load_room(i32 room_id){
                 transition_tile->new_room_id = curr[2];
                 room.transition_tile_count++;
             }
+            else if(curr[0] = 255 && curr[1] == 0 & curr[2] == 0){
+                Pufferfish* pufferfish = &room.pufferfishs[room.pufferfish_count];
+                pufferfish->position = Vector2(x, y);
+                room.pufferfish_count++;
+            }
             else{
                 room.tiles[ROOM_WIDTH * y + x] = Tile_Empty;
             }
