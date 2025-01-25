@@ -67,6 +67,14 @@ struct Pufferfish
 {
     Vector2 position;
     i32 health;
+    bool dead;
+};
+
+struct ProjectileBubble{
+    Vector2 position;
+    f32 radius;
+    Vector2 velocity;
+    i32 damage;
 };
 
 struct Room
@@ -81,6 +89,7 @@ struct Room
     i32 pufferfish_count;
     Pufferfish pufferfishs[64];
 
+    ProjectileBubble *projectiles = NULL;
 
 
 };
@@ -102,7 +111,17 @@ struct RenderEntities
     EntityDraw entities[32];
 };
 
+struct SphericalCollider
+{
+    Vector2 position;
+    f32 radius;
+};
+
 struct GameState
 {
     RenderEntities render_entities;
+
+    Room room;
+
+
 };
