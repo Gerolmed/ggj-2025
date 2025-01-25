@@ -15,6 +15,8 @@ void fish_death(Pufferfish* fish, GameState* state){
 
     for(i32 i = 0 ; i < 4; ++i)
     {
+        directions[i] = Vector2Rotate(directions[i], fish->rotation);
+
         ProjectileSpike spike = {};
         spike.position = fish->position;
         spike.direction = directions[i];
