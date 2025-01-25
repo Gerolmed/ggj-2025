@@ -30,6 +30,7 @@ void fish_pursue_player(Pufferfish* fish, GameState* state){
     Vector2 direction = Vector2Normalize(Vector2Subtract(player->position, fish->position));
 
     fish->position = Vector2Add(fish->position, Vector2Scale(direction, GetFrameTime()));
+    fish->rotation = -Vector2Angle(direction, {1,0});
 }
 
 void fish_check_collision(Pufferfish* fish, GameState* state){

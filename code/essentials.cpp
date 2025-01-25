@@ -72,6 +72,7 @@ struct Player
 struct Pufferfish
 {
     Vector2 position;
+    float rotation;
     i32 health;
     bool dead;
 };

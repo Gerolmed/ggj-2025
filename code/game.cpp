@@ -137,7 +137,7 @@ i32 main()
             if(fish->dead) continue;
             fish_update(fish, &state);
 
-            RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 0, 2*fish_get_radius(fish));
+            RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish));
         }
 
 
