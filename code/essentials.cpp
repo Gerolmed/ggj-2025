@@ -62,6 +62,8 @@ struct Player
 
     f32 speed;
     f32 fire_delay;
+
+    Model model;
 };
 
 struct Pufferfish

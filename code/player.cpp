@@ -1,4 +1,3 @@
-
 void configure_player(Player* player)
 {
     *player = {};
@@ -21,6 +20,7 @@ void update_player_animation(Player* player)
     const ModelAnimation animation = player_model_animations[player->animation];
 
     if (player->frame < animation.frameCount) return;
+
     if (player->animation == PlayerAnim_PostShoot)
     {
         player->frame = 0;
@@ -56,7 +56,7 @@ void update_charge_ball(Player* player)
     // TODO: render ball?
 }
 
-void test_player_loop(Player* player)
+void execute_player_loop(Player* player)
 {
     player->last_shot_age += GetFrameTime();
 
@@ -66,7 +66,7 @@ void test_player_loop(Player* player)
     player->rotation = Vector2Angle(mouse_direction, {1, 0});
 
 
-    if (player->last_shot_age > player->fire_delay && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    if (player->last_shot_age > player->fire_delay && IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
         if (!player->charging)
         {
@@ -78,7 +78,7 @@ void test_player_loop(Player* player)
         player->charge_value = fmin(player->charge_value, 1);
     }
 
-    if (player->charging && !IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    if (player->charging && !IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
         Vector2 position = get_current_bubble_position(player);
         Vector2 direction = Vector2Normalize(mouse_direction);
@@ -96,27 +96,29 @@ void test_player_loop(Player* player)
 
 
     try_change_player_anim(player, PlayerAnim_Idle);
-    if (IsKeyPressed(KEY_W))
+    if (IsKeyDown(KEY_W))
     {
         player->position.y += player->speed * GetFrameTime();
         try_change_player_anim(player, PlayerAnim_Walk);
     }
-    else if (IsKeyPressed(KEY_S))
+    else if (IsKeyDown(KEY_S))
     {
         player->position.y -= player->speed * GetFrameTime();
         try_change_player_anim(player, PlayerAnim_Walk);
     }
 
-    if (IsKeyPressed(KEY_D))
+    if (IsKeyDown(KEY_D))
     {
         player->position.x += player->speed * GetFrameTime();
         try_change_player_anim(player, PlayerAnim_Walk);
     }
-    else if (IsKeyPressed(KEY_A))
+    else if (IsKeyDown(KEY_A))
     {
         player->position.x -= player->speed * GetFrameTime();
         try_change_player_anim(player, PlayerAnim_Walk);
     }
 
     update_player_animation(player);
+    TraceLog(LOG_INFO, "Player animation updated %f, %f", player->position.x, player->position.y);
+    RenderAnimatedEntity(Model_Toad, player->position, player->rotation, player_model_animations + player->animation, player->frame);
 }

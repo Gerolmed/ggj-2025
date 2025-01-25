@@ -32,7 +32,37 @@ i32 main()
 
     // model.transform = model.transform * MatrixTranslate(0,1,1) * MatrixScale(1.0f, 1.0f, 1.0f);
     Model model = LoadModel("asset/3d/toad/Toad.glb");
+
+    {
+        i32 anim_count;
+        ModelAnimation *animation_list = LoadModelAnimations("asset/3d/toad/Toad.glb", &anim_count);
+
+        for (int i = 0; i < anim_count; ++i)
+        {
+            ModelAnimation *animation = animation_list + i;
+            assert(animation);
+            if (strcmp(animation->name, "attack_charge") == 0)
+            {
+                player_model_animations[PlayerAnim_Charge] = *animation;
+            } else if (strcmp(animation->name, "Idle") == 0)
+            {
+                player_model_animations[PlayerAnim_Idle] = *animation;
+            } else if (strcmp(animation->name, "Move") == 0)
+            {
+                player_model_animations[PlayerAnim_Walk] = *animation;
+            } else if (strcmp(animation->name, "post_attack") == 0)
+            {
+                player_model_animations[PlayerAnim_PostShoot] = *animation;
+            } else
+            {
+                assert(false);
+            }
+        }
+    }
     model.transform = model.transform * MatrixTranslate(0,1,0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
+
+    Player player;
+    configure_player(&player);
 
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
 
@@ -137,7 +167,7 @@ i32 main()
             case SCENE_MODE_TEST_DEFAULT:
                 break;
             case SCENE_MODE_TEST_PLAYER:
-                test_player_loop(nullptr);
+                execute_player_loop(&player);
                 break;
         }
 
