@@ -91,17 +91,19 @@ i32 main()
         // ROOM
         BeginTextureMode(room_low);
         ClearBackground(WHITE);
-        // for (u32 x = 0; x < ROOM_WIDTH; ++x)
-        // {
-        //     for (u32 y = 0; y < ROOM_HEIGHT; ++y)
-        //     {
-        //         if (room.tiles[x + y * ROOM_WIDTH])
-        //         {
-        //             DrawRectangle(x * TILE_SIZE_HIGH, y * TILE_SIZE_HIGH, TILE_SIZE_HIGH, TILE_SIZE_HIGH, RED);  
-        //         }
-        //     }
-        // }
-        // DrawTexture(jason_texture, 0, 0, WHITE);
+        for (u32 x = 0; x < ROOM_WIDTH; ++x)
+        {
+            for (u32 y = 0; y < ROOM_HEIGHT; ++y)
+            {
+                if (level.tiles[x + y * ROOM_WIDTH])
+                {
+                    //DrawRectangle(x * TILE_SIZE_LOW, y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, RED);  
+                    
+                    DrawTextureRec(wall_texture, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, (f32)TILE_SIZE_LOW * y}, WHITE);
+                }
+            }
+        }
+        //DrawTexture(jason_texture, 0, 0, WHITE);
         EndTextureMode();
 
         // Render to swapchain
