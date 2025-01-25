@@ -54,12 +54,9 @@ i32 main()
                 if (level.tiles[x + y * ROOM_WIDTH] == Tile_Wall)
                 {
                     DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);  
-                    printf("1");
                 }else{
-                    printf("0");
                 }
             }
-            printf("\n");
         }
 
         switch (sceneMode)

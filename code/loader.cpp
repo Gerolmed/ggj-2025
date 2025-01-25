@@ -9,6 +9,9 @@ Room load_room(){
     u8* tmp = stbi_load(path, (i32*) &width, (i32*) &height, NULL, STBI_rgb);
     assert(tmp);
 
+    assert(ROOM_WIDTH == width);
+    assert(ROOM_HEIGHT == height);
+
     u8* curr = tmp;
     for (u32 y = 0; y < ROOM_HEIGHT; ++y) {
         for (u32 x = 0; x < ROOM_WIDTH; ++x) {

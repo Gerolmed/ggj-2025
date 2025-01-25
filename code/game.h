@@ -7,7 +7,7 @@ typedef int32_t i32;
 typedef float f32;
 
 #define ROOM_WIDTH 20
-#define ROOM_HEIGHT 15
+#define ROOM_HEIGHT 10
 #define TILE_SIZE 100
 
 enum Tile
