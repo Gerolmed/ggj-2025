@@ -17,8 +17,8 @@ void orbit_around_player(Jellyfish* fish, GameState* state){
     if(fish->behavior_frame == 179){
         //Shoot bubble at player;
         ProjectileBubble projectile;
-        projectile.position = Vector2Add(fish->position,Vector2Scale(direction, 0.1 + 2* jelly_get_radius(fish) ));
-        projectile.radius = jelly_get_radius(fish);
+        projectile.position = fish->position;
+        projectile.radius = 2*jelly_get_radius(fish);
         projectile.damage = 1;
         projectile.can_collide_with_player = true;
         projectile.velocity = direction * 10;
@@ -44,6 +44,7 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
     ProjectileBubble *bubble_array = level->projectiles;
     for(i32 i = 0 ; i < arrlen(bubble_array); i++){
         ProjectileBubble bubble = bubble_array[i];
+        if(bubble.can_collide_with_player) continue;
         SphericalCollider bubble_collider = SphericalCollider(bubble.position, bubble.radius);
         if(intersects(&fish_collider, &bubble_collider)){
             fish->health -= bubble.damage;
@@ -58,7 +59,7 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
         ProjectileSpike spike = spikes_array[i];
         SphericalCollider spike_collider = SphericalCollider(spike.position, SPIKE_RADIUS);
         if(intersects(&fish_collider, &spike_collider)){
-            fish->health = 0;
+            fish->health -= 5;
             arrdel(spikes_array,i);
             i--;
         }
