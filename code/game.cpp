@@ -27,9 +27,23 @@ enum SceneMode
 
 Model models[Model_Count];
 
-inline Rectangle TileAt(u32 x, u32 y)
+Texture2D tileset;
+
+inline void DrawTileAt(u32 tile_x, u32 tile_y, u32 x, u32 y)
 {
-    return {(f32) x * TILE_SIZE_LOW, (f32) y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW};
+    DrawTextureRec(tileset, {(f32) tile_x * TILE_SIZE_LOW, (f32) tile_y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW}, 
+                   {(f32) x * TILE_SIZE_LOW, (f32) y * TILE_SIZE_LOW}, WHITE);
+}
+
+inline void DrawTileRegion(u32 tile_x, u32 tile_y, u32 x, u32 y, u32 size_x, u32 size_y)
+{
+    for (u32 dx = 0; dx < size_x; ++dx)
+    {
+        for (u32 dy = 0; dy < size_y; ++dy)
+        {
+            DrawTileAt(tile_x + dx, tile_y + dy, x + dx, y + dy);
+        }
+    }
 }
 
 i32 main()
@@ -88,7 +102,7 @@ i32 main()
     RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
     RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
 
-    Texture2D tileset = LoadTexture("asset/tileset.png");
+    tileset = LoadTexture("asset/tileset.png");
     Texture2D wall_texture = LoadTexture("asset/wall_base.png");
 
     Room* level = &state.room;
@@ -190,10 +204,32 @@ i32 main()
 
 
         //Render Wall
-        DrawTextureRec(tileset, TileAt(4, 0), {0, 0}, WHITE);
-        DrawTextureRec(tileset, TileAt(5, 0), {(f32) TILE_SIZE_LOW, 0}, WHITE);
-        DrawTextureRec(tileset, TileAt(4, 1), {0, (f32)TILE_SIZE_LOW}, WHITE);
-        DrawTextureRec(tileset, TileAt(5, 1), {(f32) TILE_SIZE_LOW, (f32)TILE_SIZE_LOW}, WHITE);
+
+        // Topleft
+        DrawTileRegion(4, 0, 0, 0, 2, 2);
+
+        // Topright
+        DrawTileRegion(8, 0, ROOM_WIDTH + 2, 0, 2, 2);
+
+        // Botleft
+        DrawTileRegion(4, 4, 0, ROOM_HEIGHT + 2, 2, 2);
+
+        // Botright
+        DrawTileRegion(8, 4, ROOM_WIDTH + 2, ROOM_HEIGHT + 2, 2, 2);
+
+        for (u32 y = 2; y < ROOM_HEIGHT + 1; y += 2)
+        {
+            DrawTileRegion(4, 2, 0, y, 2, 2);
+            DrawTileRegion(8, 2, ROOM_WIDTH + 2, y, 2, 2);
+        }
+        DrawTileRegion(4, 2, 0, ROOM_HEIGHT + 1, 2, 1);
+        DrawTileRegion(8, 2, ROOM_WIDTH + 2, ROOM_HEIGHT + 1, 2, 1);
+
+        for (u32 x = 2; x < ROOM_WIDTH + 1; x += 2)
+        {
+            DrawTileRegion(6, 0, x, 0, 2, 2);
+            DrawTileRegion(6, 4, x, ROOM_HEIGHT + 2, 2, 2);
+        }
 
         // for (u32 x = 0; x < ROOM_WIDTH; ++x)
         // {
