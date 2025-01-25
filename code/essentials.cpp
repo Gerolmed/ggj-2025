@@ -127,6 +127,7 @@ struct EntityDraw
     f32 x;
     f32 y;
     f32 rot;
+    f32 scale;
 
     ModelAnimation *animation;
     u32 frame;
