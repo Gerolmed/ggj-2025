@@ -3306,7 +3306,7 @@ unsigned int rlLoadTexture(const void *data, int width, int height, int format, 
 
     // Magnification and minification filters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);  // Alternative: GL_LINEAR
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  // Alternative: GL_LINEAR
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);  // Alternative: GL_LINEAR
 
 #if defined(GRAPHICS_API_OPENGL_33)
     if (mipmapCount > 1)

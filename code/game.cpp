@@ -29,9 +29,17 @@ i32 main()
 
     Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
 
+    RenderTexture room_high = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_HIGH, ROOM_HEIGHT * TILE_SIZE_HIGH);
+    RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
+
+    Texture2D jason_texture = LoadTexture("asset/jason_texture.png");
 
     Room level = load_room(1);
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
+
+    Camera camera = { 0 };
+    camera.up = { 0.0f, 1.0f, 0.0f };
+    camera.position = {-10, 10, 10};
 
     while (!WindowShouldClose())
     {
@@ -44,24 +52,38 @@ i32 main()
             sceneMode = SCENE_MODE_TEST_PLAYER;
         }
 
-        BeginDrawing();
+        // Render high texture
+        BeginTextureMode(room_high);
         ClearBackground(WHITE);
+        // for (u32 x = 0; x < ROOM_WIDTH; ++x)
+        // {
+        //     for (u32 y = 0; y < ROOM_HEIGHT; ++y)
+        //     {
+        //         if (room.tiles[x + y * ROOM_WIDTH])
+        //         {
+        //             DrawRectangle(x * TILE_SIZE_HIGH, y * TILE_SIZE_HIGH, TILE_SIZE_HIGH, TILE_SIZE_HIGH, RED);  
+        //         }
+        //     }
+        // }
+        DrawTexture(jason_texture, 0, 0, WHITE);
+        EndTextureMode();
 
-        for (u32 x = 0; x < ROOM_WIDTH; ++x)
-        {
-            for (u32 y = 0; y < ROOM_HEIGHT; ++y)
-            {
-                if (level.tiles[x + y * ROOM_WIDTH] == Tile_Wall)
-                {
-                    DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);  
-                }
-            }
-        }
+        // Render low texture
+        BeginTextureMode(room_low);
+        DrawTexturePro(room_high.texture, 
+                       { 0, 0, (f32)room_high.texture.width, (f32)-room_high.texture.height }, 
+                       { 0, 0, (f32)room_low.texture.width, (f32)room_low.texture.height }, { 0, 0 }, 0, WHITE);
+        EndTextureMode();
 
-        for(u32 i = 0 ; i < level.transition_tile_count; i++)
-        {
-            DrawRectangle(level.transition_tiles[i].pos_x * TILE_SIZE, level.transition_tiles[i].pos_y * TILE_SIZE, TILE_SIZE, TILE_SIZE, YELLOW);  
-        }
+        // Render to swapchain
+        BeginDrawing();
+        DrawTexturePro(room_low.texture, 
+                       { 0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height }, 
+                       { 0, 0, (f32)1600, (f32)880 }, { 0, 0 }, 0, WHITE);
+
+        // BeginMode3D();
+        // DrawModel(model, {}, 1, WHITE);
+        // EndMode3D();
 
         switch (sceneMode)
         {
