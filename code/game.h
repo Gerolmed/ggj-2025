@@ -16,7 +16,18 @@ enum Tile
     Tile_Wall,
 };
 
+struct TransitionTile
+{
+    i32 pos_x;
+    i32 pos_y;
+    i32 new_room_id;
+};
+
 struct Room
 {
     Tile tiles[ROOM_WIDTH * ROOM_HEIGHT];
+
+    i32 transition_tile_count;
+    TransitionTile transition_tiles[64];
+
 };

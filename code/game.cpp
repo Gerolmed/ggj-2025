@@ -30,7 +30,7 @@ i32 main()
     Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
 
 
-    Room level = load_room();
+    Room level = load_room(1);
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
     while (!WindowShouldClose())
@@ -54,9 +54,13 @@ i32 main()
                 if (level.tiles[x + y * ROOM_WIDTH] == Tile_Wall)
                 {
                     DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);  
-                }else{
                 }
             }
+        }
+
+        for(u32 i = 0 ; i < level.transition_tile_count; i++)
+        {
+            DrawRectangle(level.transition_tiles[i].pos_x * TILE_SIZE, level.transition_tiles[i].pos_y * TILE_SIZE, TILE_SIZE, TILE_SIZE, YELLOW);  
         }
 
         switch (sceneMode)
