@@ -224,6 +224,12 @@ i32 main()
             EntityDraw* draw = state.render_entities.entities + i;
 
             rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
+
+            if (draw->animation)
+            {
+                UpdateModelAnimationBones(models[draw->model], *draw->animation, draw->frame);
+            }
+
             DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, WHITE);
             // DrawCube({0,0}, 1, 1, 1, WHITE);
         }
@@ -302,7 +308,6 @@ i32 main()
             DrawTextureRec(entities_low.texture, {(f32)draw->atlas_x * 32, (f32)draw->atlas_y * 32, 32, 32},
                            {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
         }
-        printf("%u\n", state.render_entities.count);
 
         EndMode2D();
         EndDrawing();
