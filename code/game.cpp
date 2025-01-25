@@ -13,8 +13,8 @@
 
 #include "essentials.cpp"
 #include "renderer.cpp"
-#include "player.cpp"
 #include "collision.cpp"
+#include "player.cpp"
 #include "pufferfish.cpp"
 
 #include "loader.cpp"
@@ -83,7 +83,8 @@ i32 main()
     RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
     RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
 
-    Texture2D tileset = LoadTexture("asset/tileset.png");
+    Texture2D jason_texture = LoadTexture("asset/jason_texture.png");
+
     Texture2D wall_texture = LoadTexture("asset/wall_base.png");
 
     Room* level = &state.room;

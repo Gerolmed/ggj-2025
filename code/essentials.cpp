@@ -51,6 +51,8 @@ struct Player
     Vector2 position;
     f32 rotation;
 
+    i32 health;
+
     bool charging;
 
     // value 0-1 incl
@@ -80,6 +82,7 @@ struct ProjectileBubble{
     i32 damage;
 };
 
+f32 SPIKE_RADIUS = 0.1;
 struct ProjectileSpike{
     Vector2 position;
     Vector2 direction;
@@ -97,8 +100,11 @@ struct Room
     i32 pufferfish_count;
     Pufferfish pufferfishs[64];
 
-    ProjectileBubble *projectiles;
-    ProjectileSpike *spikes;
+    ProjectileBubble *projectiles = NULL;
+
+    ProjectileSpike *spikes = NULL;
+
+
 };
 
 enum ModelType
@@ -158,3 +164,10 @@ struct GameState
 };
 
 GameState state = {};
+
+
+
+
+
+
+f32 fish_get_radius(Pufferfish* fish);
