@@ -1,7 +1,7 @@
 
 
 f32 fish_get_radius(Pufferfish* fish){
-    return ((f32)10/(10+fish->health));
+    return ((f32)7/(7+fish->health));
 }
 
 void fish_death(Pufferfish* fish, GameState* state){
@@ -15,6 +15,8 @@ void fish_death(Pufferfish* fish, GameState* state){
 
     for(i32 i = 0 ; i < 4; ++i)
     {
+        directions[i] = Vector2Rotate(directions[i], fish->rotation);
+
         ProjectileSpike spike = {};
         spike.position = fish->position;
         spike.direction = directions[i];
@@ -30,6 +32,7 @@ void fish_pursue_player(Pufferfish* fish, GameState* state){
     Vector2 direction = Vector2Normalize(Vector2Subtract(player->position, fish->position));
 
     fish->position = Vector2Add(fish->position, Vector2Scale(direction, GetFrameTime()));
+    fish->rotation = -Vector2Angle(direction, {1,0});
 }
 
 void fish_check_collision(Pufferfish* fish, GameState* state){

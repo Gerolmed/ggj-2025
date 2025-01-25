@@ -51,6 +51,10 @@ Vector2 get_current_bubble_position(Player* player)
     return Vector2Add(player->position, direction);
 }
 
+f32 bubble_size(Player* player){
+    return sqrt(player->charge_value * 4);
+}
+
 void update_charge_ball(Player* player)
 {
     if (!player->charging) return;
@@ -59,7 +63,7 @@ void update_charge_ball(Player* player)
     Vector2 position = get_current_bubble_position(player);
 
     // TODO: render ball?
-    RenderEntity(Model_Bubble, position, 0, player->charge_value * 2);
+    RenderEntity(Model_Bubble, position, 0, bubble_size(player));
 }
 
 
@@ -130,7 +134,7 @@ void execute_player_loop(Player* player, GameState* state)
         //Shooting projectile
         ProjectileBubble projectile;
         projectile.position = position;
-        projectile.radius = player->charge_value*2;
+        projectile.radius = bubble_size(player);
         projectile.damage = player->charge_value*10;
         projectile.velocity = direction * 10;
         arrput(state->room.projectiles, projectile);
@@ -171,6 +175,6 @@ void execute_player_loop(Player* player, GameState* state)
     update_charge_ball(player);
     update_player_animation(player);
 
-    RenderAnimatedEntity(Model_Toad, player->position, player->rotation, 1, player_model_animations + player->animation, player->frame);
+    RenderAnimatedEntity(Model_Toad, player->position, 180 + player->rotation * 180/PI, 1, player_model_animations + player->animation, player->frame);
     // RenderEntity(Model_Toad, player->position, 0);
 }
