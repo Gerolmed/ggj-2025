@@ -80,6 +80,11 @@ struct ProjectileBubble{
     i32 damage;
 };
 
+struct ProjectileSpike{
+    Vector2 position;
+    Vector2 direction;
+};
+
 struct Room
 {
     i32 id;
@@ -94,6 +99,8 @@ struct Room
 
     ProjectileBubble *projectiles = NULL;
 
+    ProjectileSpike *spikes = NULL;
+
 
 };
 
@@ -101,6 +108,8 @@ enum ModelType
 {
     Model_Toad,
     Model_Fish,
+
+    Model_Count
 };
 
 struct EntityDraw

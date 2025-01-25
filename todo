@@ -1,0 +1,18 @@
+player 
+    movement
+    shooting
+
+enemy
+    pathfinding
+    ai
+    death
+
+rendering
+    tiles
+    animations
+
+    fix colors
+
+dungeon
+    generation
+    ...
