@@ -52,6 +52,7 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
         if(intersects(&fish_collider, &spike_collider)){
             hit = true;
             fish->knockback_velocity = Vector2Scale(spike.direction,5);
+            fish->behavior_frame = 480;
             arrdel(spikes_array,i);
             i--;
         }

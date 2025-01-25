@@ -37,7 +37,7 @@ Room load_room(i32 room_id){
                 Sharkfish* sharkfish = &room.sharkfishs[room.sharkfish_count];
                 sharkfish->position = Vector2(x,y);
                 sharkfish->health = 3;
-                sharkfish->behavior_frame = 60 * room.sharkfish_count;
+                sharkfish->behavior_frame = 360 * room.sharkfish_count;
                 room.sharkfish_count++;
             }
             else if(curr[0] == 0 && curr[1] == 255 && curr[2] == 255){
