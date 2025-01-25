@@ -37,12 +37,14 @@ Room load_room(i32 room_id){
                 Sharkfish* sharkfish = &room.sharkfishs[room.sharkfish_count];
                 sharkfish->position = Vector2(x,y);
                 sharkfish->health = 3;
+                sharkfish->behavior_frame = 60 * room.sharkfish_count;
                 room.sharkfish_count++;
             }
             else if(curr[0] == 0 && curr[1] == 255 && curr[2] == 255){
                 Jellyfish* jellyfish = &room.jellyfishs[room.jellyfish_count];
                 jellyfish->position = Vector2(x,y);
                 jellyfish->health = 25;
+                jellyfish->behavior_frame = 60*room.jellyfish_count;
                 room.jellyfish_count++;
             }
             else{
