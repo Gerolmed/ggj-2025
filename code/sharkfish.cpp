@@ -16,7 +16,7 @@ void pursue_player(Sharkfish* fish, GameState* state){
         fish->rotation = -Vector2Angle(direction, {1,0});
         fish->dash_direction = direction;
     }else{
-        fish->position = Vector2Add(fish->position, Vector2Scale(fish->dash_direction, 5*GetFrameTime()));
+        fish->position = Vector2Add(fish->position, Vector2Scale(fish->dash_direction, 7*GetFrameTime()));
     }
 
     if(fish->behavior_frame == 540){

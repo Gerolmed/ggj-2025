@@ -84,6 +84,20 @@ void check_collisions(Player* player, GameState* state){
         }
     }
 
+     //Sharkfish Collisions
+    for(i32 i = 0 ; i < state->room.sharkfish_count; i++){
+        Sharkfish* fish = &state->room.sharkfishs[i];
+        if(fish->dead) continue;
+        SphericalCollider fish_collider = {fish->position, 1};
+
+        if(intersects(&player_collider, &fish_collider))
+        {
+            player->health -= 3;
+            printf("Damaged player");
+        }
+    }
+
+
     //Spike Collisions
     for(i32 i = 0 ; i < arrlen(state->room.spikes); i++){
         ProjectileSpike spike = state->room.spikes[i];
