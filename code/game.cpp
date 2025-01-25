@@ -156,11 +156,11 @@ i32 main()
     main_camera.offset = {0, 0};
     main_camera.rotation = 0;
     main_camera.target = {0, 0};
-    main_camera.zoom = GetScreenWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
 
     while (!WindowShouldClose())
     {
         state.render_entities = {};
+        main_camera.zoom = GetRenderWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
 
         if (IsKeyPressed(KEY_F1))
         {
@@ -271,8 +271,8 @@ i32 main()
         EndTextureMode();
 
         // ROOM
-        BeginDrawing();
-        BeginMode2D(main_camera);
+        BeginTextureMode(room_low);
+        // BeginMode2D(main_camera);
         ClearBackground(WHITE);
 
 
@@ -290,18 +290,20 @@ i32 main()
         // Botright
         DrawTileRegion(8, 4, ROOM_WIDTH + 2, ROOM_HEIGHT + 2, 2, 2);
 
-        for (u32 y = 2; y < ROOM_HEIGHT + 1; y += 2)
+        u32 last = 0;
+        for (u32 y = 2; y < ROOM_HEIGHT + 2; ++y)
         {
-            DrawTileRegion(4, 2, 0, y, 2, 2);
-            DrawTileRegion(8, 2, ROOM_WIDTH + 2, y, 2, 2);
+            DrawTileRegion(4, 2 + last, 0, y, 2, 1);
+            DrawTileRegion(8, 2 + last, ROOM_WIDTH + 2, y, 2, 1);
+            last = (last + 1) % 2;
         }
-        DrawTileRegion(4, 2, 0, ROOM_HEIGHT + 1, 2, 1);
-        DrawTileRegion(8, 2, ROOM_WIDTH + 2, ROOM_HEIGHT + 1, 2, 1);
 
-        for (u32 x = 2; x < ROOM_WIDTH + 1; x += 2)
+        last = 0;
+        for (u32 x = 2; x < ROOM_WIDTH + 2; ++x)
         {
-            DrawTileRegion(6, 0, x, 0, 2, 2);
-            DrawTileRegion(6, 4, x, ROOM_HEIGHT + 2, 2, 2);
+            DrawTileRegion(6 + last, 0, x, 0, 1, 2);
+            DrawTileRegion(6 + last, 4, x, ROOM_HEIGHT + 2, 1, 2);
+            last = (last + 1) % 2;
         }
 
         // for (u32 x = 0; x < ROOM_WIDTH; ++x)
@@ -334,8 +336,13 @@ i32 main()
                            {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
         }
 
-        EndMode2D();
-        EndDrawing();
+        // EndMode2D();
+        EndTextureMode();
 
+        BeginDrawing();
+        DrawTexturePro(room_low.texture,
+                       {0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height},
+                       {0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight()}, {0, 0}, 0, WHITE);
+        EndDrawing();
     }
 }

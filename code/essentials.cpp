@@ -19,10 +19,20 @@ enum Tile
     Tile_Wall,
 };
 
+enum Direction
+{
+    Direction_Up,
+    Direction_Down,
+    Direction_Left,
+    Direction_Right,
+};
+
 struct TransitionTile
 {
     i32 pos_x;
     i32 pos_y;
+    // Direction dir;
+    // u32 offset;
     i32 new_room_id;
 };
 

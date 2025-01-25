@@ -32,7 +32,7 @@ void main()
 
 	vec3 light = vec3(0.1);
     light += clamp(dot(sun_dir, n), 0.0, 1.0) * sun_color;
-	gl_FragColor.rgb *= light;
+	// gl_FragColor.rgb *= light;
 
     // gl_FragColor.rgb = n;
 }  
