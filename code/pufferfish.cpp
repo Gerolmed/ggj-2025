@@ -1,5 +1,7 @@
 
 
-i32 get_radius(Pufferfish* fish){
-    return 10/(10+fish->health);
+f32 fish_get_radius(Pufferfish* fish){
+    return TILE_SIZE_LOW*((f32)10/(10+fish->health));
 }
+
+

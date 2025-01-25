@@ -13,6 +13,7 @@
 
 #include "essentials.cpp"
 #include "player.cpp"
+#include "pufferfish.cpp"
 
 #include "loader.cpp"
 
@@ -52,7 +53,7 @@ i32 main()
 
     Texture2D wall_texture = LoadTexture("asset/wall_base.png");
 
-    Room level = load_room(1);
+    Room level = load_room(0);
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
     f32 camera_pos_x = TILE_SIZE_HIGH * ROOM_WIDTH / 2;
@@ -110,6 +111,15 @@ i32 main()
                 }
             }
         }
+
+        //Render Pufferfish
+        for(u32 i = 0 ; i < level.pufferfish_count; i++)
+        {
+            Pufferfish* fish = &level.pufferfishs[i];
+            f32 radius = fish_get_radius(fish);
+            DrawRectangle(fish->position.x * TILE_SIZE_LOW - radius, fish->position.y * TILE_SIZE_LOW - radius, 2*radius, 2*radius, RED);
+        }
+
 
         DrawTextureRec(entities_low.texture, {0, 0, 32, 32}, {0, 0}, WHITE);
 
