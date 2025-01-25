@@ -83,6 +83,9 @@ struct Sharkfish
     float rotation;
     i32 health;
     bool dead;
+
+    i32 behavior_frame;
+    Vector2 dash_direction;
 };
 
 struct ProjectileBubble{

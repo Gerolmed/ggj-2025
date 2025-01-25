@@ -5,11 +5,23 @@ void shark_death(Sharkfish* fish, GameState* state){
 }
 
 void pursue_player(Sharkfish* fish, GameState* state){
+    fish->behavior_frame = (fish->behavior_frame + 1) % 600;
     Player* player = &state->player;
     Vector2 direction = Vector2Normalize(Vector2Subtract(player->position, fish->position));
 
-    fish->position = Vector2Add(fish->position, Vector2Scale(direction, GetFrameTime()));
-    fish->rotation = -Vector2Angle(direction, {1,0});
+    if(fish->behavior_frame % 300 < 180){
+        fish->position = Vector2Add(fish->position, Vector2Scale(direction, GetFrameTime()));
+        fish->rotation = -Vector2Angle(direction, {1,0});
+    }else if (fish->behavior_frame % 300 < 240){
+        fish->rotation = -Vector2Angle(direction, {1,0});
+        fish->dash_direction = direction;
+    }else{
+        fish->position = Vector2Add(fish->position, Vector2Scale(fish->dash_direction, 5*GetFrameTime()));
+    }
+
+    if(fish->behavior_frame == 599){
+        spawn_pufferfish(fish->position, state);
+    }
 }
 
 
