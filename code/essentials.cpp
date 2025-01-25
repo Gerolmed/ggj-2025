@@ -6,8 +6,8 @@ typedef uint32_t u32;
 typedef int32_t i32;
 typedef float f32;
 
-#define ROOM_WIDTH 20
-#define ROOM_HEIGHT 11
+#define ROOM_WIDTH 16
+#define ROOM_HEIGHT 7
 #define TILE_SIZE_HIGH 80
 #define TILE_SIZE_LOW 20
 #define RENDER_ATLAS_SIZE 8
