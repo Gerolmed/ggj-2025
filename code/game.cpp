@@ -60,7 +60,7 @@ i32 main()
     camera.position = {-10, 0, 0};
     camera.target = {0, 0, 0};
     camera.fovy = 5.0f;
-    camera.projection = CAMERA_ORTHOGRAPHIC;     
+    camera.projection = CAMERA_ORTHOGRAPHIC;
 
     while (!WindowShouldClose())
     {
@@ -79,6 +79,7 @@ i32 main()
         ClearBackground(RED);
         BeginMode3D(camera);
         DrawModel(model, {}, 1, WHITE);
+        DrawCube({0,0}, 1, 1, 1, WHITE);
         EndMode3D();
         EndTextureMode();
 
