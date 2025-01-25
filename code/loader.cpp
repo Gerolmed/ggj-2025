@@ -37,12 +37,14 @@ Room load_room(i32 room_id){
                 Sharkfish* sharkfish = &room.sharkfishs[room.sharkfish_count];
                 sharkfish->position = Vector2(x,y);
                 sharkfish->health = 3;
+                sharkfish->behavior_frame = 360 * room.sharkfish_count;
                 room.sharkfish_count++;
             }
             else if(curr[0] == 0 && curr[1] == 255 && curr[2] == 255){
                 Jellyfish* jellyfish = &room.jellyfishs[room.jellyfish_count];
                 jellyfish->position = Vector2(x,y);
                 jellyfish->health = 25;
+                jellyfish->behavior_frame = 60*room.jellyfish_count;
                 room.jellyfish_count++;
             }
             else{
@@ -55,7 +57,7 @@ Room load_room(i32 room_id){
     return room;
 }
 
-Room transition(Player* player, i32 old_room_id, i32 new_room_id){
+Room transition_to_room(Player* player, i32 old_room_id, i32 new_room_id){
     Room new_room = load_room(new_room_id);
 
     for(i32 i = 0 ; i < new_room.transition_tile_count; ++i){

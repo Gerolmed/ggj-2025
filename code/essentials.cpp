@@ -208,3 +208,4 @@ GameState state = {};
 
 
 f32 fish_get_radius(Pufferfish* fish);
+Room transition_to_room(Player* player, i32 old_room_id, i32 new_room_id);
