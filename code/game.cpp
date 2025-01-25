@@ -5,9 +5,7 @@
 #include "stb_ds.h"
 
 #include "raylib.h"
-
-
-
+#include "rlgl.h"
 
 #include "essentials.cpp"
 #include "game.h"
@@ -21,6 +19,16 @@ enum SceneMode
     SCENE_MODE_TEST_PLAYER,
 };
 
+struct RenderEntities
+{
+    u32 size;
+    u8 used[128];
+};
+
+void AllocateRenderEntity()
+{
+}
+
 i32 main()
 {
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
@@ -28,18 +36,29 @@ i32 main()
     SetTargetFPS(60);
 
     Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
+    // Model model = LoadModel("asset/3d/toad/Toad.glb");
 
-    RenderTexture room_high = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_HIGH, ROOM_HEIGHT * TILE_SIZE_HIGH);
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
+
+    RenderEntities render_entities = {};
+    render_entities.size = 8;
+    RenderTexture entities_high = LoadRenderTexture(128 * render_entities.size, 128 * render_entities.size);
+    RenderTexture entities_low = LoadRenderTexture(32 * render_entities.size, 32 * render_entities.size);
 
     Texture2D jason_texture = LoadTexture("asset/jason_texture.png");
 
     Room level = load_room();
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
+    f32 camera_pos_x = TILE_SIZE_HIGH * ROOM_WIDTH / 2;
+    f32 camera_pos_y = TILE_SIZE_HIGH * ROOM_HEIGHT / 2;
+
     Camera camera = { 0 };
     camera.up = { 0.0f, 1.0f, 0.0f };
-    camera.position = {-10, 10, 10};
+    camera.position = {-10, 0, 0};
+    camera.target = {0, 0, 0};
+    camera.fovy = 5.0f;
+    camera.projection = CAMERA_ORTHOGRAPHIC;     
 
     while (!WindowShouldClose())
     {
@@ -52,8 +71,23 @@ i32 main()
             sceneMode = SCENE_MODE_TEST_PLAYER;
         }
 
-        // Render high texture
-        BeginTextureMode(room_high);
+        // Entities
+        BeginTextureMode(entities_high);
+        rlViewport(0, 0, 128, 128);
+        ClearBackground(WHITE);
+        BeginMode3D(camera);
+        DrawModel(model, {}, 1, WHITE);
+        EndMode3D();
+        EndTextureMode();
+
+        BeginTextureMode(entities_low);
+        DrawTexturePro(entities_high.texture, 
+                       { 0, 0, (f32)entities_high.texture.width, (f32)-entities_high.texture.height }, 
+                       { 0, 0, (f32)entities_low.texture.width, (f32)entities_low.texture.height }, { 0, 0 }, 0, WHITE);
+        EndTextureMode();
+
+        // ROOM
+        BeginTextureMode(room_low);
         ClearBackground(WHITE);
         // for (u32 x = 0; x < ROOM_WIDTH; ++x)
         // {
@@ -65,14 +99,7 @@ i32 main()
         //         }
         //     }
         // }
-        DrawTexture(jason_texture, 0, 0, WHITE);
-        EndTextureMode();
-
-        // Render low texture
-        BeginTextureMode(room_low);
-        DrawTexturePro(room_high.texture, 
-                       { 0, 0, (f32)room_high.texture.width, (f32)-room_high.texture.height }, 
-                       { 0, 0, (f32)room_low.texture.width, (f32)room_low.texture.height }, { 0, 0 }, 0, WHITE);
+        // DrawTexture(jason_texture, 0, 0, WHITE);
         EndTextureMode();
 
         // Render to swapchain
@@ -81,9 +108,7 @@ i32 main()
                        { 0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height }, 
                        { 0, 0, (f32)1600, (f32)880 }, { 0, 0 }, 0, WHITE);
 
-        // BeginMode3D();
-        // DrawModel(model, {}, 1, WHITE);
-        // EndMode3D();
+        DrawTextureRec(entities_high.texture, {0, 0, 128, 128}, {0, 0}, WHITE);
 
         switch (sceneMode)
         {
