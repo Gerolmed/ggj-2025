@@ -27,6 +27,11 @@ enum SceneMode
 
 Model models[Model_Count];
 
+inline Rectangle TileAt(u32 x, u32 y)
+{
+    return {(f32) x * TILE_SIZE_LOW, (f32) y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW};
+}
+
 i32 main()
 {
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
@@ -185,10 +190,10 @@ i32 main()
 
 
         //Render Wall
-        DrawTextureRec(tileset, {0, 0, 20, 20}, {0, 0}, WHITE);
-        DrawTextureRec(tileset, {20, 0, 20, 20}, {(f32) TILE_SIZE_LOW, 0}, WHITE);
-        DrawTextureRec(tileset, {0, 20, 20, 20}, {0, (f32)TILE_SIZE_LOW}, WHITE);
-        DrawTextureRec(tileset, {20, 20, 20, 20}, {(f32) TILE_SIZE_LOW, (f32)TILE_SIZE_LOW}, WHITE);
+        DrawTextureRec(tileset, TileAt(4, 0), {0, 0}, WHITE);
+        DrawTextureRec(tileset, TileAt(5, 0), {(f32) TILE_SIZE_LOW, 0}, WHITE);
+        DrawTextureRec(tileset, TileAt(4, 1), {0, (f32)TILE_SIZE_LOW}, WHITE);
+        DrawTextureRec(tileset, TileAt(5, 1), {(f32) TILE_SIZE_LOW, (f32)TILE_SIZE_LOW}, WHITE);
 
         // for (u32 x = 0; x < ROOM_WIDTH; ++x)
         // {
