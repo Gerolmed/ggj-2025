@@ -27,6 +27,11 @@ enum SceneMode
 
 Model models[Model_Count];
 
+inline Rectangle TileAt(u32 x, u32 y)
+{
+    return {(f32) x * TILE_SIZE_LOW, (f32) y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW};
+}
+
 i32 main()
 {
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
@@ -77,7 +82,7 @@ i32 main()
     configure_player(player);
 
 
-    RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
+    RenderTexture room_low = LoadRenderTexture((ROOM_WIDTH + 4) * TILE_SIZE_LOW, (ROOM_HEIGHT + 4) * TILE_SIZE_LOW);
 
     RenderEntities render_entities = {};
     RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
@@ -104,7 +109,7 @@ i32 main()
     main_camera.offset = {0, 0};
     main_camera.rotation = 0;
     main_camera.target = {0, 0};
-    main_camera.zoom = GetScreenWidth() / (f32) (ROOM_WIDTH * TILE_SIZE_LOW);
+    main_camera.zoom = GetScreenWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
 
     while (!WindowShouldClose())
     {
@@ -186,17 +191,10 @@ i32 main()
 
 
         //Render Wall
-        for (u32 y = 1; y < ROOM_HEIGHT - 1; ++y)
-        {
-            DrawTextureRec(tileset, {0, 0, 20, 20}, {0, (f32)TILE_SIZE_LOW * y}, WHITE);
-            // DrawTextureRec(tileset, {3 * TILE_SIZE_LOW, 1 * TILE_SIZE_LOW, 20, 20}, {0, (f32)TILE_SIZE_LOW * y}, WHITE);
-            // DrawTextureRec(tileset, {0, 0, 20, 20}, {(ROOM_WIDTH - 1) * TILE_SIZE_LOW, (f32)TILE_SIZE_LOW * y}, WHITE);
-        }
-        for (u32 x = 1; x < ROOM_WIDTH - 1; ++x)
-        {
-            // DrawTextureRec(tileset, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, 0}, WHITE);
-            // DrawTextureRec(tileset, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, (ROOM_HEIGHT - 1) * TILE_SIZE_LOW}, WHITE);
-        }
+        DrawTextureRec(tileset, TileAt(4, 0), {0, 0}, WHITE);
+        DrawTextureRec(tileset, TileAt(5, 0), {(f32) TILE_SIZE_LOW, 0}, WHITE);
+        DrawTextureRec(tileset, TileAt(4, 1), {0, (f32)TILE_SIZE_LOW}, WHITE);
+        DrawTextureRec(tileset, TileAt(5, 1), {(f32) TILE_SIZE_LOW, (f32)TILE_SIZE_LOW}, WHITE);
 
         // for (u32 x = 0; x < ROOM_WIDTH; ++x)
         // {
