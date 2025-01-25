@@ -31,6 +31,8 @@ struct Pufferfish
 
 struct Room
 {
+    i32 id;
+
     Tile tiles[ROOM_WIDTH * ROOM_HEIGHT];
 
     i32 transition_tile_count;

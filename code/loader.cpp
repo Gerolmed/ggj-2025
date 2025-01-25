@@ -1,6 +1,8 @@
 Room load_room(i32 room_id){
     Room room = {};
 
+    room.id = room_id;
+
     i32 width;
     i32 height;
 
@@ -38,4 +40,29 @@ Room load_room(i32 room_id){
     }
 
     return room;
+}
+
+Room transition(Player* player, i32 old_room_id, i32 new_room_id){
+    Room new_room = load_room(new_room_id);
+
+    for(i32 i = 0 ; i < new_room.transition_tile_count; ++i){
+        if(new_room.transition_tiles[i].new_room_id == old_room_id){
+            TransitionTile* exit_tile = &new_room.transition_tiles[i];
+            Vector2 exit_direction = Vector2(0,0);
+            if(exit_tile->pos_x == 0){
+                exit_direction = Vector2(3,0);
+            }else if(exit_tile->pos_y == 0){
+                exit_direction = Vector2(0,3);
+            }else if(exit_tile->pos_x == ROOM_WIDTH -1){
+                exit_direction = Vector2(-3,0);
+            }else if(exit_tile->pos_y == ROOM_HEIGHT -1){
+                exit_direction = Vector2(0,-3);
+            }
+
+            player->position = Vector2(exit_tile->pos_x + exit_direction.x, exit_tile->pos_y + exit_direction.y);
+
+        }
+    }
+
+    return new_room;
 }

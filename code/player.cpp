@@ -39,15 +39,13 @@ struct Player
     f32 fire_delay;
 };
 
-void configure_player(Player *player)
+void configure_player(Player* player)
 {
     *player = {};
-    player->bubbles = {
-        Bubble{
-            .radius = 1,
-            .min_scale = 1.0f,
-            .max_scale = 1.5f,
-        },
+    player->bubbles[0] = Bubble{
+        .radius = 1,
+        .min_scale = 1.0f,
+        .max_scale = 1.5f,
     };
 }
 
@@ -80,18 +78,18 @@ void update_player_animation(Player* player)
 
 Vector2 get_current_bubble_position(Player* player)
 {
-    Bubble *bubble = player->bubbles + player->current_bubble;
+    Bubble* bubble = player->bubbles + player->current_bubble;
 
     Vector2 direction = Vector2Rotate({1, 0}, player->rotation);
     float scale = bubble->max_scale * player->charge_value + bubble->min_scale * (1 - player->charge_value);
     direction = Vector2Scale(direction, bubble->radius * scale + 0.2f);
-    return  Vector2Add(player->position, direction);
+    return Vector2Add(player->position, direction);
 }
 
 void update_charge_ball(Player* player)
 {
     if (!player->charging) return;
-    Bubble *bubble = player->bubbles + player->current_bubble;
+    Bubble* bubble = player->bubbles + player->current_bubble;
 
     Vector2 position = get_current_bubble_position(player);
 
