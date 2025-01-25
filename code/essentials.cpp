@@ -10,6 +10,7 @@ typedef float f32;
 #define ROOM_HEIGHT 11
 #define TILE_SIZE_HIGH 80
 #define TILE_SIZE_LOW 20
+#define RENDER_ATLAS_SIZE 8
 
 enum Tile
 {
@@ -61,6 +62,8 @@ struct Player
 
     f32 speed;
     f32 fire_delay;
+
+    Model model;
 };
 
 struct Pufferfish
@@ -94,20 +97,32 @@ struct Room
 
 };
 
+enum ModelType
+{
+    Model_Toad,
+    Model_Fish,
+};
+
 struct EntityDraw
 {
-    u32 x;
-    u32 y;
-    u32 width;
-    u32 height;
+    u32 atlas_x;
+    u32 atlas_y;
+    
+    ModelType model;
+
+    f32 x;
+    f32 y;
+    f32 rot;
+
+    ModelAnimation *animation;
+    u32 frame;
 };
 
 struct RenderEntities
 {
-    u32 size;
-    u8 used[128];
+    u8 tiles[128];
 
-    u32 entity_count;
+    u32 count;
     EntityDraw entities[32];
 };
 
@@ -125,3 +140,5 @@ struct GameState
 
 
 };
+
+GameState state = {};

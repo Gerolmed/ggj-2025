@@ -12,6 +12,7 @@
 #define lengthof(x) (sizeof(x) / sizeof(x[0]))
 
 #include "essentials.cpp"
+#include "renderer.cpp"
 #include "player.cpp"
 #include "collision.cpp"
 #include "pufferfish.cpp"
@@ -24,35 +25,51 @@ enum SceneMode
     SCENE_MODE_TEST_PLAYER,
 };
 
-GameState state = {};
-
-void RenderEntity()
-{
-    assert(state.render_entities.entity_count < lengthof(state.render_entities.entities));
-
-    EntityDraw *draw = state.render_entities.entities + state.render_entities.entity_count++;
-    memset(draw, 0, sizeof(*draw));
-}
-
 i32 main()
 {
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(1600, 900, "Divegame");
     SetTargetFPS(60);
 
-    
-    // Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
     // model.transform = model.transform * MatrixTranslate(0,1,1) * MatrixScale(1.0f, 1.0f, 1.0f);
     Model model = LoadModel("asset/3d/toad/Toad.glb");
+
+    {
+        i32 anim_count;
+        ModelAnimation *animation_list = LoadModelAnimations("asset/3d/toad/Toad.glb", &anim_count);
+
+        for (int i = 0; i < anim_count; ++i)
+        {
+            ModelAnimation *animation = animation_list + i;
+            assert(animation);
+            if (strcmp(animation->name, "attack_charge") == 0)
+            {
+                player_model_animations[PlayerAnim_Charge] = *animation;
+            } else if (strcmp(animation->name, "Idle") == 0)
+            {
+                player_model_animations[PlayerAnim_Idle] = *animation;
+            } else if (strcmp(animation->name, "Move") == 0)
+            {
+                player_model_animations[PlayerAnim_Walk] = *animation;
+            } else if (strcmp(animation->name, "post_attack") == 0)
+            {
+                player_model_animations[PlayerAnim_PostShoot] = *animation;
+            } else
+            {
+                assert(false);
+            }
+        }
+    }
     model.transform = model.transform * MatrixTranslate(0,1,0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
 
+    Player player;
+    configure_player(&player);
 
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
 
     RenderEntities render_entities = {};
-    render_entities.size = 8;
-    RenderTexture entities_high = LoadRenderTexture(128 * render_entities.size, 128 * render_entities.size);
-    RenderTexture entities_low = LoadRenderTexture(32 * render_entities.size, 32 * render_entities.size);
+    RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
+    RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
 
     Texture2D jason_texture = LoadTexture("asset/jason_texture.png");
 
@@ -73,6 +90,8 @@ i32 main()
 
     while (!WindowShouldClose())
     {
+        state.render_entities = {};
+
         if (IsKeyPressed(KEY_F1))
         {
             sceneMode = SCENE_MODE_TEST_DEFAULT;
@@ -82,12 +101,23 @@ i32 main()
             sceneMode = SCENE_MODE_TEST_PLAYER;
         }
 
-        // Entities
+        // Call render entity here...
+        RenderEntity(Model_Toad, {2, 2}, 0);
+        RenderEntity(Model_Toad, {3, 5}, 00);
+
+        // Entities to entity buffer
         BeginTextureMode(entities_high);
-        rlViewport(0, 0, 128, 128);
-        ClearBackground(PINK);
+        ClearBackground(RED);
         BeginMode3D(model_camera);
-        DrawModelEx(model, {}, {0,1,0}, GetTime() * 360, {1,1,1}, WHITE);
+
+        for (u32 i = 0; i < state.render_entities.count; ++i)
+        {
+            EntityDraw *draw = state.render_entities.entities + i;
+
+            rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
+            DrawModelEx(model, {}, {0,1,0}, GetTime() * 360, {1,1,1}, WHITE);
+            DrawCube({0,0}, 1, 1, 1, WHITE);
+        }
 
         EndMode3D();
         EndTextureMode();
@@ -117,16 +147,12 @@ i32 main()
             }
         }
 
-        //Render Pufferfish
-        for(u32 i = 0 ; i < level.pufferfish_count; i++)
+        // Render entities into room
+        for (u32 i = 0; i < state.render_entities.count; ++i)
         {
-            Pufferfish* fish = &level.pufferfishs[i];
-            f32 radius = fish_get_radius(fish);
-            DrawRectangle(fish->position.x * TILE_SIZE_LOW - radius, fish->position.y * TILE_SIZE_LOW - radius, 2*radius, 2*radius, RED);
+            EntityDraw *draw = state.render_entities.entities + i; 
+            DrawTextureRec(entities_low.texture, {(f32) draw->atlas_x * 32, (f32) draw->atlas_y * 32, 32, 32}, {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
         }
-
-
-        DrawTextureRec(entities_low.texture, {0, 0, 32, 32}, {0, 0}, WHITE);
 
         EndTextureMode();
 
@@ -135,14 +161,14 @@ i32 main()
         ClearBackground(WHITE);
         DrawTexturePro(room_low.texture, 
                        { 0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height }, 
-                       { 0, 0, (f32)1600, (f32)880 }, { 0, 0 }, 0, WHITE);
+                       { 0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight() }, { 0, 0 }, 0, WHITE);
 
         switch (sceneMode)
         {
             case SCENE_MODE_TEST_DEFAULT:
                 break;
             case SCENE_MODE_TEST_PLAYER:
-                test_player_loop(nullptr);
+                execute_player_loop(&player);
                 break;
         }
 
