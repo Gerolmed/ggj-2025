@@ -25,6 +25,8 @@ enum SceneMode
     SCENE_MODE_TEST_PLAYER,
 };
 
+Model models[Model_Count];
+
 i32 main()
 {
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
@@ -32,7 +34,10 @@ i32 main()
     SetTargetFPS(60);
 
     // model.transform = model.transform * MatrixTranslate(0,1,1) * MatrixScale(1.0f, 1.0f, 1.0f);
-    Model model = LoadModel("asset/3d/toad/Toad.glb");
+    models[Model_Toad] = LoadModel("asset/3d/toad/Toad.glb");
+    models[Model_Toad].transform = models[Model_Toad].transform * MatrixTranslate(0, 1, 0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
+
+    models[Model_Fish] = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
 
     {
         i32 anim_count;
@@ -60,7 +65,6 @@ i32 main()
             }
         }
     }
-    model.transform = model.transform * MatrixTranslate(0,1,0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
 
     Player player = {};
     configure_player(&player);
@@ -102,8 +106,8 @@ i32 main()
         }
 
         // Call render entity here...
-        RenderEntity(Model_Toad, {2, 2}, 0);
-        RenderEntity(Model_Toad, {3, 5}, 00);
+        RenderEntity(Model_Fish, {2, 2}, 0);
+        RenderEntity(Model_Fish, {3, 5}, 00);
 
         execute_player_loop(&player);
 
@@ -117,7 +121,7 @@ i32 main()
             EntityDraw *draw = state.render_entities.entities + i;
 
             rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
-            DrawModelEx(model, {}, {0,1,0}, GetTime() * 360, {1,1,1}, WHITE);
+            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {1,1,1}, WHITE);
             DrawCube({0,0}, 1, 1, 1, WHITE);
         }
 

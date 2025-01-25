@@ -101,6 +101,8 @@ enum ModelType
 {
     Model_Toad,
     Model_Fish,
+
+    Model_Count
 };
 
 struct EntityDraw
