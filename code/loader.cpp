@@ -34,7 +34,6 @@ Room load_room(i32 room_id){
                 room.pufferfish_count++;
             }
             else if(curr[0] = 100 && curr[1] == 100 && curr[2] == 100){
-                printf("Loading in shark");
                 Sharkfish* sharkfish = &room.sharkfishs[room.sharkfish_count];
                 sharkfish->position = Vector2(x,y);
                 sharkfish->health = 2;

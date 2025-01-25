@@ -65,6 +65,28 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
     }
 }
 
+void spawn_pufferfish(Vector2 position, GameState* state){
+    Pufferfish* new_fish;
+    
+    bool dead_fish_found = false;
+    for(i32 i = 0; i < state->room.pufferfish_count; i++)
+    {
+        if(state->room.pufferfishs[i].dead){
+            new_fish = &state->room.pufferfishs[i];
+            dead_fish_found = true;
+        }
+    }
+    if(!dead_fish_found)
+    {
+        new_fish = &state->room.pufferfishs[state->room.pufferfish_count];
+        state->room.pufferfish_count++;
+    }
+
+    new_fish->position = position;
+    new_fish->health = 16;
+    new_fish->dead = false;
+}
+
 
 void fish_update(Pufferfish* fish, GameState* state){
     if(fish->dead){
