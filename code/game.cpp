@@ -28,6 +28,8 @@ enum SceneMode
 };
 
 Model models[Model_Count];
+Shader skinned_shader;
+Shader default_shader;
 
 Texture2D tileset;
 
@@ -44,6 +46,27 @@ inline void DrawTileRegion(u32 tile_x, u32 tile_y, u32 x, u32 y, u32 size_x, u32
         for (u32 dy = 0; dy < size_y; ++dy)
         {
             DrawTileAt(tile_x + dx, tile_y + dy, x + dx, y + dy);
+        }
+    }
+}
+
+void LoadShaders()
+{
+    skinned_shader = LoadShader("asset/skinned.vert", "asset/default.frag");
+    default_shader = LoadShader("asset/default.vert", "asset/default.frag");
+
+    for (u32 i = 0; i < Model_Count; ++i)
+    {
+        Shader shader = default_shader;
+
+        if (i == Model_Toad)
+        {
+            shader = skinned_shader;
+        }
+
+        for (u32 j = 0; j < models[i].materialCount; ++j)
+        {
+            models[i].materials[j].shader = shader;
         }
     }
 }
@@ -70,6 +93,8 @@ i32 main()
 
     models[Model_Jelly] = LoadModel("asset/3d/jellyfish/jellyfish.glb");
     models[Model_Jelly].transform = models[Model_Jelly].transform * MatrixTranslate(0, 1, 0.6);
+
+    LoadShaders();
  
     {
         i32 anim_count;
