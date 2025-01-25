@@ -12,6 +12,11 @@ void orbit_around_player(Jellyfish* fish, GameState* state){
 
     Vector2 to_player = Vector2Subtract(player->position, fish->position);
     Vector2 direction = Vector2Normalize(to_player);
+    f32 orthogonal_speed = 4;
+    if(fish->behavior_frame < 90){
+        orthogonal_speed = 1;
+    }
+    Vector2 orthogonal = {-orthogonal_speed* direction.y , orthogonal_speed* direction.x};
     fish->rotation = -Vector2Angle(direction, {1,0});
 
     if(fish->behavior_frame == 179){
@@ -28,8 +33,10 @@ void orbit_around_player(Jellyfish* fish, GameState* state){
     if(abs_squared(to_player) < 5){
         direction = Vector2Scale(direction,-1);
     }else if(abs_squared(to_player) < 25){
-        direction = Vector2(-direction.y,direction.x);
+        direction = Vector2(0,0);
     }
+
+    direction = Vector2Add(direction, orthogonal);
 
     fish->position = Vector2Add(fish->position, Vector2Scale(direction, GetFrameTime()));
 }
