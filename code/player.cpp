@@ -57,7 +57,7 @@ void update_charge_ball(Player* player)
     // TODO: render ball?
 }
 
-void execute_player_loop(Player* player, Room* level)
+void execute_player_loop(Player* player, GameState* state)
 {
     player->last_shot_age += GetFrameTime();
 
@@ -90,7 +90,7 @@ void execute_player_loop(Player* player, Room* level)
         projectile.radius = player->charge_value * 10;
         projectile.damage = projectile.radius;
         projectile.velocity = direction * 3;
-        arrput(level->projectiles, projectile);
+        arrput(state->room.projectiles, projectile);
 
         player->current_bubble = ++player->current_bubble % sizeof(player->bubbles);
         player->last_shot_age = 0;

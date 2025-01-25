@@ -14,10 +14,10 @@ void fish_pursue_player(){
 }
 
 
-void fish_check_collision(Pufferfish* fish, Room* level){
+void fish_check_collision(Pufferfish* fish, GameState* state){
     SphericalCollider fish_collider = SphericalCollider(fish->position, fish_get_radius(fish));
 
-
+    Room* level = &state->room;
 
     //Bubble Projectile Collision
     ProjectileBubble *bubble_array = level->projectiles;
@@ -36,10 +36,10 @@ void fish_check_collision(Pufferfish* fish, Room* level){
 }
 
 
-void fish_update(Pufferfish* fish, Room* level){
+void fish_update(Pufferfish* fish, GameState* state){
     if(fish->dead){
         return;
     }
     fish_pursue_player();
-    fish_check_collision(fish, level);
+    fish_check_collision(fish, state);
 }

@@ -111,12 +111,12 @@ i32 main()
         //RenderEntity(Model_Toad, {2, 2}, 0);
         //RenderEntity(Model_Toad, {3, 5}, 00);
 
-        execute_player_loop(player, level);
+        execute_player_loop(player, &state);
 
         for(u32 i = 0; i < level->pufferfish_count; ++i)
         {
             Pufferfish* fish = &level->pufferfishs[i];
-            fish_update(fish, level);
+            fish_update(fish, &state);
 
             RenderEntity(Model_Toad, Vector2(fish->position.x, fish->position.y), 0);
         }
