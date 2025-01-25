@@ -80,8 +80,7 @@ i32 main()
     RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
     RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
 
-    Texture2D jason_texture = LoadTexture("asset/jason_texture.png");
-
+    Texture2D tileset = LoadTexture("asset/tileset.png");
     Texture2D wall_texture = LoadTexture("asset/wall_base.png");
 
     Room* level = &state.room;
@@ -176,19 +175,31 @@ i32 main()
 
 
         //Render Wall
-        for (u32 x = 0; x < ROOM_WIDTH; ++x)
+        for (u32 y = 1; y < ROOM_HEIGHT - 1; ++y)
         {
-            for (u32 y = 0; y < ROOM_HEIGHT; ++y)
-            {
-                if (level->tiles[x + y * ROOM_WIDTH])
-                {
-                    //DrawRectangle(x * TILE_SIZE_LOW, y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, RED);
-
-                    DrawTextureRec(wall_texture, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, (f32)TILE_SIZE_LOW * y},
-                                   WHITE);
-                }
-            }
+            DrawTextureRec(tileset, {0, 0, 20, 20}, {0, (f32)TILE_SIZE_LOW * y}, WHITE);
+            // DrawTextureRec(tileset, {3 * TILE_SIZE_LOW, 1 * TILE_SIZE_LOW, 20, 20}, {0, (f32)TILE_SIZE_LOW * y}, WHITE);
+            // DrawTextureRec(tileset, {0, 0, 20, 20}, {(ROOM_WIDTH - 1) * TILE_SIZE_LOW, (f32)TILE_SIZE_LOW * y}, WHITE);
         }
+        for (u32 x = 1; x < ROOM_WIDTH - 1; ++x)
+        {
+            // DrawTextureRec(tileset, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, 0}, WHITE);
+            // DrawTextureRec(tileset, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, (ROOM_HEIGHT - 1) * TILE_SIZE_LOW}, WHITE);
+        }
+
+        // for (u32 x = 0; x < ROOM_WIDTH; ++x)
+        // {
+        //     for (u32 y = 0; y < ROOM_HEIGHT; ++y)
+        //     {
+        //         if (level->tiles[x + y * ROOM_WIDTH])
+        //         {
+        //             //DrawRectangle(x * TILE_SIZE_LOW, y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, RED);
+        //
+        //             DrawTextureRec(tileset, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, (f32)TILE_SIZE_LOW * y},
+        //                            WHITE);
+        //         }
+        //     }
+        // }
 
         // Render entities into room
         for (u32 i = 0; i < state.render_entities.count; ++i)

@@ -93,8 +93,6 @@ struct Room
     Pufferfish pufferfishs[64];
 
     ProjectileBubble *projectiles = NULL;
-
-
 };
 
 enum ModelType
