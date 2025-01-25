@@ -39,6 +39,9 @@ i32 main()
 
     models[Model_Fish] = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
 
+    models[Model_Spike] = LoadModel("asset/3d/pufferfish/spike.glb");
+    models[Model_Bubble] = LoadModel("asset/3d/bubble/Bubble.glb");
+
     {
         i32 anim_count;
         ModelAnimation* animation_list = LoadModelAnimations("asset/3d/toad/Toad.glb", &anim_count);
@@ -124,6 +127,7 @@ i32 main()
         for (u32 i = 0; i < level->pufferfish_count; ++i)
         {
             Pufferfish* fish = &level->pufferfishs[i];
+            if(fish->dead) continue;
             fish_update(fish, &state);
 
             RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 0);
@@ -136,12 +140,18 @@ i32 main()
             projectile->position.x += GetFrameTime() * projectile->velocity.x;
             projectile->position.y += GetFrameTime() * projectile->velocity.y;
 
-            RenderEntity(Model_Toad, Vector2(projectile->position.x, projectile->position.y), 0);
+            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0);
+            
+        }
+        for(u32 i = 0; i < arrlen(level->spikes); i++)
+        {
+            i32 SPIKE_SPEED = 5;
+            ProjectileSpike* spike = &level->spikes[i];
+            spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
+            spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0);
+            
 
-            //DrawRectangle(projectile->position.x, projectile->position.y,
-            //   TILE_SIZE_LOW, TILE_SIZE_LOW, RED);
-            //DrawRectangle(projectile->position.x-projectile->radius, projectile->position.y-projectile->radius,
-            //   2*projectile->radius, 2*projectile->radius,RED);
         }
 
         // Entities to entity buffer

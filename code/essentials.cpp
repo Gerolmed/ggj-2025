@@ -80,6 +80,11 @@ struct ProjectileBubble{
     i32 damage;
 };
 
+struct ProjectileSpike{
+    Vector2 position;
+    Vector2 direction;
+};
+
 struct Room
 {
     i32 id;
@@ -92,13 +97,16 @@ struct Room
     i32 pufferfish_count;
     Pufferfish pufferfishs[64];
 
-    ProjectileBubble *projectiles = NULL;
+    ProjectileBubble *projectiles;
+    ProjectileSpike *spikes;
 };
 
 enum ModelType
 {
     Model_Toad,
     Model_Fish,
+    Model_Spike,
+    Model_Bubble,
 
     Model_Count
 };

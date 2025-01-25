@@ -2,11 +2,14 @@ void configure_player(Player* player)
 {
     *player = {};
     player->speed = 5;
-    player->bubbles[0] = Bubble{
-        .radius = 1,
-        .min_scale = 1.0f,
-        .max_scale = 1.5f,
-    };
+    for (int i = 0; i < lengthof(player->bubbles); ++i)
+    {
+        player->bubbles[i] = Bubble{
+            .radius = 1,
+            .min_scale = 1.0f,
+            .max_scale = 1.5f,
+        };
+    }
 }
 
 void try_change_player_anim(Player* player, PlayerAnim anim)
@@ -55,6 +58,7 @@ void update_charge_ball(Player* player)
     Vector2 position = get_current_bubble_position(player);
 
     // TODO: render ball?
+    RenderEntity(Model_Bubble, position, 0);
 }
 
 void execute_player_loop(Player* player, GameState* state)
@@ -62,8 +66,9 @@ void execute_player_loop(Player* player, GameState* state)
     player->last_shot_age += GetFrameTime();
 
     const Vector2 mouse_screen_pos = GetMousePosition();
-    const Vector2 player_screen_pos = GetWorldToScreen2D(player->position, main_camera);
-    const Vector2 mouse_direction = Vector2Subtract(mouse_screen_pos, player_screen_pos);
+    const Vector2 player_screen_pos = GetWorldToScreen2D(player->position * TILE_SIZE_LOW, main_camera);
+    Vector2 mouse_direction = Vector2Subtract(mouse_screen_pos, player_screen_pos);
+    mouse_direction.y *= -1;
     player->rotation = Vector2Angle(mouse_direction, {1, 0});
 
 
@@ -82,17 +87,17 @@ void execute_player_loop(Player* player, GameState* state)
     if (player->charging && !IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
         Vector2 position = get_current_bubble_position(player);
-        Vector2 direction = Vector2Normalize(mouse_direction);
-
+        Vector2 direction = Vector2Rotate({1, 0}, player->rotation);
+        TraceLog(LOG_INFO, "%f", player->charge_value);
         //Shooting projectile
         ProjectileBubble projectile;
-        projectile.position = player->position;
+        projectile.position = position;
         projectile.radius = player->charge_value * 10;
         projectile.damage = projectile.radius;
         projectile.velocity = direction * 3;
         arrput(state->room.projectiles, projectile);
 
-        player->current_bubble = ++player->current_bubble % sizeof(player->bubbles);
+        player->current_bubble = ++player->current_bubble % lengthof(player->bubbles);
         player->last_shot_age = 0;
         player->charge_value = 0;
         player->charging = false;
@@ -125,6 +130,7 @@ void execute_player_loop(Player* player, GameState* state)
         try_change_player_anim(player, PlayerAnim_Walk);
     }
 
+    update_charge_ball(player);
     update_player_animation(player);
 
     RenderAnimatedEntity(Model_Toad, player->position, player->rotation, player_model_animations + player->animation, player->frame);
