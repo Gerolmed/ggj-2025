@@ -92,6 +92,7 @@ void fish_update(Pufferfish* fish, GameState* state){
     if(fish->dead){
         return;
     }
+
     fish_pursue_player(fish, state);
     fish_check_collision(fish, state);
     if(fish->health <= 0){

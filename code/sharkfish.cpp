@@ -16,10 +16,10 @@ void pursue_player(Sharkfish* fish, GameState* state){
         fish->rotation = -Vector2Angle(direction, {1,0});
         fish->dash_direction = direction;
     }else{
-        fish->position = Vector2Add(fish->position, Vector2Scale(fish->dash_direction, 5*GetFrameTime()));
+        fish->position = Vector2Add(fish->position, Vector2Scale(fish->dash_direction, 7*GetFrameTime()));
     }
 
-    if(fish->behavior_frame == 599){
+    if(fish->behavior_frame == 540){
         spawn_pufferfish(fish->position, state);
     }
 }
@@ -36,26 +36,44 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
         ProjectileBubble* bubble = &bubble_array[i];
         SphericalCollider bubble_collider = SphericalCollider(bubble->position, bubble->radius);
         if(intersects(&fish_collider, &bubble_collider)){
-            bubble->velocity = Vector2Scale(bubble->velocity,-1);
-            bubble->position = Vector2Add(bubble->position, Vector2Scale(bubble->velocity,GetFrameTime()));
+            if(!bubble->can_collide_with_player){
+                bubble->velocity = Vector2Scale(bubble->velocity,-1);
+                bubble->can_collide_with_player = true;
+            }
         }
     }
 
     //Spike Projectile Collision
     ProjectileSpike *spikes_array = level->spikes;
+    bool hit = false;
     for(i32 i = 0 ; i < arrlen(spikes_array); i++){
         ProjectileSpike spike = spikes_array[i];
         SphericalCollider spike_collider = SphericalCollider(spike.position, SPIKE_RADIUS);
         if(intersects(&fish_collider, &spike_collider)){
-            fish->health -= 1;
+            hit = true;
+            fish->knockback_velocity = Vector2Scale(spike.direction,5);
             arrdel(spikes_array,i);
             i--;
         }
     }
+    if(hit) fish->health -= 1;
 }
 
 void shark_update(Sharkfish* fish, GameState* state){
     if(fish->dead) return;
+
+      //Process knockback velocity
+    if(fish->knockback_velocity.x != 0 || fish->knockback_velocity.y != 0)
+    {
+        fish->position = Vector2Add(fish->position, Vector2Scale(fish->knockback_velocity, GetFrameTime()));
+        Vector2 friction = Vector2Scale(Vector2Normalize(fish->knockback_velocity), 5* GetFrameTime());
+        if(abs_squared(friction) > abs_squared(fish->knockback_velocity)){
+            fish->knockback_velocity = {0,0};
+        }else{
+            fish->knockback_velocity = Vector2Subtract(fish->knockback_velocity, friction);
+        }
+    }
+
     pursue_player(fish,state);
     shark_check_collision(fish,state);
     if(fish->health <= 0){
