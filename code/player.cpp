@@ -69,9 +69,11 @@ void update_charge_ball(Player* player)
 void check_collisions(Player* player, GameState* state){
     SphericalCollider player_collider = SphericalCollider(player->position,0.5);
 
+    Room *room = state->rooms + state->current_room;
+
     //Pufferfish Collisions
-    for(i32 i = 0 ; i < state->room.pufferfish_count; i++){
-        Pufferfish* fish = &state->room.pufferfishs[i];
+    for(i32 i = 0 ; i < room->pufferfish_count; i++){
+        Pufferfish* fish = room->pufferfishs + i;
         if(fish->dead) continue;
         SphericalCollider fish_collider = {fish->position, fish_get_radius(fish)};
 
@@ -85,8 +87,8 @@ void check_collisions(Player* player, GameState* state){
     }
 
      //Sharkfish Collisions
-    for(i32 i = 0 ; i < state->room.sharkfish_count; i++){
-        Sharkfish* fish = &state->room.sharkfishs[i];
+    for(i32 i = 0 ; i < room->sharkfish_count; i++){
+        Sharkfish* fish = room->sharkfishs + i;
         if(fish->dead) continue;
         SphericalCollider fish_collider = {fish->position, 1};
 
@@ -99,8 +101,8 @@ void check_collisions(Player* player, GameState* state){
     }
 
     //Spike Collisions
-    for(i32 i = 0 ; i < arrlen(state->room.spikes); i++){
-        ProjectileSpike spike = state->room.spikes[i];
+    for(i32 i = 0 ; i < arrlen(room->spikes); i++){
+        ProjectileSpike spike = room->spikes[i];
 
         SphericalCollider spike_collider = {spike.position, SPIKE_RADIUS};
 
@@ -109,14 +111,14 @@ void check_collisions(Player* player, GameState* state){
             printf("Damaged player");
             player->knockback_velocity = spike.direction * 10;
             player->health -= 1;
-            arrdel(state->room.spikes,i);
+            arrdel(room->spikes,i);
             i--;
         }
     }
 
      //Bubble Collisions
-    for(i32 i = 0 ; i < arrlen(state->room.projectiles); i++){
-        ProjectileBubble bubble = state->room.projectiles[i];
+    for(i32 i = 0 ; i < arrlen(room->projectiles); i++){
+        ProjectileBubble bubble = room->projectiles[i];
         if(!bubble.can_collide_with_player) continue;
 
         SphericalCollider bubble_collider = {bubble.position, bubble.radius};
@@ -124,17 +126,18 @@ void check_collisions(Player* player, GameState* state){
         if(intersects(&player_collider, &bubble_collider))
         {
             player->knockback_velocity = bubble.velocity;
-            arrdel(state->room.projectiles,i);
+            arrdel(room->projectiles,i);
             i--;
         }
     }
 
-    //Transition Tiles
-    for(i32 i = 0 ; i < state->room.transition_tile_count; ++i){
-        TransitionTile tile = state->room.transition_tiles[i];
+    // Transition Tiles
+    for(i32 i = 0 ; i < room->transition_tile_count; ++i){
+        TransitionTile tile = room->transition_tiles[i];
         SphericalCollider tile_collider = {Vector2(tile.pos_x, tile.pos_y), 0.5};
-        if(intersects(&player_collider,&tile_collider)){
-            state->room = transition_to_room(player, state->room.id, tile.new_room_id);
+        if(intersects(&player_collider,&tile_collider)) 
+        {
+            transition_to_room(player, state->current_room, tile.new_room_id);
             return;
         }
     }
@@ -144,6 +147,8 @@ void check_collisions(Player* player, GameState* state){
 void execute_player_loop(Player* player, GameState* state)
 {
     check_collisions(player,state);
+
+    Room* room = state->rooms + state->current_room;
 
      //Process knockback velocity
     if(player->knockback_velocity.x != 0 || player->knockback_velocity.y != 0)
@@ -190,7 +195,7 @@ void execute_player_loop(Player* player, GameState* state)
         projectile.radius = bubble_size(player);
         projectile.damage = player->charge_value*10;
         projectile.velocity = direction * 10;
-        arrput(state->room.projectiles, projectile);
+        arrput(room->projectiles, projectile);
 
         player->current_bubble = ++player->current_bubble % lengthof(player->bubbles);
         player->last_shot_age = 0;

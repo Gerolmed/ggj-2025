@@ -139,9 +139,11 @@ i32 main()
 
     tileset = LoadTexture("asset/tileset.png");
 
-    Room* level = &state.room;
-    *level = load_room(0);
-
+    for (u32 i = 0; i <= 4; ++i)
+    {
+        assert(state.room_count < lengthof(state.rooms));
+        state.rooms[state.room_count++] = load_room(i);
+    }
 
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
@@ -162,14 +164,7 @@ i32 main()
         state.render_entities = {};
         main_camera.zoom = GetRenderWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
 
-        if (IsKeyPressed(KEY_F1))
-        {
-            sceneMode = SCENE_MODE_TEST_DEFAULT;
-        }
-        else if (IsKeyPressed(KEY_F2))
-        {
-            sceneMode = SCENE_MODE_TEST_PLAYER;
-        }
+        Room *level = state.rooms + state.current_room;
 
         // Call render entity here...
         // RenderEntity(Model_Fish, {2, 2}, 0);
@@ -321,9 +316,9 @@ i32 main()
         // }
 
         // Render Transition Tiles - This should be deleted eventually
-        for(u32 i = 0 ; i < state.room.transition_tile_count; i++)
+        for(u32 i = 0 ; i < level->transition_tile_count; i++)
         {
-            TransitionTile tile = state.room.transition_tiles[i];
+            TransitionTile tile = level->transition_tiles[i];
             DrawRectangle(tile.pos_x * TILE_SIZE_LOW, tile.pos_y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, YELLOW);
         }
 

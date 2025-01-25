@@ -7,6 +7,8 @@ void jelly_death(Jellyfish* fish, GameState* state){
 }
 
 void orbit_around_player(Jellyfish* fish, GameState* state){
+    Room* room = state->rooms + state->current_room;
+
     fish->behavior_frame = (fish->behavior_frame + 1) % 180;
     Player* player = &state->player;
 
@@ -27,7 +29,7 @@ void orbit_around_player(Jellyfish* fish, GameState* state){
         projectile.damage = 1;
         projectile.can_collide_with_player = true;
         projectile.velocity = direction * 10;
-        arrput(state->room.projectiles, projectile);
+        arrput(room->projectiles, projectile);
     }
 
     if(abs_squared(to_player) < 5){
@@ -45,7 +47,7 @@ void orbit_around_player(Jellyfish* fish, GameState* state){
 void jelly_check_collision(Jellyfish* fish, GameState* state){
     SphericalCollider fish_collider = SphericalCollider(fish->position, jelly_get_radius(fish));
 
-    Room* level = &state->room;
+    Room* level = state->rooms + state->current_room;
 
     //Bubble Projectile Collision
     ProjectileBubble *bubble_array = level->projectiles;

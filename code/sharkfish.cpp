@@ -28,7 +28,7 @@ void pursue_player(Sharkfish* fish, GameState* state){
 void shark_check_collision(Sharkfish* fish, GameState* state){
     SphericalCollider fish_collider = SphericalCollider(fish->position, 0.5);
 
-    Room* level = &state->room;
+    Room* level = state->rooms + state->current_room;
 
     //Bubble Projectile Collision
     ProjectileBubble *bubble_array = level->projectiles;

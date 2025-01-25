@@ -7,6 +7,8 @@ f32 fish_get_radius(Pufferfish* fish){
 void fish_death(Pufferfish* fish, GameState* state){
     fish->dead = true;
 
+    Room* room = state->rooms + state->current_room;
+
     Vector2 directions[4];
     directions[0] = Vector2(1,0);
     directions[1] = Vector2(0,1);
@@ -21,7 +23,7 @@ void fish_death(Pufferfish* fish, GameState* state){
         spike.position = fish->position;
         spike.direction = directions[i];
 
-        arrput(state->room.spikes, spike);
+        arrput(room->spikes, spike);
     }
 
     //TODO: Explode and spawn spike projectiles
@@ -38,7 +40,7 @@ void fish_pursue_player(Pufferfish* fish, GameState* state){
 void fish_check_collision(Pufferfish* fish, GameState* state){
     SphericalCollider fish_collider = SphericalCollider(fish->position, fish_get_radius(fish));
 
-    Room* level = &state->room;
+    Room *level = state->rooms + state->current_room;
 
     //Bubble Projectile Collision
     ProjectileBubble *bubble_array = level->projectiles;
@@ -68,18 +70,20 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
 void spawn_pufferfish(Vector2 position, GameState* state){
     Pufferfish* new_fish;
     
+    Room* room = state->rooms + state->current_room;
+
     bool dead_fish_found = false;
-    for(i32 i = 0; i < state->room.pufferfish_count; i++)
+    for(i32 i = 0; i < room->pufferfish_count; i++)
     {
-        if(state->room.pufferfishs[i].dead){
-            new_fish = &state->room.pufferfishs[i];
+        if(room->pufferfishs[i].dead){
+            new_fish = room->pufferfishs + i;
             dead_fish_found = true;
         }
     }
     if(!dead_fish_found)
     {
-        new_fish = &state->room.pufferfishs[state->room.pufferfish_count];
-        state->room.pufferfish_count++;
+        new_fish = room->pufferfishs + room->pufferfish_count;
+        room->pufferfish_count++;
     }
 
     new_fish->position = position;
