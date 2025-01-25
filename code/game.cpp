@@ -66,8 +66,10 @@ i32 main()
         }
     }
 
-    Player player = {};
-    configure_player(&player);
+    Player *player = &state.player;
+    configure_player(player);
+
+    
 
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
 
@@ -79,7 +81,10 @@ i32 main()
 
     Texture2D wall_texture = LoadTexture("asset/wall_base.png");
 
-    Room level = load_room(0);
+    Room *level = &state.room;
+    *level = load_room(0);
+    
+
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
 
     f32 camera_pos_x = TILE_SIZE_HIGH * ROOM_WIDTH / 2;
@@ -94,6 +99,7 @@ i32 main()
 
     while (!WindowShouldClose())
     {
+
         state.render_entities = {};
 
         if (IsKeyPressed(KEY_F1))
@@ -106,10 +112,33 @@ i32 main()
         }
 
         // Call render entity here...
-        RenderEntity(Model_Fish, {2, 2}, 0);
-        RenderEntity(Model_Fish, {3, 5}, 00);
+        // RenderEntity(Model_Fish, {2, 2}, 0);
+        // RenderEntity(Model_Fish, {3, 5}, 00);
 
-        execute_player_loop(&player);
+        execute_player_loop(player, level);
+
+        for(u32 i = 0; i < level->pufferfish_count; ++i)
+        {
+            Pufferfish* fish = &level->pufferfishs[i];
+            fish_update(fish, level);
+
+            RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 0);
+        }
+        
+
+        for(u32 i = 0; i < arrlen(level->projectiles); i++)
+        {
+            ProjectileBubble* projectile = &level->projectiles[i];
+            projectile->position.x += GetFrameTime() * projectile->velocity.x;
+            projectile->position.y += GetFrameTime() * projectile->velocity.y;
+
+            RenderEntity(Model_Toad, Vector2(projectile->position.x, projectile->position.y), 0);
+            
+            //DrawRectangle(projectile->position.x, projectile->position.y, 
+            //   TILE_SIZE_LOW, TILE_SIZE_LOW, RED);
+            //DrawRectangle(projectile->position.x-projectile->radius, projectile->position.y-projectile->radius, 
+            //   2*projectile->radius, 2*projectile->radius,RED);
+        }
 
         // Entities to entity buffer
         BeginTextureMode(entities_high);
@@ -122,7 +151,7 @@ i32 main()
 
             rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
             DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {1,1,1}, WHITE);
-            DrawCube({0,0}, 1, 1, 1, WHITE);
+            // DrawCube({0,0}, 1, 1, 1, WHITE);
         }
 
         EndMode3D();
@@ -144,7 +173,7 @@ i32 main()
         {
             for (u32 y = 0; y < ROOM_HEIGHT; ++y)
             {
-                if (level.tiles[x + y * ROOM_WIDTH])
+                if (level->tiles[x + y * ROOM_WIDTH])
                 {
                     //DrawRectangle(x * TILE_SIZE_LOW, y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, RED);  
                     
@@ -170,5 +199,7 @@ i32 main()
                        { 0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight() }, { 0, 0 }, 0, WHITE);
 
         EndDrawing();
+
+        
     }
 }
