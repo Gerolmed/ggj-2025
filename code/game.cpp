@@ -29,22 +29,6 @@ i32 main()
 
     Model model = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
 
-    Room room = {};
-    for (u32 x = 0; x < 20; ++x)
-    {
-        for (u32 y = 0; y < 15; ++y)
-        {
-            Tile tile = Tile_Empty;
-
-            if (x >= 3 && x <= 5 && y >= 7 && y <= 8)
-            {
-                tile = Tile_Wall;
-            }
-
-            room.tiles[x + y * ROOM_WIDTH] = tile;
-
-        }
-    }
 
     Room level = load_room();
     SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
@@ -67,11 +51,15 @@ i32 main()
         {
             for (u32 y = 0; y < ROOM_HEIGHT; ++y)
             {
-                if (room.tiles[x + y * ROOM_WIDTH])
+                if (level.tiles[x + y * ROOM_WIDTH] == Tile_Wall)
                 {
                     DrawRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);  
+                    printf("1");
+                }else{
+                    printf("0");
                 }
             }
+            printf("\n");
         }
 
         switch (sceneMode)
