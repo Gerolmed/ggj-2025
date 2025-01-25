@@ -55,7 +55,7 @@ Room load_room(i32 room_id){
     return room;
 }
 
-Room transition(Player* player, i32 old_room_id, i32 new_room_id){
+Room transition_to_room(Player* player, i32 old_room_id, i32 new_room_id){
     Room new_room = load_room(new_room_id);
 
     for(i32 i = 0 ; i < new_room.transition_tile_count; ++i){

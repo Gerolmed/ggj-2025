@@ -287,6 +287,14 @@ i32 main()
         //     }
         // }
 
+        // Render Transition Tiles - This should be deleted eventually
+        for(u32 i = 0 ; i < state.room.transition_tile_count; i++)
+        {
+            TransitionTile tile = state.room.transition_tiles[i];
+            DrawRectangle(tile.pos_x * TILE_SIZE_LOW, tile.pos_y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, YELLOW);
+        }
+
+
         // Render entities into room
         for (u32 i = 0; i < state.render_entities.count; ++i)
         {

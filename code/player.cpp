@@ -62,13 +62,12 @@ void update_charge_ball(Player* player)
 
     Vector2 position = get_current_bubble_position(player);
 
-    // TODO: render ball?
     RenderEntity(Model_Bubble, position, 0, bubble_size(player));
 }
 
 
 void check_collisions(Player* player, GameState* state){
-    SphericalCollider player_collider = SphericalCollider(player->position,1);
+    SphericalCollider player_collider = SphericalCollider(player->position,0.5);
 
     //Pufferfish Collisions
     for(i32 i = 0 ; i < state->room.pufferfish_count; i++){
@@ -127,6 +126,16 @@ void check_collisions(Player* player, GameState* state){
             player->knockback_velocity = bubble.velocity;
             arrdel(state->room.projectiles,i);
             i--;
+        }
+    }
+
+    //Transition Tiles
+    for(i32 i = 0 ; i < state->room.transition_tile_count; ++i){
+        TransitionTile tile = state->room.transition_tiles[i];
+        SphericalCollider tile_collider = {Vector2(tile.pos_x, tile.pos_y), 0.5};
+        if(intersects(&player_collider,&tile_collider)){
+            state->room = transition_to_room(player, state->room.id, tile.new_room_id);
+            return;
         }
     }
 }
