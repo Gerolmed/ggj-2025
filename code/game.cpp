@@ -61,7 +61,7 @@ i32 main()
     }
     model.transform = model.transform * MatrixTranslate(0,1,0.8) * MatrixScale(1.2f, 1.2f, 1.2f);
 
-    Player player;
+    Player player = {};
     configure_player(&player);
 
     RenderTexture room_low = LoadRenderTexture(ROOM_WIDTH * TILE_SIZE_LOW, ROOM_HEIGHT * TILE_SIZE_LOW);
@@ -103,6 +103,8 @@ i32 main()
         // Call render entity here...
         RenderEntity(Model_Toad, {2, 2}, 0);
         RenderEntity(Model_Toad, {3, 5}, 00);
+
+        execute_player_loop(&player);
 
         // Entities to entity buffer
         BeginTextureMode(entities_high);
@@ -161,15 +163,6 @@ i32 main()
         DrawTexturePro(room_low.texture, 
                        { 0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height }, 
                        { 0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight() }, { 0, 0 }, 0, WHITE);
-
-        switch (sceneMode)
-        {
-            case SCENE_MODE_TEST_DEFAULT:
-                break;
-            case SCENE_MODE_TEST_PLAYER:
-                execute_player_loop(&player);
-                break;
-        }
 
         EndDrawing();
     }

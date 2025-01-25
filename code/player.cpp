@@ -1,6 +1,7 @@
 void configure_player(Player* player)
 {
     *player = {};
+    player->speed = 5;
     player->bubbles[0] = Bubble{
         .radius = 1,
         .min_scale = 1.0f,
@@ -98,12 +99,12 @@ void execute_player_loop(Player* player)
     try_change_player_anim(player, PlayerAnim_Idle);
     if (IsKeyDown(KEY_W))
     {
-        player->position.y += player->speed * GetFrameTime();
+        player->position.y -= player->speed * GetFrameTime();
         try_change_player_anim(player, PlayerAnim_Walk);
     }
     else if (IsKeyDown(KEY_S))
     {
-        player->position.y -= player->speed * GetFrameTime();
+        player->position.y += player->speed * GetFrameTime();
         try_change_player_anim(player, PlayerAnim_Walk);
     }
 
@@ -119,6 +120,7 @@ void execute_player_loop(Player* player)
     }
 
     update_player_animation(player);
-    TraceLog(LOG_INFO, "Player animation updated %f, %f", player->position.x, player->position.y);
+
     RenderAnimatedEntity(Model_Toad, player->position, player->rotation, player_model_animations + player->animation, player->frame);
+    // RenderEntity(Model_Toad, player->position, 0);
 }
