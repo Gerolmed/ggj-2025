@@ -136,6 +136,21 @@ struct ProjectileSpike
     Vector2 direction;
 };
 
+enum ItemType
+{
+    ItemType_Heart_Full,
+    ItemType_Heart_Half,
+    ItemType_Heart_Temp_Full,
+    ItemType_Heart_Temp_Half,
+};
+
+struct Collectable
+{
+    Vector2 position;
+    ItemType type;
+};
+
+
 struct Room
 {
     i32 id;
@@ -152,6 +167,8 @@ struct Room
 
     i32 jellyfish_count;
     Jellyfish jellyfishs[16];
+
+    Collectable *collectables = NULL;
 
     ProjectileBubble* projectiles = NULL;
 
