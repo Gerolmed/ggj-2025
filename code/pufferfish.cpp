@@ -48,7 +48,7 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
         ProjectileBubble bubble = bubble_array[i];
         SphericalCollider bubble_collider = SphericalCollider(bubble.position, bubble.radius);
         if(intersects(&fish_collider, &bubble_collider)){
-            fish->health.health -= bubble.damage;
+            damage(&fish->health, bubble.damage);
             arrdel(bubble_array,i);
             i--;
         }
@@ -60,7 +60,7 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
         ProjectileSpike spike = spikes_array[i];
         SphericalCollider spike_collider = SphericalCollider(spike.position, SPIKE_RADIUS);
         if(intersects(&fish_collider, &spike_collider)){
-            fish->health.health = 0;
+            kill(&fish->health);
             arrdel(spikes_array,i);
             i--;
         }
@@ -100,9 +100,10 @@ void fish_update(Pufferfish* fish, GameState* state){
 
     fish_pursue_player(fish, state);
     fish_check_collision(fish, state);
-    if(fish->health.health <= 0){
+    if(fish->health.dead){
         fish_death(fish, state);
     }
 
-    RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish));
+    update_health(&fish->health);
+    RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish), color_from_damage(&fish->health));
 }

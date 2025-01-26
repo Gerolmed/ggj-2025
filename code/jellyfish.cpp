@@ -56,8 +56,7 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
         if(bubble.can_collide_with_player) continue;
         SphericalCollider bubble_collider = SphericalCollider(bubble.position, bubble.radius);
         if(intersects(&fish_collider, &bubble_collider)){
-            fish->health.health -= bubble.damage;
-            fish->health.damage_indicator = 1;
+            damage(&fish->health, bubble.damage);
             arrdel(bubble_array,i);
             i--;
         }
@@ -69,7 +68,7 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
         ProjectileSpike spike = spikes_array[i];
         SphericalCollider spike_collider = SphericalCollider(spike.position, SPIKE_RADIUS);
         if(intersects(&fish_collider, &spike_collider)){
-            fish->health.health = 0;
+            kill(&fish->health);
             arrdel(spikes_array,i);
             i--;
         }
@@ -82,9 +81,10 @@ void jellyfish_update(Jellyfish* fish, GameState* state){
 
     orbit_around_player(fish,state);
     jelly_check_collision(fish,state);
-    if(fish->health.health <= 0){
+    if(fish->health.dead){
         jelly_death(fish, state);
     }
 
-    RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish));
+    update_health(&fish->health);
+    RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish), color_from_damage(&fish->health));
 }

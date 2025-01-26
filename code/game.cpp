@@ -254,7 +254,7 @@ i32 main()
                 i--;
             }
 
-            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius);
+            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius, WHITE);
             
         }
         for(u32 i = 0; i < arrlen(level->spikes); i++)
@@ -269,8 +269,8 @@ i32 main()
                 arrdel(level->spikes, i);
                 i--;
             }
-            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1);
-            
+
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
 
         }
 
@@ -295,7 +295,7 @@ i32 main()
                 UpdateModelAnimationBones(models[draw->model], *draw->animation, draw->frame);
             }
 
-            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, WHITE);
+            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, draw->color);
             // DrawCube({0,0}, 1, 1, 1, WHITE);
         }
 

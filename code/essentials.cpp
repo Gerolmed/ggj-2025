@@ -57,6 +57,15 @@ Texture texture_ui_heart_temporary_full;
 Texture texture_ui_heart_temporary_half;
 
 
+struct Health
+{
+    u32 temp_health;
+    u32 health;
+    u32 max_health;
+    bool dead;
+    float damage_indicator;
+};
+
 struct Player
 {
     Bubble bubbles[6];
@@ -65,9 +74,7 @@ struct Player
     Vector2 position;
     f32 rotation;
 
-    u32 temp_health;
-    u32 health;
-    u32 max_health;
+    Health health;
 
     Vector2 knockback_velocity;
 
@@ -86,25 +93,18 @@ struct Player
     Model model;
 };
 
-struct EnemyHealth
-{
-    i32 health;
-    bool dead;
-    float damage_indicator;
-};
-
 struct Pufferfish
 {
     Vector2 position;
     float rotation;
-    EnemyHealth health;
+    Health health;
 };
 
 struct Sharkfish
 {
     Vector2 position;
     float rotation;
-    EnemyHealth health;
+    Health health;
     Vector2 knockback_velocity;
 
     i32 behavior_frame;
@@ -116,7 +116,7 @@ struct Jellyfish
     Vector2 position;
     float size;
     float rotation;
-    EnemyHealth health;
+    Health health;
     i32 behavior_frame;
 };
 
@@ -190,6 +190,7 @@ struct EntityDraw
 
     ModelAnimation *animation;
     u32 frame;
+    Color color;
 };
 
 struct RenderEntities
@@ -228,7 +229,63 @@ struct GameState
 GameState state = {};
 
 
+Color color_from_damage(Health *health)
+{
+    float t = 1 - health->damage_indicator;
+    t = 1 - pow(1 - t, 5);
+    return ColorLerp(RED, WHITE, t);
+}
 
+void damage(Health *health, u32 amount)
+{
+    health->damage_indicator = 1;
+    if (health->temp_health > 0)
+    {
+        if (amount > health->temp_health)
+        {
+            amount -= health->temp_health;
+            health->temp_health = 0;
+        } else
+        {
+            health->temp_health -= amount;
+            return;
+        }
+    }
+
+    if (amount > health->health)
+    {
+        health->health = 0;
+        health->dead = true;
+    } else
+    {
+        health->health -= amount;
+    }
+}
+
+void kill(Health *health)
+{
+    health->dead = false;
+    health->health = 0;
+}
+
+void heal(Health *health, const u32 amount)
+{
+    health->dead = false;
+    health->health = fmax(health->health + amount, health->max_health);
+}
+
+void grant_temp_health(Health *health, u32 amount)
+{
+    health->temp_health += amount;
+}
+
+
+void update_health(Health *health)
+{
+    health->damage_indicator -= GetFrameTime() * 2;
+    TraceLog(LOG_INFO, "Damage is %f", health->damage_indicator);
+    health->damage_indicator = fmax(health->damage_indicator, 0);
+}
 
 
 
