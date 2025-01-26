@@ -1,9 +1,2 @@
-rendering
-    tiles
-    animations
-
-    fix colors
-
-dungeon
-    generation
-    ...
+floor tiles
+fix player in room start position
