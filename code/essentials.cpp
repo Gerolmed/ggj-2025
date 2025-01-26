@@ -136,6 +136,21 @@ struct ProjectileSpike
     Vector2 direction;
 };
 
+enum ItemType
+{
+    ItemType_Heart_Full,
+    ItemType_Heart_Half,
+    ItemType_Heart_Temp_Full,
+    ItemType_Heart_Temp_Half,
+};
+
+struct Collectable
+{
+    Vector2 position;
+    ItemType type;
+};
+
+
 struct Room
 {
     i32 id;
@@ -152,6 +167,8 @@ struct Room
 
     i32 jellyfish_count;
     Jellyfish jellyfishs[16];
+
+    Collectable *collectables = NULL;
 
     ProjectileBubble* projectiles = NULL;
 
@@ -310,8 +327,8 @@ void update_health(Health* health)
 
 Tile get_safe_tile(Room* room, i32 x, i32 y)
 {
-    if (x < 0 || y < 0) return Tile_Empty;
-    if (ROOM_WIDTH + 4 <= x || ROOM_HEIGHT + 4 <= y) return Tile_Empty;
+    if (x < 0 || y < 0) return Tile_Wall;
+    if (ROOM_WIDTH + 4 <= x || ROOM_HEIGHT + 4 <= y) return Tile_Wall;
     return room->tiles[y * (ROOM_WIDTH + 4) + x];
 }
 
