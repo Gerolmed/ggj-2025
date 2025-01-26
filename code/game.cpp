@@ -261,7 +261,7 @@ i32 main()
                 i--;
             }
 
-            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius);
+            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius, WHITE);
             
         }
         for(u32 i = 0; i < arrlen(level->spikes); i++)
@@ -276,8 +276,8 @@ i32 main()
                 arrdel(level->spikes, i);
                 i--;
             }
-            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1);
-            
+
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
 
         }
 
@@ -302,7 +302,7 @@ i32 main()
                 UpdateModelAnimationBones(models[draw->model], *draw->animation, draw->frame);
             }
 
-            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, WHITE);
+            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, draw->color);
             // DrawCube({0,0}, 1, 1, 1, WHITE);
         }
 
@@ -327,7 +327,35 @@ i32 main()
         ClearBackground({69, 54, 34});
 
 
-        //Render Wall
+        // Render floor 
+        for (u32 x = 3; x < ROOM_WIDTH + 1; ++x)
+        {
+            for (u32 y = 3; y < ROOM_HEIGHT + 1; ++y)
+            {
+                DrawTileAt(8, 7, x, y);
+            }
+        }
+
+        // Floor corners
+        DrawTileAt(7, 6, 2, 2);
+        DrawTileAt(9, 6, ROOM_WIDTH + 1, 2);
+        DrawTileAt(7, 8, 2, ROOM_HEIGHT + 1);
+        DrawTileAt(9, 8, ROOM_WIDTH + 1, ROOM_HEIGHT + 1);
+
+        // Floor edges
+        for (u32 x = 3; x < ROOM_WIDTH + 1; ++x)
+        {
+            DrawTileAt(8, 9, x, 2);
+            DrawTileAt(8, 10, x, ROOM_HEIGHT + 1);
+        }
+
+        for (u32 y = 3; y < ROOM_HEIGHT + 1; ++y)
+        {
+            DrawTileAt(2, 5, 2, y);
+            DrawTileAt(3, 5, ROOM_WIDTH + 1, y);
+        }
+
+        // Render Wall
 
         // Topleft
         DrawTileRegion(4, 0, 0, 0, 2, 2);
