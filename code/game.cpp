@@ -16,6 +16,7 @@
 #include "collision.cpp"
 
 #include "entities/player.cpp"
+#include "entities/collectable.cpp"
 #include "entities/pufferfish.cpp"
 #include "entities/jellyfish.cpp"
 #include "entities/sharkfish.cpp"
@@ -254,6 +255,7 @@ i32 main()
 
         {
             execute_player_loop(player, &state);
+            update_collectables(level, player);
 
             for (u32 i = 0; i < level->pufferfish_count; ++i)
             {
@@ -412,6 +414,8 @@ i32 main()
 
                 DrawTexture(drop_shadow, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
             }
+
+            draw_collectables(level);
 
             // Render entities into room
             for (u32 i = 0; i < state.render_entities.count; ++i)
