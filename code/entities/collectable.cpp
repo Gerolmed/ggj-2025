@@ -1,7 +1,8 @@
 
-void configure_collectable(Collectable *collectable, ItemType type)
+void configure_collectable(Collectable *collectable, ItemType type, Vector2 position)
 {
     collectable->type = type;
+    collectable->position = position;
 }
 
 void update_collectables(Room *room, Player *player) {

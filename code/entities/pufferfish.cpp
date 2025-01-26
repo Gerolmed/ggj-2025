@@ -30,11 +30,8 @@ void fish_death(Pufferfish* fish, GameState* state){
     }
 
     
-    Collectable heart = {};
-    heart.position = fish->position;
-    heart.type = ItemType_Heart_Half;
 
-    arrput(room->collectables, heart);
+    configure_collectable(arraddnptr(room->collectables, 1), ItemType_Heart_Half, fish->position);
 
 }
 

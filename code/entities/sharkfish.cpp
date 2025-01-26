@@ -10,12 +10,8 @@ void shark_death(Sharkfish* fish, GameState* state){
 
     for(i32 i = 0 ; i < 3 ; i++){
         
-        Collectable heart;
-        heart.position = Vector2Add(fish->position, item_offset[i]);
-        heart.type = ItemType_Temp_Full;
-
         Room* room = state->rooms + state->current_room;
-        arrput(room->collectables, heart);
+        configure_collectable(arraddnptr(room->collectables, 1), ItemType_Heart_Temp_Full, Vector2Add(fish->position,item_offset[i]));
     }
 }
 
