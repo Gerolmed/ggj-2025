@@ -35,6 +35,18 @@ struct Entrance
     u32 target_room;
 };
 
+enum ShadowSize
+{
+    ShadowSize_Micro,
+    ShadowSize_Tiny,
+    ShadowSize_Smaller,
+    ShadowSize_Small,
+    ShadowSize_Medium,
+    ShadowSize_Large,
+
+    ShadowSize_Count,
+};
+
 struct Bubble
 {
     // unscaled radius (of model)
@@ -56,6 +68,13 @@ enum SharkAnim
     SharkAnim_Attack,
     SharkAnim_Idle,
     SharkAnim_Move,
+};
+
+enum JellyAnim
+{
+    JellyAnim0,
+    JellyAnim1,
+    JellyAnim2,
 };
 
 struct Health
@@ -102,6 +121,8 @@ struct Pufferfish
     Vector2 position;
     float rotation;
     Health health;
+    i32 animation_frame;
+    i32 animation;
 };
 
 struct Sharkfish
@@ -126,6 +147,8 @@ struct Jellyfish
     float rotation;
     Health health;
     i32 behavior_frame;
+    i32 animation_frame;
+    i32 animation;
 };
 
 struct ProjectileBubble
@@ -208,6 +231,7 @@ struct EntityDraw
     u32 atlas_y;
 
     ModelType model;
+    ShadowSize shadow_size;
 
     f32 x;
     f32 y;
@@ -257,18 +281,16 @@ struct GameState
 Camera2D main_camera;
 ModelAnimation player_model_animations[4] = {};
 ModelAnimation shark_model_animations[3] = {};
+ModelAnimation jelly_model_animations[3] = {};
+ModelAnimation pufferfish_model_animations[3] = {};
 
 Texture texture_ui_heart_full;
 Texture texture_ui_heart_half;
 Texture texture_ui_heart_empty;
 Texture texture_ui_heart_temporary_full;
 Texture texture_ui_heart_temporary_half;
-Texture2D drop_shadow_micro;
-Texture2D drop_shadow_tiny;
-Texture2D drop_shadow_smaller;
-Texture2D drop_shadow_small;
-Texture2D drop_shadow_medium;
-Texture2D drop_shadow_large;
+
+Texture2D drop_shadow[ShadowSize_Count];
 
 Texture2D gradient;
 

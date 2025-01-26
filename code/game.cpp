@@ -91,7 +91,7 @@ void LoadShaders()
     {
         Shader shader = default_shader;
 
-        if (i == Model_Toad || i == Model_Shark)
+        if (i == Model_Toad || i == Model_Shark || i == Model_Jelly || i == Model_Fish)
         {
             shader = skinned_shader;
         }
@@ -140,12 +140,12 @@ i32 main()
     texture_ui_heart_temporary_full = LoadTexture("asset/ui/heart_temporary_full.png");
     texture_ui_heart_temporary_half = LoadTexture("asset/ui/heart_temporary_half.png");
 
-    drop_shadow_micro = LoadTexture("asset/dropshadow_micro.png");
-    drop_shadow_tiny = LoadTexture("asset/dropshadow_tiny.png");
-    drop_shadow_smaller = LoadTexture("asset/dropshadow_smaller.png");
-    drop_shadow_small = LoadTexture("asset/dropshadow_small.png");
-    drop_shadow_medium = LoadTexture("asset/dropshadow_medium.png");
-    drop_shadow_large = LoadTexture("asset/dropshadow_large.png");
+    drop_shadow[ShadowSize_Micro] = LoadTexture("asset/dropshadow_micro.png");
+    drop_shadow[ShadowSize_Tiny] = LoadTexture("asset/dropshadow_tiny.png");
+    drop_shadow[ShadowSize_Smaller] = LoadTexture("asset/dropshadow_smaller.png");
+    drop_shadow[ShadowSize_Small] = LoadTexture("asset/dropshadow_small.png");
+    drop_shadow[ShadowSize_Medium] = LoadTexture("asset/dropshadow_medium.png");
+    drop_shadow[ShadowSize_Large] = LoadTexture("asset/dropshadow_large.png");
 
     u8 buffer[40 * 4];
     u8 *write = buffer;
@@ -255,6 +255,68 @@ i32 main()
             }
         }
     }
+
+     ////////////////////////////////////////////
+    // Prepare Jelly animations
+    ////////////////////////////////////////////
+    {
+        i32 anim_count;
+        ModelAnimation* animation_list = LoadModelAnimations("asset/3d/jellyfish/jellyfish.glb", &anim_count);
+
+        for (int i = 0; i < anim_count; ++i)
+        {
+            ModelAnimation* animation = animation_list + i;
+            assert(animation);
+            if (strcmp(animation->name, "attack") == 0)
+            {
+                jelly_model_animations[JellyAnim0] = *animation;
+            }
+            else if (strcmp(animation->name, "idle") == 0)
+            {
+                jelly_model_animations[JellyAnim1] = *animation;
+            }
+            else if (strcmp(animation->name, "move") == 0)
+            {
+                jelly_model_animations[JellyAnim2] = *animation;
+            }
+            else
+            {
+                assert(false);
+            }
+        }
+    }
+
+
+     ////////////////////////////////////////////
+    // Prepare Pufferfish animations
+    ////////////////////////////////////////////
+    {
+        i32 anim_count;
+        ModelAnimation* animation_list = LoadModelAnimations("asset/3d/pufferfish/Pufferfish.glb", &anim_count);
+
+        for (int i = 0; i < anim_count; ++i)
+        {
+            ModelAnimation* animation = animation_list + i;
+            assert(animation);
+            if (strcmp(animation->name, "pump_up") == 0)
+            {
+                pufferfish_model_animations[0] = *animation;
+            }
+            else if (strcmp(animation->name, "idle") == 0)
+            {
+                pufferfish_model_animations[1] = *animation;
+            }
+            else if (strcmp(animation->name, "move") == 0)
+            {
+                pufferfish_model_animations[2] = *animation;
+            }
+            else
+            {
+                assert(false);
+            }
+        }
+    }
+
 
 
 
@@ -393,7 +455,7 @@ i32 main()
                 continue;
             }
 
-            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE, ShadowSize_Micro);
         }
 
         ////////////////////////////////////////////
@@ -471,13 +533,9 @@ i32 main()
             for (u32 i = 0; i < state.render_entities.count; ++i)
             {
                 EntityDraw *draw = state.render_entities.entities + i;
+                if (draw->shadow_size >= ShadowSize_Count) continue;
 
-                if (draw->model == Model_Spike)
-                {
-                    continue;
-                }
-
-                DrawTexture(drop_shadow_medium, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
+                DrawTexture(drop_shadow[draw->shadow_size], (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
             }
 
             draw_collectables(level);

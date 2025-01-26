@@ -98,6 +98,7 @@ Room load_room(i32 room_id){
                 jellyfish->health.health = 25;
                 jellyfish->health.damage_indicator = 0;
                 jellyfish->behavior_frame = 60*room.jellyfish_count;
+                jellyfish->animation_frame = 10*room.jellyfish_count;
                 room.jellyfish_count++;
             }
             curr += 3;

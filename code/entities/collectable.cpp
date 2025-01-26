@@ -117,9 +117,9 @@ void draw_collectables(Room* room)
         }
 
         Texture2D drop_texture;
-        if (height_value < .33) drop_texture = drop_shadow_smaller;
-        else if (height_value < .66) drop_texture = drop_shadow_tiny;
-        else drop_texture = drop_shadow_micro;
+        if (height_value < .33) drop_texture = drop_shadow[ShadowSize_Smaller];
+        else if (height_value < .66) drop_texture = drop_shadow[ShadowSize_Tiny];
+        else drop_texture = drop_shadow[ShadowSize_Micro];
 
 
         DrawTexture(drop_texture, position.x - drop_texture.width / 2,
