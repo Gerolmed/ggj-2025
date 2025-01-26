@@ -31,6 +31,7 @@ Model models[Model_Count];
 Shader skinned_shader;
 Shader default_shader;
 
+
 Texture2D tileset;
 
 inline void DrawTileAt(u32 tile_x, u32 tile_y, u32 x, u32 y)
@@ -48,6 +49,25 @@ inline void DrawTileRegion(u32 tile_x, u32 tile_y, u32 x, u32 y, u32 size_x, u32
             DrawTileAt(tile_x + dx, tile_y + dy, x + dx, y + dy);
         }
     }
+}
+
+
+
+void LoadMusic(){
+    calm_music = LoadMusicStream("asset/sounds/calm_music.wav");
+    calm_music.looping = true;
+    SetMusicVolume(calm_music,1.0f);
+    
+    dark_music = LoadMusicStream("asset/sounds/Background_theme.wav");
+    dark_music.looping = true;
+    SetMusicVolume(calm_music,0.8f);
+
+    bubble_sound[0] = LoadMusicStream("asset/sounds/bubbles_1.wav");
+    bubble_sound[0].looping = false;
+    bubble_sound[1] = LoadMusicStream("asset/sounds/bubbles_2.wav");
+    bubble_sound[1].looping = false;
+    bubble_sound[2] = LoadMusicStream("asset/sounds/bubbles_3.wav");
+    bubble_sound[2].looping = false;
 }
 
 void LoadShaders()
@@ -74,7 +94,8 @@ void LoadShaders()
 i32 main()
 {
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
-    InitWindow(1600, 900, "Divegame");
+    InitWindow(1600, 900, "Divegame"); 
+    InitAudioDevice(); 
     SetTargetFPS(60);
 
     texture_ui_heart_full = LoadTexture("asset/ui/heart_full.png");
@@ -101,7 +122,8 @@ i32 main()
     models[Model_Jelly].transform = models[Model_Jelly].transform * MatrixTranslate(0, 1, 0.6);
 
     LoadShaders();
- 
+    LoadMusic();
+
     {
         i32 anim_count;
         ModelAnimation* animation_list = LoadModelAnimations("asset/3d/toad/Toad.glb", &anim_count);
@@ -136,9 +158,6 @@ i32 main()
     Player* player = &state.player;
     configure_player(player);
 
-
-    RenderTexture room_low = LoadRenderTexture((ROOM_WIDTH + 4) * TILE_SIZE_LOW, (ROOM_HEIGHT + 4) * TILE_SIZE_LOW);
-
     RenderEntities render_entities = {};
     RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
     RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
@@ -165,44 +184,60 @@ i32 main()
     main_camera.rotation = 0;
     main_camera.target = {0, 0};
 
+    PlayMusicStream(calm_music);
+
+    PlayMusicStream(dark_music);
+    PauseMusicStream(dark_music);
+
     while (!WindowShouldClose())
     {
+
+        UpdateMusicStream(calm_music); 
+        UpdateMusicStream(dark_music);
+        for(i32 i = 0 ; i < 3 ; i++){
+            UpdateMusicStream(bubble_sound[i]); 
+        } 
+
         state.render_entities = {};
         main_camera.zoom = GetRenderWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
 
         Room *level = state.rooms + state.current_room;
 
-        // Call render entity here...
+        ////////////////////////////////////////////
+        // RUN ENTITY MAIN LOOPS. Only allows:
         // RenderEntity(Model_Fish, {2, 2}, 0);
-        // RenderEntity(Model_Fish, {3, 5}, 00);
+        // for rendering
+        ///////////////////////////////////////////
 
         execute_player_loop(player, &state);
 
         for (u32 i = 0; i < level->pufferfish_count; ++i)
         {
             Pufferfish* fish = &level->pufferfishs[i];
-            if(fish->dead) continue;
             fish_update(fish, &state);
 
-            RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish));
         }
 
+        bool shark_alive = false;
         for (u32 i = 0; i < level->sharkfish_count; ++i)
         {
             Sharkfish* fish = &level->sharkfishs[i];
-            if(fish->dead) continue;
             shark_update(fish, &state);
 
-            RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1);
+            if(!fish->health.dead) shark_alive = true;
+        }
+        if(shark_alive){
+            ResumeMusicStream(dark_music);  
+            PauseMusicStream(calm_music); 
+        }else{
+            PauseMusicStream(dark_music);  
+            ResumeMusicStream(calm_music); 
         }
 
         for (u32 i = 0; i < level->jellyfish_count; ++i)
         {
             Jellyfish* fish = &level->jellyfishs[i];
-            if(fish->dead) continue;
             jellyfish_update(fish, &state);
-
-            RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish));
         }
 
 
@@ -219,7 +254,7 @@ i32 main()
                 i--;
             }
 
-            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius);
+            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius, WHITE);
             
         }
         for(u32 i = 0; i < arrlen(level->spikes); i++)
@@ -234,12 +269,16 @@ i32 main()
                 arrdel(level->spikes, i);
                 i--;
             }
-            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1);
-            
+
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
 
         }
 
-        // Entities toaaaaaa entity buffer
+        ////////////////////////////////////////////
+        // Begin high-res drawing operations
+        ////////////////////////////////////////////
+
+        // Entities to entity buffer
         BeginTextureMode(entities_high);
         ClearBackground({});
 
@@ -256,7 +295,7 @@ i32 main()
                 UpdateModelAnimationBones(models[draw->model], *draw->animation, draw->frame);
             }
 
-            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, WHITE);
+            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, draw->color);
             // DrawCube({0,0}, 1, 1, 1, WHITE);
         }
 
@@ -271,13 +310,45 @@ i32 main()
                        {0, 0, (f32)entities_low.texture.width, (f32)entities_low.texture.height}, {0, 0}, 0, WHITE);
         EndTextureMode();
 
+
+        ////////////////////////////////////////////
+        // Begin drawing world
+        ////////////////////////////////////////////
         // ROOM
-        BeginTextureMode(room_low);
-        // BeginMode2D(main_camera);
-        ClearBackground(WHITE);
+        BeginDrawing();
+        BeginMode2D(main_camera);
+        ClearBackground({69, 54, 34});
 
 
-        //Render Wall
+        // Render floor 
+        for (u32 x = 3; x < ROOM_WIDTH + 1; ++x)
+        {
+            for (u32 y = 3; y < ROOM_HEIGHT + 1; ++y)
+            {
+                DrawTileAt(8, 7, x, y);
+            }
+        }
+
+        // Floor corners
+        DrawTileAt(7, 6, 2, 2);
+        DrawTileAt(9, 6, ROOM_WIDTH + 1, 2);
+        DrawTileAt(7, 8, 2, ROOM_HEIGHT + 1);
+        DrawTileAt(9, 8, ROOM_WIDTH + 1, ROOM_HEIGHT + 1);
+
+        // Floor edges
+        for (u32 x = 3; x < ROOM_WIDTH + 1; ++x)
+        {
+            DrawTileAt(8, 9, x, 2);
+            DrawTileAt(8, 10, x, ROOM_HEIGHT + 1);
+        }
+
+        for (u32 y = 3; y < ROOM_HEIGHT + 1; ++y)
+        {
+            DrawTileAt(2, 5, 2, y);
+            DrawTileAt(3, 5, ROOM_WIDTH + 1, y);
+        }
+
+        // Render Wall
 
         // Topleft
         DrawTileRegion(4, 0, 0, 0, 2, 2);
@@ -291,43 +362,100 @@ i32 main()
         // Botright
         DrawTileRegion(8, 4, ROOM_WIDTH + 2, ROOM_HEIGHT + 2, 2, 2);
 
-        u32 last = 0;
-        for (u32 y = 2; y < ROOM_HEIGHT + 2; ++y)
+        u32 last;
+
+        // level->entrances[Direction_Left].enabled = true;
+        // level->entrances[Direction_Right].enabled = true;
+        // level->entrances[Direction_Up].enabled = true;
+        // level->entrances[Direction_Down].enabled = true;
+
+        if (level->entrances[Direction_Left].enabled)
         {
-            DrawTileRegion(4, 2 + last, 0, y, 2, 1);
-            DrawTileRegion(8, 2 + last, ROOM_WIDTH + 2, y, 2, 1);
-            last = (last + 1) % 2;
+            DrawTileRegion(4, 2, 0, 2, 2, 1);
+            DrawTileRegion(2, 2, 0, 3, 2, 2);
+
+            DrawTileRegion(2, 0, 0, 6, 2, 2);
+            DrawTileRegion(4, 2, 0, 8, 2, 1);
+        }
+        else
+        {
+            last = 0;
+            for (u32 y = 2; y < ROOM_HEIGHT + 2; ++y)
+            {
+                DrawTileRegion(4, 2 + last, 0, y, 2, 1);
+                last = (last + 1) % 2;
+            }
         }
 
-        last = 0;
-        for (u32 x = 2; x < ROOM_WIDTH + 2; ++x)
+        if (level->entrances[Direction_Right].enabled)
         {
-            DrawTileRegion(6 + last, 0, x, 0, 1, 2);
-            DrawTileRegion(6 + last, 4, x, ROOM_HEIGHT + 2, 1, 2);
-            last = (last + 1) % 2;
+            DrawTileRegion(8, 2, ROOM_WIDTH + 2, 2, 2, 1);
+            DrawTileRegion(0, 2, ROOM_WIDTH + 2, 3, 2, 2);
+
+            DrawTileRegion(0, 0, ROOM_WIDTH + 2, 6, 2, 2);
+            DrawTileRegion(8, 2, ROOM_WIDTH + 2, 8, 2, 1);
+        }
+        else
+        {
+            last = 0;
+            for (u32 y = 2; y < ROOM_HEIGHT + 2; ++y)
+            {
+                DrawTileRegion(8, 2 + last, ROOM_WIDTH + 2, y, 2, 1);
+                last = (last + 1) % 2;
+            }
         }
 
-        // for (u32 x = 0; x < ROOM_WIDTH; ++x)
-        // {
-        //     for (u32 y = 0; y < ROOM_HEIGHT; ++y)
-        //     {
-        //         if (level->tiles[x + y * ROOM_WIDTH])
-        //         {
-        //             //DrawRectangle(x * TILE_SIZE_LOW, y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, RED);
-        //
-        //             DrawTextureRec(tileset, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, (f32)TILE_SIZE_LOW * y},
-        //                            WHITE);
-        //         }
-        //     }
-        // }
-
-        // Render Transition Tiles - This should be deleted eventually
-        for(u32 i = 0 ; i < level->transition_tile_count; i++)
+        if (level->entrances[Direction_Up].enabled)
         {
-            TransitionTile tile = level->transition_tiles[i];
-            DrawRectangle(tile.pos_x * TILE_SIZE_LOW, tile.pos_y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, YELLOW);
+            DrawTileRegion(6, 0, 2, 0, 2, 2);
+            DrawTileRegion(6, 0, 4, 0, 2, 2);
+            DrawTileRegion(6, 0, 6, 0, 2, 2);
+
+            DrawTileRegion(1, 4, 8, 0, 1, 1);
+            DrawTileRegion(1, 7, 8, 1, 1, 1);
+
+            DrawTileRegion(0, 4, 11, 0, 1, 1);
+            DrawTileRegion(0, 7, 11, 1, 1, 1);
+
+            DrawTileRegion(6, 0, 12, 0, 2, 2);
+            DrawTileRegion(6, 0, 14, 0, 2, 2);
+            DrawTileRegion(6, 0, 16, 0, 2, 2);
+        }
+        else
+        {
+            last = 0;
+            for (u32 x = 2; x < ROOM_WIDTH + 2; ++x)
+            {
+                DrawTileRegion(6 + last, 0, x, 0, 1, 2);
+                last = (last + 1) % 2;
+            }
         }
 
+        if (level->entrances[Direction_Down].enabled)
+        {
+            DrawTileRegion(6, 4, 2, ROOM_HEIGHT + 2, 2, 2);
+            DrawTileRegion(6, 4, 4, ROOM_HEIGHT + 2, 2, 2);
+            DrawTileRegion(6, 4, 6, ROOM_HEIGHT + 2, 2, 2);
+
+            DrawTileRegion(1, 6, 8, ROOM_HEIGHT + 2, 1, 1);
+            DrawTileRegion(1, 5, 8, ROOM_HEIGHT + 3, 1, 1);
+
+            DrawTileRegion(0, 6, 11, ROOM_HEIGHT + 2, 1, 1);
+            DrawTileRegion(0, 5, 11, ROOM_HEIGHT + 3, 1, 1);
+
+            DrawTileRegion(6, 4, 12, ROOM_HEIGHT + 2, 2, 2);
+            DrawTileRegion(6, 4, 14, ROOM_HEIGHT + 2, 2, 2);
+            DrawTileRegion(6, 4, 16, ROOM_HEIGHT + 2, 2, 2);
+        }
+        else
+        {
+            last = 0;
+            for (u32 x = 2; x < ROOM_WIDTH + 2; ++x)
+            {
+                DrawTileRegion(6 + last, 4, x, ROOM_HEIGHT + 2, 1, 2);
+                last = (last + 1) % 2;
+            }
+        }
 
         // Render entities into room
         for (u32 i = 0; i < state.render_entities.count; ++i)
@@ -337,13 +465,7 @@ i32 main()
                            {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
         }
 
-        // EndMode2D();
-        EndTextureMode();
-
-        BeginDrawing();
-        DrawTexturePro(room_low.texture,
-                       {0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height},
-                       {0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight()}, {0, 0}, 0, WHITE);
+        EndMode2D();
         
         draw_player_hud(player);
 

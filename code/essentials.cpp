@@ -27,13 +27,10 @@ enum Direction
     Direction_Right,
 };
 
-struct TransitionTile
+struct Entrance
 {
-    i32 pos_x;
-    i32 pos_y;
-    // Direction dir;
-    // u32 offset;
-    i32 new_room_id;
+    bool enabled;
+    u32 target_room;
 };
 
 struct Bubble
@@ -60,6 +57,15 @@ Texture texture_ui_heart_temporary_full;
 Texture texture_ui_heart_temporary_half;
 
 
+struct Health
+{
+    u32 temp_health;
+    u32 health;
+    u32 max_health;
+    bool dead;
+    float damage_indicator;
+};
+
 struct Player
 {
     Bubble bubbles[6];
@@ -68,9 +74,7 @@ struct Player
     Vector2 position;
     f32 rotation;
 
-    u32 temp_health;
-    u32 health;
-    u32 max_health;
+    Health health;
 
     Vector2 knockback_velocity;
 
@@ -93,16 +97,14 @@ struct Pufferfish
 {
     Vector2 position;
     float rotation;
-    i32 health;
-    bool dead;
+    Health health;
 };
 
 struct Sharkfish
 {
     Vector2 position;
     float rotation;
-    i32 health;
-    bool dead;
+    Health health;
     Vector2 knockback_velocity;
 
     i32 behavior_frame;
@@ -114,9 +116,7 @@ struct Jellyfish
     Vector2 position;
     float size;
     float rotation;
-    i32 health;
-    bool dead;
-
+    Health health;
     i32 behavior_frame;
 };
 
@@ -140,8 +140,7 @@ struct Room
 
     Tile tiles[ROOM_WIDTH * ROOM_HEIGHT];
 
-    i32 transition_tile_count;
-    TransitionTile transition_tiles[64];
+    Entrance entrances[4];
 
     i32 pufferfish_count;
     Pufferfish pufferfishs[64];
@@ -158,6 +157,12 @@ struct Room
 
 
 };
+
+
+Music calm_music;
+Music dark_music;
+i32 last_bubble_sound = 0;
+Music bubble_sound[3];
 
 enum ModelType
 {
@@ -185,6 +190,7 @@ struct EntityDraw
 
     ModelAnimation *animation;
     u32 frame;
+    Color color;
 };
 
 struct RenderEntities
@@ -223,7 +229,66 @@ struct GameState
 GameState state = {};
 
 
+Color color_from_damage(Health *health)
+{
+    float t = 1 - health->damage_indicator;
+    t = 1 - pow(1 - t, 5);
+    return ColorLerp(RED, WHITE, t);
+}
 
+void damage(Health *health, u32 amount)
+{
+    // grant invulnerability if damage indicator still playing
+    if (health->damage_indicator > 0) return;
+
+    health->damage_indicator = 1;
+    if (health->temp_health > 0)
+    {
+        if (amount > health->temp_health)
+        {
+            amount -= health->temp_health;
+            health->temp_health = 0;
+        } else
+        {
+            health->temp_health -= amount;
+            return;
+        }
+    }
+
+    if (amount > health->health)
+    {
+        health->health = 0;
+        health->dead = true;
+    } else
+    {
+        health->health -= amount;
+    }
+}
+
+void kill(Health *health)
+{
+    health->dead = true;
+    health->health = 0;
+}
+
+void heal(Health *health, const u32 amount)
+{
+    health->dead = false;
+    health->health = fmax(health->health + amount, health->max_health);
+}
+
+void grant_temp_health(Health *health, u32 amount)
+{
+    health->temp_health += amount;
+}
+
+
+void update_health(Health *health)
+{
+    health->damage_indicator -= GetFrameTime() * 2;
+    TraceLog(LOG_INFO, "Damage is %f", health->damage_indicator);
+    health->damage_indicator = fmax(health->damage_indicator, 0);
+}
 
 
 
