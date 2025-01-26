@@ -51,6 +51,12 @@ enum PlayerAnim
     PlayerAnim_PostShoot,
 };
 
+enum SharkAnim
+{
+    SharkAnim_Attack,
+    SharkAnim_Idle,
+    SharkAnim_Move,
+};
 
 struct Health
 {
@@ -104,6 +110,8 @@ struct Sharkfish
     float rotation;
     Health health;
     Vector2 knockback_velocity;
+
+    i32 animation;
 
     i32 behavior_frame;
     Vector2 dash_direction;
@@ -248,6 +256,7 @@ struct GameState
 
 Camera2D main_camera;
 ModelAnimation player_model_animations[4] = {};
+ModelAnimation shark_model_animations[3] = {};
 
 Texture texture_ui_heart_full;
 Texture texture_ui_heart_half;

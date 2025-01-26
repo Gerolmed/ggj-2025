@@ -1,4 +1,12 @@
 
+i32 shark_animation_frame = 0;
+
+void set_shark_animation(Sharkfish* fish, i32 animation){
+    if(animation != fish->animation){
+        shark_animation_frame = 0;
+    }
+    fish->animation = animation;
+}
 
 void shark_death(Sharkfish* fish, GameState* state){
     fish->health.dead = true;
@@ -21,6 +29,7 @@ void pursue_player(Sharkfish* fish, GameState* state){
     Vector2 direction = Vector2Normalize(Vector2Subtract(player->position, fish->position));
 
     if(fish->behavior_frame % 300 < 180){
+        set_shark_animation(fish,SharkAnim_Move);
         fish->rotation = -Vector2Angle(direction, {1,0});
         if(fish->health.health == 1) {
             fish->behavior_frame += 180;
@@ -38,7 +47,9 @@ void pursue_player(Sharkfish* fish, GameState* state){
     }else if (fish->behavior_frame % 300 < 240){
         fish->rotation = -Vector2Angle(direction, {1,0});
         fish->dash_direction = direction;
+        set_shark_animation(fish,SharkAnim_Move);
     }else{
+        set_shark_animation(fish,SharkAnim_Attack);
         fish->position = Vector2Add(fish->position, Vector2Scale(fish->dash_direction, 7*GetFrameTime()));
     }
 
@@ -113,8 +124,12 @@ void shark_update(Sharkfish* fish, GameState* state){
     if(fish->health.dead){
         shark_death(fish, state);
     }
+    shark_animation_frame++;
+
+    ModelAnimation* animation = &shark_model_animations[fish->animation];
+
 
     update_health(&fish->health);
     collide_with_room(state->rooms + state->current_room, fish->position, old_pos, &fish->position);
-    RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1, color_from_damage(&fish->health));
+    RenderAnimatedEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1, animation, shark_animation_frame % animation->frameCount , color_from_damage(&fish->health));
 }
