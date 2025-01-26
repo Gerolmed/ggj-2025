@@ -320,7 +320,35 @@ i32 main()
         ClearBackground({69, 54, 34});
 
 
-        //Render Wall
+        // Render floor 
+        for (u32 x = 3; x < ROOM_WIDTH + 1; ++x)
+        {
+            for (u32 y = 3; y < ROOM_HEIGHT + 1; ++y)
+            {
+                DrawTileAt(8, 7, x, y);
+            }
+        }
+
+        // Floor corners
+        DrawTileAt(7, 6, 2, 2);
+        DrawTileAt(9, 6, ROOM_WIDTH + 1, 2);
+        DrawTileAt(7, 8, 2, ROOM_HEIGHT + 1);
+        DrawTileAt(9, 8, ROOM_WIDTH + 1, ROOM_HEIGHT + 1);
+
+        // Floor edges
+        for (u32 x = 3; x < ROOM_WIDTH + 1; ++x)
+        {
+            DrawTileAt(8, 9, x, 2);
+            DrawTileAt(8, 10, x, ROOM_HEIGHT + 1);
+        }
+
+        for (u32 y = 3; y < ROOM_HEIGHT + 1; ++y)
+        {
+            DrawTileAt(2, 5, 2, y);
+            DrawTileAt(3, 5, ROOM_WIDTH + 1, y);
+        }
+
+        // Render Wall
 
         // Topleft
         DrawTileRegion(4, 0, 0, 0, 2, 2);
