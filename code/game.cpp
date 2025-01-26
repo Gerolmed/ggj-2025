@@ -430,8 +430,14 @@ i32 main()
                 continue;
             }
 
+
+            ShadowSize shadow_size;
+            if (projectile->radius < .9) shadow_size = ShadowSize_Smaller;
+            else if (projectile->radius < 1.5) shadow_size = ShadowSize_Small;
+            else if (projectile->radius < 1.8) shadow_size = ShadowSize_Medium;
+            else shadow_size = ShadowSize_Medium;
             RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0,
-                         projectile->radius, WHITE);
+                         projectile->radius, WHITE, shadow_size);
         }
         for (u32 i = 0; i < arrlen(level->spikes); i++)
         {
