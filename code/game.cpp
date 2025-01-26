@@ -133,7 +133,10 @@ i32 main()
     texture_ui_heart_temporary_full = LoadTexture("asset/ui/heart_temporary_full.png");
     texture_ui_heart_temporary_half = LoadTexture("asset/ui/heart_temporary_half.png");
 
-    Texture2D drop_shadow = LoadTexture("asset/dropshadow.png");
+    drop_shadow_tiny = LoadTexture("asset/dropshadow_tiny.png");
+    drop_shadow_small = LoadTexture("asset/dropshadow_small.png");
+    drop_shadow_medium = LoadTexture("asset/dropshadow_medium.png");
+    drop_shadow_large = LoadTexture("asset/dropshadow_large.png");
 
     ////////////////////////////////////////////
     // Load Models
@@ -408,7 +411,7 @@ i32 main()
                     continue;
                 }
 
-                DrawTexture(drop_shadow, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
+                DrawTexture(drop_shadow_medium, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
             }
 
             draw_collectables(level);

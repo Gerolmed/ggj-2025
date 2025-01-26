@@ -152,9 +152,8 @@ struct Collectable
 
     float collection_radius;
 
-    // float bobbing_speed;
-    // float bobbing_state;
-    // bool bobbing_ping_pong;
+    float bobbing_speed;
+    float bobbing_state;
 };
 
 
@@ -254,6 +253,10 @@ Texture texture_ui_heart_half;
 Texture texture_ui_heart_empty;
 Texture texture_ui_heart_temporary_full;
 Texture texture_ui_heart_temporary_half;
+Texture2D drop_shadow_tiny;
+Texture2D drop_shadow_small;
+Texture2D drop_shadow_medium;
+Texture2D drop_shadow_large;
 
 Texture2D tileset;
 
@@ -376,6 +379,10 @@ bool collide_with_room(Room* room, Vector2 new_pos, Vector2 old_pos, Vector2 *ou
     }
 
     return collided;
+}
+
+f32 easeInOutQuad(f32 x) {
+    return x < 0.5 ? 2 * x * x : 1 - powf(-2 * x + 2, 2) / 2;;
 }
 
 f32 fish_get_radius(Pufferfish* fish);
