@@ -68,6 +68,13 @@ void LoadMusic(){
     bubble_sound[1].looping = false;
     bubble_sound[2] = LoadMusicStream("asset/sounds/bubbles_3.wav");
     bubble_sound[2].looping = false;
+
+    cry = LoadMusicStream("asset/sounds/Jump_Dangerous_03.wav");
+
+    jump[0] = LoadMusicStream("asset/sounds/Jump_Friendly_03.wav");
+    jump[1] = LoadMusicStream("asset/sounds/Jump_Friendly_05.wav");
+    jump[2] = LoadMusicStream("asset/sounds/Jump_Friendly_07.wav");
+    step = LoadMusicStream("asset/sounds/Sand_Single_step_12.wav");
 }
 
 void LoadShaders()

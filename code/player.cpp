@@ -239,7 +239,7 @@ void execute_player_loop(Player* player, GameState* state)
         projectile.damage = player->charge_value*10;
         projectile.can_collide_with_player = false;
         projectile.velocity = direction * 10;
-        PlayMusicStream(bubble_sound[ (last_bubble_sound++ )%3 ]);
+        PlayMusicStream(bubble_sound[0]);
         arrput(room->projectiles, projectile);
 
         player->current_bubble = ++player->current_bubble % lengthof(player->bubbles);
