@@ -57,8 +57,10 @@ Music bubble_sound1;
 
 
 void LoadMusic(){
-    calm_music = LoadMusicStream("asset/sounds/op39no2.wav");
+    calm_music = LoadMusicStream("asset/sounds/calm_music.wav");
     calm_music.looping = true;
+    SetMusicVolume(calm_music,1.0f);
+    
     dark_music = LoadMusicStream("asset/sounds/Background_theme.wav");
     dark_music.looping = true;
     bubble_sound1 = LoadMusicStream("asset/sounds/bubbles_1.wav");
