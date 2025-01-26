@@ -159,6 +159,7 @@ struct Collectable
     ItemType type;
 
     float collection_radius;
+    float push_radius;
 
     float bobbing_speed;
     float bobbing_state;
