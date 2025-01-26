@@ -3,7 +3,8 @@ void configure_collectable(Collectable* collectable, ItemType type, Vector2 posi
     *collectable = {};
     collectable->type = type;
     collectable->position = position;
-    collectable->collection_radius = 0.5f;
+    collectable->collection_radius = 0.6f;
+    collectable->push_radius = 0.8f;
 
     collectable->bobbing_speed = 1;
 }
@@ -14,7 +15,7 @@ void update_collectables(Room* room, Player* player)
     {
         Collectable* collectable = room->collectables + i;
 
-        if (Vector2LengthSqr(player->position - collectable->position) > collectable->collection_radius)
+        if (Vector2LengthSqr(player->position - collectable->position) > collectable->collection_radius * collectable->collection_radius)
             continue;
         bool collected = false;
 
@@ -52,6 +53,28 @@ void update_collectables(Room* room, Player* player)
             i--;
             continue;
         }
+
+        if (Vector2LengthSqr(player->position - collectable->position) > collectable->push_radius * collectable->push_radius)
+            continue;
+
+        Vector2 player_dir = Vector2Normalize(player->last_delta_pos);
+        if (Vector2LengthSqr(player_dir) == 0) continue;
+
+        Vector2 collectable_dir = Vector2Normalize(collectable->position - player->position);
+
+        f32 influence;
+        f32 factor = 0.05f;
+        if (fabs(Vector2Angle(player_dir, collectable_dir)) > 90)
+        {
+            influence = 0;
+            factor = 0.02f;
+        }
+        else influence = Vector2DotProduct(player_dir, collectable_dir);
+
+        Vector2 old_pos = collectable->position;
+        collectable->position += Vector2Lerp(collectable_dir, player_dir, influence) * factor;
+
+        collide_with_room(room, collectable->position, old_pos, &collectable->position);
     }
 }
 

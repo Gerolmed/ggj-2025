@@ -35,7 +35,7 @@ void fish_death(Pufferfish* fish, GameState* state){
 
     
 
-    //configure_collectable(arraddnptr(room->collectables, 1), ItemType_Heart_Half, fish->position);
+    //configure_collectable(arraddnptr(room->collectables, 1), ItemType_Heart_Full, fish->position);
 
 }
 
