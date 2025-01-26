@@ -270,6 +270,8 @@ i32 main()
 
 
 
+
+
     Player* player = &state.player;
 
     RenderTexture entities_high = LoadRenderTexture(
