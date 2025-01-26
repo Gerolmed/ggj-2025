@@ -152,9 +152,6 @@ i32 main()
     Player* player = &state.player;
     configure_player(player);
 
-
-    RenderTexture room_low = LoadRenderTexture((ROOM_WIDTH + 4) * TILE_SIZE_LOW, (ROOM_HEIGHT + 4) * TILE_SIZE_LOW);
-
     RenderEntities render_entities = {};
     RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
     RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
