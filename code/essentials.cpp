@@ -149,6 +149,12 @@ struct Collectable
 {
     Vector2 position;
     ItemType type;
+
+    float collection_radius;
+
+    // float bobbing_speed;
+    // float bobbing_state;
+    // bool bobbing_ping_pong;
 };
 
 
@@ -311,7 +317,7 @@ void kill(Health* health)
 void heal(Health* health, const u32 amount)
 {
     health->dead = false;
-    health->health = fmax(health->health + amount, health->max_health);
+    health->health = fmin(health->health + amount, health->max_health);
 }
 
 void grant_temp_health(Health* health, u32 amount)
