@@ -5,12 +5,8 @@ f32 jelly_get_radius(Jellyfish* fish){
 void jelly_death(Jellyfish* fish, GameState* state){
     fish->health.dead = true;
 
-    Collectable heart;
-    heart.position = fish->position;
-    heart.type = ItemType_Heart_Full;
-
     Room* room = state->rooms + state->current_room;
-    arrput(room->collectables, heart);
+    configure_collectable(arraddnptr(room->collectables, 1), ItemType_Heart_Half, fish->position);
 }
 
 void orbit_around_player(Jellyfish* fish, GameState* state){

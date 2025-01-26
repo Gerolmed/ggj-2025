@@ -2,6 +2,17 @@
 
 void shark_death(Sharkfish* fish, GameState* state){
     fish->health.dead = true;
+
+    Vector2 item_offset[3];
+    item_offset[0] = Vector2(0,0.2);
+    item_offset[1] = Vector2(-0.3,-0.2);
+    item_offset[2] = Vector2(0.3,-0.2);
+
+    for(i32 i = 0 ; i < 3 ; i++){
+        
+        Room* room = state->rooms + state->current_room;
+        configure_collectable(arraddnptr(room->collectables, 1), ItemType_Heart_Temp_Full, Vector2Add(fish->position,item_offset[i]));
+    }
 }
 
 void pursue_player(Sharkfish* fish, GameState* state){
@@ -12,11 +23,7 @@ void pursue_player(Sharkfish* fish, GameState* state){
     if(fish->behavior_frame % 300 < 180){
         fish->rotation = -Vector2Angle(direction, {1,0});
         if(fish->health.health == 1) {
-            if(fish->upgraded){
-                fish->behavior_frame += 240;
-            }else{
-                fish->behavior_frame += 180;
-            }
+            fish->behavior_frame += 180;
         }
 
         if(fish->upgraded && fish->behavior_frame > 30){
@@ -72,7 +79,8 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
         if(intersects(&fish_collider, &spike_collider)){
             hit = true;
             fish->knockback_velocity = Vector2Scale(spike.direction,5);
-            fish->behavior_frame = 480;
+            fish->behavior_frame = 180;
+            if(fish->upgraded) fish->behavior_frame = 480;
             PlayMusicStream(cry);
             arrdel(spikes_array,i);
             i--;
