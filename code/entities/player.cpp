@@ -72,6 +72,30 @@ void update_charge_ball(Player* player)
     RenderEntity(Model_Bubble, position, 0, bubble_size(player), WHITE);
 }
 
+inline void RoomTransition(Player* player, i32 new_room_id, Direction direction) 
+{
+    if (direction == Direction_Right)
+    {
+        player->position.x = 0;
+    }
+
+    if (direction == Direction_Left)
+    {
+        player->position.x = ROOM_WIDTH + 4;
+    }
+
+    if (direction == Direction_Up)
+    {
+        player->position.y = ROOM_HEIGHT + 4;
+    }
+
+    if (direction == Direction_Down)
+    {
+        player->position.y = 0;
+    }
+
+    state.current_room = new_room_id;
+}
 
 void check_collisions(Player* player, GameState* state)
 {
@@ -137,19 +161,19 @@ void check_collisions(Player* player, GameState* state)
 
     if (room->entrances[Direction_Left].enabled && player->position.x < 0)
     {
-        transition_to_room(player, state->current_room, room->entrances[Direction_Left].target_room);
+        RoomTransition(player, room->entrances[Direction_Left].target_room, Direction_Left);
     }
     if (room->entrances[Direction_Right].enabled && player->position.x > ROOM_WIDTH + 4)
     {
-        transition_to_room(player, state->current_room, room->entrances[Direction_Right].target_room);
+        RoomTransition(player, room->entrances[Direction_Right].target_room, Direction_Right);
     }
     if (room->entrances[Direction_Up].enabled && player->position.y < 0)
     {
-        transition_to_room(player, state->current_room, room->entrances[Direction_Up].target_room);
+        RoomTransition(player, room->entrances[Direction_Up].target_room, Direction_Up);
     }
     if (room->entrances[Direction_Down].enabled && player->position.y > ROOM_HEIGHT + 4)
     {
-        transition_to_room(player, state->current_room, room->entrances[Direction_Down].target_room);
+        RoomTransition(player, room->entrances[Direction_Down].target_room, Direction_Down);
     }
 }
 

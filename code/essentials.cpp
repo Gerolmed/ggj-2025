@@ -355,4 +355,3 @@ bool collide_with_room(Room* room, Vector2 new_pos, Vector2 old_pos, Vector2 *ou
 }
 
 f32 fish_get_radius(Pufferfish* fish);
-void transition_to_room(Player* player, i32 old_room_id, i32 new_room_id);
