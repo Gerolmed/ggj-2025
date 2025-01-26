@@ -19,10 +19,20 @@ enum Tile
     Tile_Wall,
 };
 
+enum Direction
+{
+    Direction_Up,
+    Direction_Down,
+    Direction_Left,
+    Direction_Right,
+};
+
 struct TransitionTile
 {
     i32 pos_x;
     i32 pos_y;
+    // Direction dir;
+    // u32 offset;
     i32 new_room_id;
 };
 
@@ -201,7 +211,9 @@ struct GameState
 {
     RenderEntities render_entities;
 
-    Room room;
+    u32 room_count;
+    u32 current_room;
+    Room rooms[32];
 
     Player player;
 
@@ -216,4 +228,4 @@ GameState state = {};
 
 
 f32 fish_get_radius(Pufferfish* fish);
-Room transition_to_room(Player* player, i32 old_room_id, i32 new_room_id);
+void transition_to_room(Player* player, i32 old_room_id, i32 new_room_id);
