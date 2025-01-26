@@ -29,6 +29,13 @@ void fish_death(Pufferfish* fish, GameState* state){
         arrput(room->spikes, spike);
     }
 
+    
+    Collectable heart = {};
+    heart.position = fish->position;
+    heart.type = ItemType_Heart_Half;
+
+    arrput(room->collectables, heart);
+
 }
 
 void fish_pursue_player(Pufferfish* fish, GameState* state){
