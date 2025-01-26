@@ -1,5 +1,6 @@
-floor tiles
-room entry
-shading
-dropshadows
-fresnel bullets
+floor tiles         10          done
+reset game          10
+room entry          20
+shading             50
+dropshadows         20
+fresnel bullets     50
