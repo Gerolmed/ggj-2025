@@ -117,7 +117,7 @@ void draw_room(Room *level) {
     // Draw gradients
     if (level->entrances[Direction_Left].enabled)
     {
-        DrawTexturePro(gradient, {0, 0, 40, 1}, {4 * TILE_SIZE_LOW, 6 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
+        DrawTexturePro(gradient, {0, 0, 40, 1}, {2 * TILE_SIZE_LOW, 6 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
                        {0.5, 0.5}, 180, WHITE);
     }
 
