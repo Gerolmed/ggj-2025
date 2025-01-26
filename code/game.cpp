@@ -329,7 +329,6 @@ i32 main()
             RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
         }
 
-
         ////////////////////////////////////////////
         // Manage Audio data
         ////////////////////////////////////////////
