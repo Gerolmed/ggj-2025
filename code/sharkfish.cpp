@@ -80,4 +80,6 @@ void shark_update(Sharkfish* fish, GameState* state){
     if(fish->health.health <= 0){
         shark_death(fish, state);
     }
+
+    RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1);
 }

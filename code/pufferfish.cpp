@@ -103,4 +103,6 @@ void fish_update(Pufferfish* fish, GameState* state){
     if(fish->health.health <= 0){
         fish_death(fish, state);
     }
+
+    RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish));
 }

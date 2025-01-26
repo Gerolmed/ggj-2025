@@ -172,37 +172,31 @@ i32 main()
 
         Room *level = state.rooms + state.current_room;
 
-        // Call render entity here...
+        ////////////////////////////////////////////
+        // RUN ENTITY MAIN LOOPS. Only allows:
         // RenderEntity(Model_Fish, {2, 2}, 0);
-        // RenderEntity(Model_Fish, {3, 5}, 00);
+        // for rendering
+        ///////////////////////////////////////////
 
         execute_player_loop(player, &state);
 
         for (u32 i = 0; i < level->pufferfish_count; ++i)
         {
             Pufferfish* fish = &level->pufferfishs[i];
-            if(fish->health.dead) continue;
             fish_update(fish, &state);
 
-            RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish));
         }
 
         for (u32 i = 0; i < level->sharkfish_count; ++i)
         {
             Sharkfish* fish = &level->sharkfishs[i];
-            if(fish->health.dead) continue;
             shark_update(fish, &state);
-
-            RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1);
         }
 
         for (u32 i = 0; i < level->jellyfish_count; ++i)
         {
             Jellyfish* fish = &level->jellyfishs[i];
-            if(fish->health.dead) continue;
             jellyfish_update(fish, &state);
-
-            RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish));
         }
 
 
@@ -239,7 +233,11 @@ i32 main()
 
         }
 
-        // Entities toaaaaaa entity buffer
+        ////////////////////////////////////////////
+        // Begin high-res drawing operations
+        ////////////////////////////////////////////
+
+        // Entities to entity buffer
         BeginTextureMode(entities_high);
         ClearBackground({});
 
@@ -271,10 +269,14 @@ i32 main()
                        {0, 0, (f32)entities_low.texture.width, (f32)entities_low.texture.height}, {0, 0}, 0, WHITE);
         EndTextureMode();
 
+
+        ////////////////////////////////////////////
+        // Begin drawing world
+        ////////////////////////////////////////////
         // ROOM
-        BeginTextureMode(room_low);
-        // BeginMode2D(main_camera);
-        ClearBackground(WHITE);
+        BeginDrawing();
+        BeginMode2D(main_camera);
+        ClearBackground({69, 54, 34});
 
 
         //Render Wall
@@ -307,20 +309,6 @@ i32 main()
             last = (last + 1) % 2;
         }
 
-        // for (u32 x = 0; x < ROOM_WIDTH; ++x)
-        // {
-        //     for (u32 y = 0; y < ROOM_HEIGHT; ++y)
-        //     {
-        //         if (level->tiles[x + y * ROOM_WIDTH])
-        //         {
-        //             //DrawRectangle(x * TILE_SIZE_LOW, y * TILE_SIZE_LOW, TILE_SIZE_LOW, TILE_SIZE_LOW, RED);
-        //
-        //             DrawTextureRec(tileset, {0, 0, 20, 20}, {(f32)TILE_SIZE_LOW * x, (f32)TILE_SIZE_LOW * y},
-        //                            WHITE);
-        //         }
-        //     }
-        // }
-
         // Render Transition Tiles - This should be deleted eventually
         for(u32 i = 0 ; i < level->transition_tile_count; i++)
         {
@@ -337,13 +325,7 @@ i32 main()
                            {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
         }
 
-        // EndMode2D();
-        EndTextureMode();
-
-        BeginDrawing();
-        DrawTexturePro(room_low.texture,
-                       {0, 0, (f32)room_low.texture.width, (f32)-room_low.texture.height},
-                       {0, 0, (f32)GetRenderWidth(), (f32)GetRenderHeight()}, {0, 0}, 0, WHITE);
+        EndMode2D();
         
         draw_player_hud(player);
 

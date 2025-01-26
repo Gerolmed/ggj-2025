@@ -85,4 +85,6 @@ void jellyfish_update(Jellyfish* fish, GameState* state){
     if(fish->health.health <= 0){
         jelly_death(fish, state);
     }
+
+    RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish));
 }
