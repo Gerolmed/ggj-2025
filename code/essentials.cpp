@@ -158,6 +158,11 @@ struct Room
 
 };
 
+
+Music calm_music;
+Music dark_music;
+Music bubble_sound1;
+
 enum ModelType
 {
     Model_Toad,

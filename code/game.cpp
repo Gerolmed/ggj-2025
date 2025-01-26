@@ -51,9 +51,6 @@ inline void DrawTileRegion(u32 tile_x, u32 tile_y, u32 x, u32 y, u32 size_x, u32
     }
 }
 
-Music calm_music;
-Music dark_music;
-Music bubble_sound1;
 
 
 void LoadMusic(){
@@ -63,6 +60,8 @@ void LoadMusic(){
     
     dark_music = LoadMusicStream("asset/sounds/Background_theme.wav");
     dark_music.looping = true;
+    SetMusicVolume(calm_music,0.8f);
+
     bubble_sound1 = LoadMusicStream("asset/sounds/bubbles_1.wav");
 }
 
@@ -182,6 +181,9 @@ i32 main()
 
     PlayMusicStream(calm_music);
 
+    PlayMusicStream(dark_music);
+    PauseMusicStream(dark_music);
+
     while (!WindowShouldClose())
     {
 
@@ -209,10 +211,20 @@ i32 main()
 
         }
 
+        bool shark_alive = false;
         for (u32 i = 0; i < level->sharkfish_count; ++i)
         {
             Sharkfish* fish = &level->sharkfishs[i];
             shark_update(fish, &state);
+
+            if(!fish->health.dead) shark_alive = true;
+        }
+        if(shark_alive){
+            ResumeMusicStream(dark_music);  
+            PauseMusicStream(calm_music); 
+        }else{
+            PauseMusicStream(dark_music);  
+            ResumeMusicStream(calm_music); 
         }
 
         for (u32 i = 0; i < level->jellyfish_count; ++i)
