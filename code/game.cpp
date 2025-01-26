@@ -12,15 +12,15 @@
 #define lengthof(x) (sizeof(x) / sizeof(x[0]))
 
 #include "essentials.cpp"
-#include "renderer.cpp"
+#include "rendering/renderer.cpp"
 #include "collision.cpp"
 
-#include "player.cpp"
-#include "pufferfish.cpp"
-#include "sharkfish.cpp"
-#include "jellyfish.cpp"
+#include "entities/player.cpp"
+#include "entities/pufferfish.cpp"
+#include "entities/sharkfish.cpp"
+#include "entities/jellyfish.cpp"
 
-#include "room_renderer.cpp"
+#include "rendering/room_renderer.cpp"
 
 #include "loader.cpp"
 
