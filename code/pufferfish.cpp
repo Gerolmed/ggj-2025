@@ -1,11 +1,11 @@
 
 
 f32 fish_get_radius(Pufferfish* fish){
-    return ((f32)7/(7+fish->health));
+    return ((f32)7/(7+fish->health.health));
 }
 
 void fish_death(Pufferfish* fish, GameState* state){
-    fish->dead = true;
+    fish->health.dead = true;
 
     Room* room = state->rooms + state->current_room;
 
@@ -48,7 +48,7 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
         ProjectileBubble bubble = bubble_array[i];
         SphericalCollider bubble_collider = SphericalCollider(bubble.position, bubble.radius);
         if(intersects(&fish_collider, &bubble_collider)){
-            fish->health -= bubble.damage;
+            fish->health.health -= bubble.damage;
             arrdel(bubble_array,i);
             i--;
         }
@@ -60,7 +60,7 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
         ProjectileSpike spike = spikes_array[i];
         SphericalCollider spike_collider = SphericalCollider(spike.position, SPIKE_RADIUS);
         if(intersects(&fish_collider, &spike_collider)){
-            fish->health = 0;
+            fish->health.health = 0;
             arrdel(spikes_array,i);
             i--;
         }
@@ -75,7 +75,7 @@ void spawn_pufferfish(Vector2 position, GameState* state){
     bool dead_fish_found = false;
     for(i32 i = 0; i < room->pufferfish_count; i++)
     {
-        if(room->pufferfishs[i].dead){
+        if(room->pufferfishs[i].health.dead){
             new_fish = room->pufferfishs + i;
             dead_fish_found = true;
         }
@@ -87,19 +87,20 @@ void spawn_pufferfish(Vector2 position, GameState* state){
     }
 
     new_fish->position = position;
-    new_fish->health = 16;
-    new_fish->dead = false;
+    new_fish->health.health = 16;
+    new_fish->health.damage_indicator = 0;
+    new_fish->health.dead = false;
 }
 
 
 void fish_update(Pufferfish* fish, GameState* state){
-    if(fish->dead){
+    if(fish->health.dead){
         return;
     }
 
     fish_pursue_player(fish, state);
     fish_check_collision(fish, state);
-    if(fish->health <= 0){
+    if(fish->health.health <= 0){
         fish_death(fish, state);
     }
 }

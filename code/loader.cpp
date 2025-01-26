@@ -30,20 +30,23 @@ Room load_room(i32 room_id){
             else if(curr[0] == 255 && curr[1] == 0 & curr[2] == 0){
                 Pufferfish* pufferfish = &room.pufferfishs[room.pufferfish_count];
                 pufferfish->position = Vector2(x, y);
-                pufferfish->health = 16;
+                pufferfish->health.health = 16;
+                pufferfish->health.damage_indicator = 0;
                 room.pufferfish_count++;
             }
             else if(curr[0] == 100 && curr[1] == 100 && curr[2] == 100){
                 Sharkfish* sharkfish = &room.sharkfishs[room.sharkfish_count];
                 sharkfish->position = Vector2(x,y);
-                sharkfish->health = 3;
+                sharkfish->health.health = 3;
+                sharkfish->health.damage_indicator = 0;
                 sharkfish->behavior_frame = 360 * room.sharkfish_count;
                 room.sharkfish_count++;
             }
             else if(curr[0] == 0 && curr[1] == 255 && curr[2] == 255){
                 Jellyfish* jellyfish = &room.jellyfishs[room.jellyfish_count];
                 jellyfish->position = Vector2(x,y);
-                jellyfish->health = 25;
+                jellyfish->health.health = 25;
+                jellyfish->health.damage_indicator = 0;
                 jellyfish->behavior_frame = 60*room.jellyfish_count;
                 room.jellyfish_count++;
             }

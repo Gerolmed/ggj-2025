@@ -111,7 +111,7 @@ void check_collisions(Player* player, GameState* state){
     //Pufferfish Collisions
     for(i32 i = 0 ; i < room->pufferfish_count; i++){
         Pufferfish* fish = room->pufferfishs + i;
-        if(fish->dead) continue;
+        if(fish->health.dead) continue;
         SphericalCollider fish_collider = {fish->position, fish_get_radius(fish)};
 
         if(intersects(&player_collider, &fish_collider))
@@ -126,7 +126,7 @@ void check_collisions(Player* player, GameState* state){
      //Sharkfish Collisions
     for(i32 i = 0 ; i < room->sharkfish_count; i++){
         Sharkfish* fish = room->sharkfishs + i;
-        if(fish->dead) continue;
+        if(fish->health.dead) continue;
         SphericalCollider fish_collider = {fish->position, 1};
 
         if(intersects(&player_collider, &fish_collider))

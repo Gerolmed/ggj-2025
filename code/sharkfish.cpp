@@ -1,7 +1,7 @@
 
 
 void shark_death(Sharkfish* fish, GameState* state){
-    fish->dead = true;
+    fish->health.dead = true;
 }
 
 void pursue_player(Sharkfish* fish, GameState* state){
@@ -57,11 +57,11 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
             i--;
         }
     }
-    if(hit) fish->health -= 1;
+    if(hit) fish->health.health -= 1;
 }
 
 void shark_update(Sharkfish* fish, GameState* state){
-    if(fish->dead) return;
+    if(fish->health.dead) return;
 
       //Process knockback velocity
     if(fish->knockback_velocity.x != 0 || fish->knockback_velocity.y != 0)
@@ -77,7 +77,7 @@ void shark_update(Sharkfish* fish, GameState* state){
 
     pursue_player(fish,state);
     shark_check_collision(fish,state);
-    if(fish->health <= 0){
+    if(fish->health.health <= 0){
         shark_death(fish, state);
     }
 }
