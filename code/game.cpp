@@ -100,6 +100,17 @@ void LoadShaders()
     }
 }
 
+void LoadGame()
+{
+    state = {};
+    configure_player(&state.player);
+
+    for (u32 i = 0; i <= 6; ++i)
+    {
+        assert(state.room_count < lengthof(state.rooms));
+        state.rooms[state.room_count++] = load_room(i);
+    }
+}
 
 ////////////////////////////////////////////
 // START EXECUTING PROGRAMM
@@ -182,9 +193,7 @@ i32 main()
     }
 
     Player* player = &state.player;
-    configure_player(player);
 
-    RenderEntities render_entities = {};
     RenderTexture entities_high = LoadRenderTexture(
         RENDER_HIGH_CELL_SIZE * RENDER_ATLAS_SIZE, RENDER_HIGH_CELL_SIZE * RENDER_ATLAS_SIZE);
     RenderTexture entities_low = LoadRenderTexture(RENDER_LOW_CELL_SIZE * RENDER_ATLAS_SIZE,
@@ -192,11 +201,7 @@ i32 main()
 
     tileset = LoadTexture("asset/tileset.png");
 
-    for (u32 i = 0; i <= 6; ++i)
-    {
-        assert(state.room_count < lengthof(state.rooms));
-        state.rooms[state.room_count++] = load_room(i);
-    }
+    LoadGame();
 
     ////////////////////////////////////////////
     // Configure camera setups
@@ -223,6 +228,11 @@ i32 main()
 
     while (!WindowShouldClose())
     {
+        if (IsKeyPressed(KEY_R))
+        {
+            LoadGame();
+        }
+
         Room* level = state.rooms + state.current_room;
         bool shark_alive = false;
         state.render_entities = {};
