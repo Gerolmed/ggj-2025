@@ -26,7 +26,8 @@ void orbit_around_player(Jellyfish* fish, GameState* state){
         ProjectileBubble projectile;
         projectile.position = fish->position;
         projectile.radius = 2*jelly_get_radius(fish);
-        projectile.damage = (25-fish->health.health)/5;
+        projectile.damage = 2;
+        if(fish->health.health < 5) projectile.damage = 4;
         projectile.can_collide_with_player = true;
         projectile.velocity = direction * 10;
         StopMusicStream(jump[0]);
