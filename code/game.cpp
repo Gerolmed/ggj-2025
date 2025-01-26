@@ -17,8 +17,8 @@
 
 #include "entities/player.cpp"
 #include "entities/pufferfish.cpp"
-#include "entities/sharkfish.cpp"
 #include "entities/jellyfish.cpp"
+#include "entities/sharkfish.cpp"
 
 #include "rendering/room_renderer.cpp"
 
@@ -192,7 +192,7 @@ i32 main()
 
     tileset = LoadTexture("asset/tileset.png");
 
-    for (u32 i = 0; i <= 4; ++i)
+    for (u32 i = 0; i <= 6; ++i)
     {
         assert(state.room_count < lengthof(state.rooms));
         state.rooms[state.room_count++] = load_room(i);

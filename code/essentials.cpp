@@ -106,6 +106,8 @@ struct Sharkfish
 
     i32 behavior_frame;
     Vector2 dash_direction;
+
+    bool upgraded;
 };
 
 struct Jellyfish

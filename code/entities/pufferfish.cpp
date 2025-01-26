@@ -69,6 +69,18 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
     }
 }
 
+Pufferfish* get_living_pufferfish(GameState* state){
+    Room* room = state->rooms + state->current_room;
+    for(i32 i = 0; i < room->pufferfish_count; i++)
+    {
+        if(!room->pufferfishs[i].health.dead){
+            return room->pufferfishs + i;
+        }
+    }
+
+    return NULL;
+}
+
 void spawn_pufferfish(Vector2 position, GameState* state){
     Pufferfish* new_fish;
     

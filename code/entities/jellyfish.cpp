@@ -77,6 +77,32 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
     }
 }
 
+void spawn_jellyfish(Vector2 position, GameState* state){
+    Jellyfish* new_fish;
+    
+    Room* room = state->rooms + state->current_room;
+
+    bool dead_fish_found = false;
+    for(i32 i = 0; i < room->jellyfish_count; i++)
+    {
+        if(room->jellyfishs[i].health.dead){
+            new_fish = room->jellyfishs + i;
+            dead_fish_found = true;
+        }
+    }
+    if(!dead_fish_found)
+    {
+        new_fish = room->jellyfishs + room->jellyfish_count;
+        room->jellyfish_count++;
+    }
+
+    new_fish->position = position;
+    new_fish->health.health = 16;
+    new_fish->health.damage_indicator = 0;
+    new_fish->health.dead = false;
+}
+
+
 
 void jellyfish_update(Jellyfish* fish, GameState* state){
     if(fish->health.dead) return;

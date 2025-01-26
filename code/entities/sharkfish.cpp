@@ -10,9 +10,24 @@ void pursue_player(Sharkfish* fish, GameState* state){
     Vector2 direction = Vector2Normalize(Vector2Subtract(player->position, fish->position));
 
     if(fish->behavior_frame % 300 < 180){
-        if(fish->health.health == 1) fish->behavior_frame += 180;
-        fish->position = Vector2Add(fish->position, Vector2Scale(direction, GetFrameTime()));
         fish->rotation = -Vector2Angle(direction, {1,0});
+        if(fish->health.health == 1) {
+            if(fish->upgraded){
+                fish->behavior_frame += 240;
+            }else{
+                fish->behavior_frame += 180;
+            }
+        }
+
+        if(fish->upgraded && fish->behavior_frame > 30){
+            Pufferfish* pufferfish = get_living_pufferfish(state);
+            if(pufferfish){
+                Vector2 midpoint = Vector2Scale(Vector2Add(player->position, pufferfish->position) ,0.5f);
+                direction = Vector2Scale(Vector2Normalize(Vector2Subtract(midpoint, fish->position)),2);
+            }
+        }
+        fish->position = Vector2Add(fish->position, Vector2Scale(direction, GetFrameTime()));
+
     }else if (fish->behavior_frame % 300 < 240){
         fish->rotation = -Vector2Angle(direction, {1,0});
         fish->dash_direction = direction;
@@ -22,6 +37,9 @@ void pursue_player(Sharkfish* fish, GameState* state){
 
     if(fish->behavior_frame == 240){
         spawn_pufferfish(fish->position, state);
+    }
+    if(fish->upgraded && fish->behavior_frame == 540){
+        spawn_jellyfish(fish->position, state);
     }
 }
 
