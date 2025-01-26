@@ -24,17 +24,14 @@
 
 #include "loader.cpp"
 
-enum SceneMode
-{
-    SCENE_MODE_TEST_DEFAULT,
-    SCENE_MODE_TEST_PLAYER,
-};
 
 Model models[Model_Count];
 Shader skinned_shader;
 Shader default_shader;
 
-
+////////////////////////////////////////////
+// Load Music
+////////////////////////////////////////////
 void LoadMusic(){
     calm_music = LoadMusicStream("asset/sounds/calm_music.wav");
     calm_music.looping = true;
@@ -59,6 +56,9 @@ void LoadMusic(){
     step = LoadMusicStream("asset/sounds/Sand_Single_step_12.wav");
 }
 
+////////////////////////////////////////////
+// Load Shaders
+////////////////////////////////////////////
 void LoadShaders()
 {
     skinned_shader = LoadShader("asset/skinned.vert", "asset/default.frag");
@@ -80,18 +80,31 @@ void LoadShaders()
     }
 }
 
+
+////////////////////////////////////////////
+// START EXECUTING PROGRAMM
+////////////////////////////////////////////
 i32 main()
 {
+    // Configure device and window
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(1600, 900, "Divegame"); 
     InitAudioDevice(); 
     SetTargetFPS(60);
 
+    ////////////////////////////////////////////
+    // Load Textures
+    ////////////////////////////////////////////
     texture_ui_heart_full = LoadTexture("asset/ui/heart_full.png");
     texture_ui_heart_half = LoadTexture("asset/ui/heart_half.png");
     texture_ui_heart_empty = LoadTexture("asset/ui/heart_empty.png");
     texture_ui_heart_temporary_full = LoadTexture("asset/ui/heart_temporary_full.png");
     texture_ui_heart_temporary_half = LoadTexture("asset/ui/heart_temporary_half.png");
+
+
+    ////////////////////////////////////////////
+    // Load Models
+    ////////////////////////////////////////////
 
     // model.transform = model.transform * MatrixTranslate(0,1,1) * MatrixScale(1.0f, 1.0f, 1.0f);
     models[Model_Toad] = LoadModel("asset/3d/toad/Toad.glb");
@@ -113,6 +126,9 @@ i32 main()
     LoadShaders();
     LoadMusic();
 
+    ////////////////////////////////////////////
+    // Prepare player animations
+    ////////////////////////////////////////////
     {
         i32 anim_count;
         ModelAnimation* animation_list = LoadModelAnimations("asset/3d/toad/Toad.glb", &anim_count);
@@ -159,7 +175,9 @@ i32 main()
         state.rooms[state.room_count++] = load_room(i);
     }
 
-    SceneMode sceneMode = SCENE_MODE_TEST_DEFAULT;
+    ////////////////////////////////////////////
+    // Configure camera setups
+    ////////////////////////////////////////////
 
     Camera model_camera = {0};
     model_camera.up = {0.0f, -1.0f, 0.0f};
@@ -173,155 +191,171 @@ i32 main()
     main_camera.rotation = 0;
     main_camera.target = {0, 0};
 
+    ////////////////////////////////////////////
+    // Prepare Audio
+    ////////////////////////////////////////////
     PlayMusicStream(calm_music);
-
     PlayMusicStream(dark_music);
     PauseMusicStream(dark_music);
 
     while (!WindowShouldClose())
     {
-
-        UpdateMusicStream(calm_music); 
-        UpdateMusicStream(dark_music);
-        for(i32 i = 0 ; i < 3 ; i++){
-            UpdateMusicStream(bubble_sound[i]); 
-        } 
-
+        Room *level = state.rooms + state.current_room;
+        bool shark_alive = false;
         state.render_entities = {};
+
+        // Configure camera zoom
         main_camera.zoom = GetRenderWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
 
-        Room *level = state.rooms + state.current_room;
 
         ///////////////////////////////////////////
         // RUN ENTITY MAIN LOOPS. Only allows:
         // RenderEntity(Model_Fish, {2, 2}, 0);
         // for rendering
         ///////////////////////////////////////////
-
-        execute_player_loop(player, &state);
-
-        for (u32 i = 0; i < level->pufferfish_count; ++i)
         {
-            Pufferfish* fish = &level->pufferfishs[i];
-            fish_update(fish, &state);
-
-        }
-
-        bool shark_alive = false;
-        for (u32 i = 0; i < level->sharkfish_count; ++i)
-        {
-            Sharkfish* fish = &level->sharkfishs[i];
-            shark_update(fish, &state);
-
-            if(!fish->health.dead) shark_alive = true;
-        }
-        if(shark_alive){
-            ResumeMusicStream(dark_music);  
-            PauseMusicStream(calm_music); 
-        }else{
-            PauseMusicStream(dark_music);  
-            ResumeMusicStream(calm_music); 
-        }
-
-        for (u32 i = 0; i < level->jellyfish_count; ++i)
-        {
-            Jellyfish* fish = &level->jellyfishs[i];
-            jellyfish_update(fish, &state);
-        }
-
-
-
-        for (u32 i = 0; i < arrlen(level->projectiles); i++)
-        {
-            ProjectileBubble* projectile = &level->projectiles[i];
-            projectile->position.x += GetFrameTime() * projectile->velocity.x;
-            projectile->position.y += GetFrameTime() * projectile->velocity.y;
-
-            if(abs_squared(projectile->position) > 10000)
             {
-                arrdel(level->projectiles, i);
-                i--;
+                execute_player_loop(player, &state);
+
+                for (u32 i = 0; i < level->pufferfish_count; ++i)
+                {
+                    Pufferfish* fish = &level->pufferfishs[i];
+                    fish_update(fish, &state);
+
+                }
+
+                for (u32 i = 0; i < level->sharkfish_count; ++i)
+                {
+                    Sharkfish* fish = &level->sharkfishs[i];
+                    shark_update(fish, &state);
+
+                    if(!fish->health.dead) shark_alive = true;
+                }
+
+                for (u32 i = 0; i < level->jellyfish_count; ++i)
+                {
+                    Jellyfish* fish = &level->jellyfishs[i];
+                    jellyfish_update(fish, &state);
+                }
             }
 
-            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius, WHITE);
-            
-        }
-        for(u32 i = 0; i < arrlen(level->spikes); i++)
-        {
-            i32 SPIKE_SPEED = 10;
-            ProjectileSpike* spike = &level->spikes[i];
-            spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
-            spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
 
-            if(abs_squared(spike->position) > 10000)
+            ///////////////////////////////////////////
+            // Manage Projectiles
+            ///////////////////////////////////////////
+            for (u32 i = 0; i < arrlen(level->projectiles); i++)
             {
-                arrdel(level->spikes, i);
-                i--;
+                ProjectileBubble* projectile = &level->projectiles[i];
+                projectile->position.x += GetFrameTime() * projectile->velocity.x;
+                projectile->position.y += GetFrameTime() * projectile->velocity.y;
+
+                if(abs_squared(projectile->position) > 10000)
+                {
+                    arrdel(level->projectiles, i);
+                    i--;
+                }
+
+                RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius, WHITE);
+
+            }
+            for(u32 i = 0; i < arrlen(level->spikes); i++)
+            {
+                i32 SPIKE_SPEED = 10;
+                ProjectileSpike* spike = &level->spikes[i];
+                spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
+                spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
+
+                if(abs_squared(spike->position) > 10000)
+                {
+                    arrdel(level->spikes, i);
+                    i--;
+                }
+
+                RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
+
+            }
+        }
+
+        ////////////////////////////////////////////
+        // Manage Audio data
+        ////////////////////////////////////////////
+        {
+            UpdateMusicStream(calm_music);
+            UpdateMusicStream(dark_music);
+            for(i32 i = 0 ; i < 3 ; i++){
+                UpdateMusicStream(bubble_sound[i]);
             }
 
-            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
-
+            if(shark_alive){
+                ResumeMusicStream(dark_music);
+                PauseMusicStream(calm_music);
+            }else{
+                PauseMusicStream(dark_music);
+                ResumeMusicStream(calm_music);
+            }
         }
 
         ////////////////////////////////////////////
         // Begin high-res drawing operations
         ////////////////////////////////////////////
-
-        // Entities to entity buffer
-        BeginTextureMode(entities_high);
-        ClearBackground({});
-
-        BeginMode3D(model_camera);
-
-        for (u32 i = 0; i < state.render_entities.count; ++i)
         {
-            EntityDraw* draw = state.render_entities.entities + i;
+            // Entities to entity buffer
+            BeginTextureMode(entities_high);
+            ClearBackground({});
 
-            rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
+            BeginMode3D(model_camera);
 
-            if (draw->animation)
+            for (u32 i = 0; i < state.render_entities.count; ++i)
             {
-                UpdateModelAnimationBones(models[draw->model], *draw->animation, draw->frame);
+                EntityDraw* draw = state.render_entities.entities + i;
+
+                rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
+
+                if (draw->animation)
+                {
+                    UpdateModelAnimationBones(models[draw->model], *draw->animation, draw->frame);
+                }
+
+                DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, draw->color);
+                // DrawCube({0,0}, 1, 1, 1, WHITE);
             }
 
-            DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, draw->color);
-            // DrawCube({0,0}, 1, 1, 1, WHITE);
+            EndMode3D();
+            EndTextureMode();
+
+
+            BeginTextureMode(entities_low);
+            ClearBackground({});
+            DrawTexturePro(entities_high.texture,
+                           {0, 0, (f32)entities_high.texture.width, (f32)-entities_high.texture.height},
+                           {0, 0, (f32)entities_low.texture.width, (f32)entities_low.texture.height}, {0, 0}, 0, WHITE);
+            EndTextureMode();
         }
-
-        EndMode3D();
-        EndTextureMode();
-
-
-        BeginTextureMode(entities_low);
-        ClearBackground({});
-        DrawTexturePro(entities_high.texture,
-                       {0, 0, (f32)entities_high.texture.width, (f32)-entities_high.texture.height},
-                       {0, 0, (f32)entities_low.texture.width, (f32)entities_low.texture.height}, {0, 0}, 0, WHITE);
-        EndTextureMode();
 
 
         ////////////////////////////////////////////
         // Begin drawing world
         ////////////////////////////////////////////
-        // ROOM
-        BeginDrawing();
-        BeginMode2D(main_camera);
-        ClearBackground({69, 54, 34});
-
-        draw_room(level);
-
-        // Render entities into room
-        for (u32 i = 0; i < state.render_entities.count; ++i)
         {
-            EntityDraw* draw = state.render_entities.entities + i;
-            DrawTextureRec(entities_low.texture, {(f32)draw->atlas_x * 32, (f32)draw->atlas_y * 32, 32, 32},
-                           {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
+            BeginDrawing();
+            BeginMode2D(main_camera);
+            ClearBackground({69, 54, 34});
+
+            draw_room(level);
+
+            // Render entities into room
+            for (u32 i = 0; i < state.render_entities.count; ++i)
+            {
+                EntityDraw* draw = state.render_entities.entities + i;
+                DrawTextureRec(entities_low.texture, {(f32)draw->atlas_x * 32, (f32)draw->atlas_y * 32, 32, 32},
+                               {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
+            }
+
+            EndMode2D();
+
+            draw_player_hud(player);
+
+            EndDrawing();
         }
-
-        EndMode2D();
-        
-        draw_player_hud(player);
-
-        EndDrawing();
     }
 }
