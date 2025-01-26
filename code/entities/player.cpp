@@ -132,6 +132,7 @@ void check_collisions(Player* player, GameState* state)
 
         if (intersects(&player_collider, &bubble_collider))
         {
+            damage(&player->health, bubble.damage);
             arrdel(room->projectiles, i);
             i--;
         }

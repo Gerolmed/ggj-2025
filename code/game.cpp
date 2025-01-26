@@ -228,7 +228,7 @@ i32 main()
 
     while (!WindowShouldClose())
     {
-        if (IsKeyPressed(KEY_R))
+        if (IsKeyPressed(KEY_R) || state.player.health.dead)
         {
             LoadGame();
         }
