@@ -270,6 +270,8 @@ Texture2D drop_shadow_small;
 Texture2D drop_shadow_medium;
 Texture2D drop_shadow_large;
 
+Texture2D gradient;
+
 Texture2D tileset;
 
 Music calm_music;

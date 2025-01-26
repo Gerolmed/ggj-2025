@@ -26,10 +26,10 @@ void draw_room(Room *level) {
         }
     }
 
-    // level->entrances[Direction_Left].enabled = true;
-    // level->entrances[Direction_Right].enabled = true;
-    // level->entrances[Direction_Up].enabled = true;
-    // level->entrances[Direction_Down].enabled = true;
+    level->entrances[Direction_Left].enabled = true;
+    level->entrances[Direction_Right].enabled = true;
+    level->entrances[Direction_Up].enabled = true;
+    level->entrances[Direction_Down].enabled = true;
 
     // Floor corners
     DrawTileAt(7, 6, 2, 2);
@@ -112,6 +112,13 @@ void draw_room(Room *level) {
         // DrawTileAt(5, 6, x, y);
         // DrawTileAt(5, 6, x + 1, y);
         // DrawTileAt(5, 6, x + 1, y + 1);
+    }
+
+    // Draw gradients
+    if (level->entrances[Direction_Left].enabled)
+    {
+        DrawTexturePro(gradient, {0, 0, 40, 1}, {4 * TILE_SIZE_LOW, 6 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
+                       {0.5, 0.5}, 180, WHITE);
     }
 
     // Render Wall

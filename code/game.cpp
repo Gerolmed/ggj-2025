@@ -147,6 +147,25 @@ i32 main()
     drop_shadow_medium = LoadTexture("asset/dropshadow_medium.png");
     drop_shadow_large = LoadTexture("asset/dropshadow_large.png");
 
+    u8 buffer[40 * 4];
+    u8 *write = buffer;
+    for (u32 x = 0; x < 40; ++x)
+    {
+        write[0] = 0;
+        write[1] = 0;
+        write[2] = 0;
+        write[3] = 255 * ((f32) x / 40.0);
+        write += 4;
+    }
+
+    Image gradient_image = {};
+    gradient_image.data = buffer;
+    gradient_image.width = 40;
+    gradient_image.height = 1;
+    gradient_image.mipmaps = 1;
+    gradient_image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+    gradient = LoadTextureFromImage(gradient_image);
+
     ////////////////////////////////////////////
     // Load Models
     ////////////////////////////////////////////
