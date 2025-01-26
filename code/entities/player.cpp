@@ -89,6 +89,7 @@ void check_collisions(Player* player, GameState* state)
         if (intersects(&player_collider, &fish_collider))
         {
             damage(&player->health, 1);
+            player->knockback_velocity = Vector2Scale(Vector2Normalize(Vector2Subtract(player->position, fish->position)),2);
         }
     }
 
@@ -102,6 +103,7 @@ void check_collisions(Player* player, GameState* state)
         if (intersects(&player_collider, &fish_collider))
         {
             damage(&player->health, 3);
+            player->knockback_velocity = Vector2Scale(Vector2Normalize(Vector2Subtract(player->position, fish->position)),10);
         }
     }
 

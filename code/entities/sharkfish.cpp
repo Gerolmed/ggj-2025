@@ -58,6 +58,7 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
             if(!bubble->can_collide_with_player){
                 bubble->velocity = Vector2Scale(bubble->velocity,-1);
                 bubble->can_collide_with_player = true;
+                bubble->damage = 1;
             }
         }
     }
