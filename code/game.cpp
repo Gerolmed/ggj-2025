@@ -70,11 +70,29 @@ void LoadMusic(){
     bubble_sound[2].looping = false;
 
     cry = LoadMusicStream("asset/sounds/Jump_Dangerous_03.wav");
+    cry.looping = false;
 
     jump[0] = LoadMusicStream("asset/sounds/Jump_Friendly_03.wav");
+    jump[0].looping = false;
     jump[1] = LoadMusicStream("asset/sounds/Jump_Friendly_05.wav");
+    jump[1].looping = false;
     jump[2] = LoadMusicStream("asset/sounds/Jump_Friendly_07.wav");
+    jump[2].looping = false;
     step = LoadMusicStream("asset/sounds/Sand_Single_step_12.wav");
+    step.looping = false;
+}
+
+void UpdateAllMusicStreams(){
+    UpdateMusicStream(calm_music);
+    UpdateMusicStream(dark_music);
+    UpdateMusicStream(bubble_sound[0]);
+    UpdateMusicStream(bubble_sound[1]);
+    UpdateMusicStream(bubble_sound[2]);
+    UpdateMusicStream(jump[0]);
+    UpdateMusicStream(jump[1]);
+    UpdateMusicStream(jump[2]);
+    UpdateMusicStream(cry);
+    UpdateMusicStream(step);
 }
 
 void LoadShaders()
@@ -198,12 +216,7 @@ i32 main()
 
     while (!WindowShouldClose())
     {
-
-        UpdateMusicStream(calm_music); 
-        UpdateMusicStream(dark_music);
-        for(i32 i = 0 ; i < 3 ; i++){
-            UpdateMusicStream(bubble_sound[i]); 
-        } 
+        UpdateAllMusicStreams();
 
         state.render_entities = {};
         main_camera.zoom = GetRenderWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);

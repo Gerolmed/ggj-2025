@@ -258,7 +258,7 @@ void damage(Health *health, u32 amount)
         }
     }
 
-    if (amount > health->health)
+    if (amount >= health->health)
     {
         health->health = 0;
         health->dead = true;
