@@ -188,7 +188,7 @@ void execute_player_loop(Player* player, GameState* state)
         if (!player->charging)
         {
             player->frame = 0;
-            try_change_player_anim(player, PlayerAnim_Charge);
+            player->animation = PlayerAnim_Charge;
         }
         player->charging = true;
         player->charge_value += GetFrameTime();
