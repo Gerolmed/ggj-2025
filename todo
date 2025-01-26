@@ -1,6 +1,8 @@
 floor tiles         10          done
 reset game          10          done
-room entry          20
-shading             50
+room entry          20          done
 dropshadows         20
+shading             50
 fresnel bullets     50
+
+gradient

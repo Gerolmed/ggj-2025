@@ -132,6 +132,7 @@ i32 main()
     texture_ui_heart_temporary_full = LoadTexture("asset/ui/heart_temporary_full.png");
     texture_ui_heart_temporary_half = LoadTexture("asset/ui/heart_temporary_half.png");
 
+    Texture2D drop_shadow = LoadTexture("asset/dropshadow.png");
 
     ////////////////////////////////////////////
     // Load Models
@@ -394,6 +395,19 @@ i32 main()
             ClearBackground({69, 54, 34});
 
             draw_room(level);
+
+            // Render drop shadows
+            for (u32 i = 0; i < state.render_entities.count; ++i)
+            {
+                EntityDraw *draw = state.render_entities.entities + i;
+
+                if (draw->model == Model_Spike)
+                {
+                    continue;
+                }
+
+                DrawTexture(drop_shadow, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
+            }
 
             // Render entities into room
             for (u32 i = 0; i < state.render_entities.count; ++i)
