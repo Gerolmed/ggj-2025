@@ -12,6 +12,8 @@ typedef float f32;
 #define TILE_SIZE_HIGH 80
 #define TILE_SIZE_LOW 20
 #define RENDER_ATLAS_SIZE 8
+#define RENDER_HIGH_CELL_SIZE 256.0f
+#define RENDER_LOW_CELL_SIZE (RENDER_HIGH_CELL_SIZE / 4.0f)
 
 enum Tile
 {
