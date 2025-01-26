@@ -16,8 +16,6 @@ inline void DrawTileRegion(u32 tile_x, u32 tile_y, u32 x, u32 y, u32 size_x, u32
     }
 }
 
-
-
 void draw_room(Room *level) {
     // Render floor
     for (u32 x = 3; x < ROOM_WIDTH + 1; ++x)
@@ -68,8 +66,53 @@ void draw_room(Room *level) {
 
     if (level->entrances[Direction_Up].enabled)
     {
+        DrawTileAt(5, 11, 9, 2);
+        DrawTileAt(5, 10, 10, 2);
+
+        DrawTileAt(2, 5, 9, 1);
+        DrawTileAt(3, 5, 10, 1);
+        DrawTileAt(2, 5, 9, 0);
+        DrawTileAt(3, 5, 10, 0);
+    }
+
+    if (level->entrances[Direction_Down].enabled)
+    {
+        DrawTileAt(2, 10, 9, ROOM_HEIGHT + 1);
+        DrawTileAt(3, 10, 10, ROOM_HEIGHT + 1);
+
+        DrawTileAt(2, 5, 9, ROOM_HEIGHT + 2);
+        DrawTileAt(3, 5, 10, ROOM_HEIGHT + 2);
+        DrawTileAt(2, 5, 9, ROOM_HEIGHT + 3);
+        DrawTileAt(3, 5, 10, ROOM_HEIGHT + 3);
     }
     
+    // Draw floor pattern
+    {
+        u32 x = 8;
+        u32 y = 3;
+
+        DrawTileAt(5 + 1, 6, x, y);
+        DrawTileAt(5, 6, x + 1, y);
+        DrawTileAt(5, 6 + 2, x + 2, y);
+        DrawTileAt(5, 6, x + 3, y);
+
+        DrawTileAt(5 + 1, 6, x + 2, y + 1);
+        DrawTileAt(5, 6, x + 3, y + 1);
+
+        DrawTileAt(5 + 1, 6 + 2, x + 1, y + 2);
+        DrawTileAt(5, 6, x + 2, y + 2);
+
+        DrawTileAt(5 + 1, 6 + 3, x + 1, y + 3);
+        DrawTileAt(5, 6, x + 2, y + 3);
+
+        DrawTileAt(5, 6, x + 1, y + 4);
+        DrawTileAt(5 + 1, 6 + 1, x + 2, y + 4);
+
+        // x = 13;
+        // DrawTileAt(5, 6, x, y);
+        // DrawTileAt(5, 6, x + 1, y);
+        // DrawTileAt(5, 6, x + 1, y + 1);
+    }
 
     // Render Wall
 
