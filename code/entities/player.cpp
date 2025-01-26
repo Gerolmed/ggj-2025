@@ -69,7 +69,13 @@ void update_charge_ball(Player* player)
 
     Vector2 position = get_current_bubble_position(player);
 
-    RenderEntity(Model_Bubble, position, 0, bubble_size(player), WHITE);
+    ShadowSize shadow_size;
+    if (bubble_size(player) < .9) shadow_size = ShadowSize_Smaller;
+    else if (bubble_size(player) < 1.5) shadow_size = ShadowSize_Small;
+    else if (bubble_size(player) < 1.8) shadow_size = ShadowSize_Medium;
+    else shadow_size = ShadowSize_Medium;
+
+    RenderEntity(Model_Bubble, position, 0, bubble_size(player), WHITE, shadow_size);
 }
 
 inline void RoomTransition(Player* player, i32 new_room_id, Direction direction) 
