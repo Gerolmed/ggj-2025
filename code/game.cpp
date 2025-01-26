@@ -31,6 +31,7 @@ Model models[Model_Count];
 Shader skinned_shader;
 Shader default_shader;
 
+
 Texture2D tileset;
 
 inline void DrawTileAt(u32 tile_x, u32 tile_y, u32 x, u32 y)
@@ -48,6 +49,25 @@ inline void DrawTileRegion(u32 tile_x, u32 tile_y, u32 x, u32 y, u32 size_x, u32
             DrawTileAt(tile_x + dx, tile_y + dy, x + dx, y + dy);
         }
     }
+}
+
+
+
+void LoadMusic(){
+    calm_music = LoadMusicStream("asset/sounds/calm_music.wav");
+    calm_music.looping = true;
+    SetMusicVolume(calm_music,1.0f);
+    
+    dark_music = LoadMusicStream("asset/sounds/Background_theme.wav");
+    dark_music.looping = true;
+    SetMusicVolume(calm_music,0.8f);
+
+    bubble_sound[0] = LoadMusicStream("asset/sounds/bubbles_1.wav");
+    bubble_sound[0].looping = false;
+    bubble_sound[1] = LoadMusicStream("asset/sounds/bubbles_2.wav");
+    bubble_sound[1].looping = false;
+    bubble_sound[2] = LoadMusicStream("asset/sounds/bubbles_3.wav");
+    bubble_sound[2].looping = false;
 }
 
 void LoadShaders()
@@ -74,7 +94,8 @@ void LoadShaders()
 i32 main()
 {
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
-    InitWindow(1600, 900, "Divegame");
+    InitWindow(1600, 900, "Divegame"); 
+    InitAudioDevice(); 
     SetTargetFPS(60);
 
     texture_ui_heart_full = LoadTexture("asset/ui/heart_full.png");
@@ -101,7 +122,8 @@ i32 main()
     models[Model_Jelly].transform = models[Model_Jelly].transform * MatrixTranslate(0, 1, 0.6);
 
     LoadShaders();
- 
+    LoadMusic();
+
     {
         i32 anim_count;
         ModelAnimation* animation_list = LoadModelAnimations("asset/3d/toad/Toad.glb", &anim_count);
@@ -162,8 +184,20 @@ i32 main()
     main_camera.rotation = 0;
     main_camera.target = {0, 0};
 
+    PlayMusicStream(calm_music);
+
+    PlayMusicStream(dark_music);
+    PauseMusicStream(dark_music);
+
     while (!WindowShouldClose())
     {
+
+        UpdateMusicStream(calm_music); 
+        UpdateMusicStream(dark_music);
+        for(i32 i = 0 ; i < 3 ; i++){
+            UpdateMusicStream(bubble_sound[i]); 
+        } 
+
         state.render_entities = {};
         main_camera.zoom = GetRenderWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
 
@@ -184,10 +218,20 @@ i32 main()
 
         }
 
+        bool shark_alive = false;
         for (u32 i = 0; i < level->sharkfish_count; ++i)
         {
             Sharkfish* fish = &level->sharkfishs[i];
             shark_update(fish, &state);
+
+            if(!fish->health.dead) shark_alive = true;
+        }
+        if(shark_alive){
+            ResumeMusicStream(dark_music);  
+            PauseMusicStream(calm_music); 
+        }else{
+            PauseMusicStream(dark_music);  
+            ResumeMusicStream(calm_music); 
         }
 
         for (u32 i = 0; i < level->jellyfish_count; ++i)

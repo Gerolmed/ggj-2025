@@ -69,7 +69,7 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
         ProjectileSpike spike = spikes_array[i];
         SphericalCollider spike_collider = SphericalCollider(spike.position, SPIKE_RADIUS);
         if(intersects(&fish_collider, &spike_collider)){
-            fish->health.health -= 5;
+            fish->health.health = 0;
             arrdel(spikes_array,i);
             i--;
         }
