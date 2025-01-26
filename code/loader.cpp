@@ -21,11 +21,28 @@ Room load_room(i32 room_id){
                 room.tiles[ROOM_WIDTH * y + x] = Tile_Wall;
             }
             else if(curr[0] == 255 && curr[1] == 255 && curr[2] < 64){
-                TransitionTile* transition_tile = &room.transition_tiles[room.transition_tile_count];
-                transition_tile->pos_x = x;
-                transition_tile->pos_y = y;
-                transition_tile->new_room_id = curr[2];
-                room.transition_tile_count++;
+                Direction direction;
+
+                if (x == 0)
+                {
+                    direction = Direction_Left;
+                }
+                if (x == ROOM_WIDTH - 1)
+                {
+                    direction = Direction_Right;
+                }
+
+                if (y == 0)
+                {
+                    direction = Direction_Up;
+                }
+                if (y == ROOM_HEIGHT - 1)
+                {
+                    direction = Direction_Down;
+                }
+
+                room.entrances[direction].enabled = true;
+                room.entrances[direction].target_room = curr[2];
             }
             else if(curr[0] == 255 && curr[1] == 0 & curr[2] == 0){
                 Pufferfish* pufferfish = &room.pufferfishs[room.pufferfish_count];
@@ -60,24 +77,26 @@ Room load_room(i32 room_id){
 void transition_to_room(Player* player, i32 old_room_id, i32 new_room_id){
     Room *new_room = state.rooms + new_room_id;
 
-    for(i32 i = 0 ; i < new_room->transition_tile_count; ++i){
-        if(new_room->transition_tiles[i].new_room_id == old_room_id){
-            TransitionTile* exit_tile = new_room->transition_tiles + i;
-            Vector2 exit_direction = Vector2(0,0);
-            if(exit_tile->pos_x == 0){
-                exit_direction = Vector2(3,0);
-            }else if(exit_tile->pos_y == 0){
-                exit_direction = Vector2(0,3);
-            }else if(exit_tile->pos_x == ROOM_WIDTH -1){
-                exit_direction = Vector2(-3,0);
-            }else if(exit_tile->pos_y == ROOM_HEIGHT -1){
-                exit_direction = Vector2(0,-3);
-            }
+    // for(i32 i = 0 ; i < new_room->transition_tile_count; ++i){
+    //     if(new_room->transition_tiles[i].new_room_id == old_room_id){
+    //         TransitionTile* exit_tile = new_room->transition_tiles + i;
+    //         Vector2 exit_direction = Vector2(0,0);
+    //         if(exit_tile->pos_x == 0){
+    //             exit_direction = Vector2(3,0);
+    //         }else if(exit_tile->pos_y == 0){
+    //             exit_direction = Vector2(0,3);
+    //         }else if(exit_tile->pos_x == ROOM_WIDTH -1){
+    //             exit_direction = Vector2(-3,0);
+    //         }else if(exit_tile->pos_y == ROOM_HEIGHT -1){
+    //             exit_direction = Vector2(0,-3);
+    //         }
+    //
+    //         player->position = Vector2(exit_tile->pos_x + exit_direction.x, exit_tile->pos_y + exit_direction.y);
+    //
+    //     }
+    // }
 
-            player->position = Vector2(exit_tile->pos_x + exit_direction.x, exit_tile->pos_y + exit_direction.y);
-
-        }
-    }
+    player->position = {5, 5};
 
     state.current_room = new_room_id;
 }
