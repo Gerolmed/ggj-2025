@@ -310,8 +310,8 @@ void update_health(Health* health)
 
 Tile get_safe_tile(Room* room, i32 x, i32 y)
 {
-    if (x < 0 || y < 0) return Tile_Empty;
-    if (ROOM_WIDTH + 4 <= x || ROOM_HEIGHT + 4 <= y) return Tile_Empty;
+    if (x < 0 || y < 0) return Tile_Wall;
+    if (ROOM_WIDTH + 4 <= x || ROOM_HEIGHT + 4 <= y) return Tile_Wall;
     return room->tiles[y * (ROOM_WIDTH + 4) + x];
 }
 

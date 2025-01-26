@@ -135,19 +135,19 @@ void check_collisions(Player* player, GameState* state)
         }
     }
 
-    if (room->entrances[Direction_Left].enabled && player->position.x < 0)
+    if (room->entrances[Direction_Left].enabled && player->position.x < 1)
     {
         transition_to_room(player, state->current_room, room->entrances[Direction_Left].target_room);
     }
-    if (room->entrances[Direction_Right].enabled && player->position.x > ROOM_WIDTH + 4)
+    if (room->entrances[Direction_Right].enabled && player->position.x > ROOM_WIDTH + 3)
     {
         transition_to_room(player, state->current_room, room->entrances[Direction_Right].target_room);
     }
-    if (room->entrances[Direction_Up].enabled && player->position.y < 0)
+    if (room->entrances[Direction_Up].enabled && player->position.y < 1)
     {
         transition_to_room(player, state->current_room, room->entrances[Direction_Up].target_room);
     }
-    if (room->entrances[Direction_Down].enabled && player->position.y > ROOM_HEIGHT + 4)
+    if (room->entrances[Direction_Down].enabled && player->position.y > ROOM_HEIGHT + 3)
     {
         transition_to_room(player, state->current_room, room->entrances[Direction_Down].target_room);
     }
