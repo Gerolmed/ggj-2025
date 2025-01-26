@@ -362,7 +362,7 @@ i32 main()
             {
                 EntityDraw* draw = state.render_entities.entities + i;
                 DrawTextureRec(entities_low.texture, {(f32)draw->atlas_x * 32, (f32)draw->atlas_y * 32, 32, 32},
-                               {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
+                               {draw->x * TILE_SIZE_LOW - 32 / 2, draw->y * TILE_SIZE_LOW - 32 / 2}, WHITE);
             }
 
             EndMode2D();
