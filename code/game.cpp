@@ -237,6 +237,10 @@ i32 main()
         {
             LoadGame();
         }
+        if (IsKeyPressed(KEY_T))
+        {
+            LoadShaders();
+        }
 
         Room* level = state.rooms + state.current_room;
         bool shark_alive = false;

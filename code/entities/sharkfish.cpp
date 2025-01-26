@@ -5,8 +5,8 @@ void shark_death(Sharkfish* fish, GameState* state){
 
     Vector2 item_offset[3];
     item_offset[0] = Vector2(0,0.2);
-    item_offset[1] = Vector2(-0.1,-0.1);
-    item_offset[2] = Vector2(0.1,-0.1);
+    item_offset[1] = Vector2(-0.3,-0.2);
+    item_offset[2] = Vector2(0.3,-0.2);
 
     for(i32 i = 0 ; i < 3 ; i++){
         
@@ -23,11 +23,7 @@ void pursue_player(Sharkfish* fish, GameState* state){
     if(fish->behavior_frame % 300 < 180){
         fish->rotation = -Vector2Angle(direction, {1,0});
         if(fish->health.health == 1) {
-            if(fish->upgraded){
-                fish->behavior_frame += 240;
-            }else{
-                fish->behavior_frame += 180;
-            }
+            fish->behavior_frame += 180;
         }
 
         if(fish->upgraded && fish->behavior_frame > 30){
@@ -83,7 +79,8 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
         if(intersects(&fish_collider, &spike_collider)){
             hit = true;
             fish->knockback_velocity = Vector2Scale(spike.direction,5);
-            fish->behavior_frame = 480;
+            fish->behavior_frame = 180;
+            if(fish->upgraded) fish->behavior_frame = 480;
             PlayMusicStream(cry);
             arrdel(spikes_array,i);
             i--;
