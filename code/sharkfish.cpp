@@ -19,7 +19,7 @@ void pursue_player(Sharkfish* fish, GameState* state){
         fish->position = Vector2Add(fish->position, Vector2Scale(fish->dash_direction, 7*GetFrameTime()));
     }
 
-    if(fish->behavior_frame == 540){
+    if(fish->behavior_frame == 240){
         spawn_pufferfish(fish->position, state);
     }
 }
