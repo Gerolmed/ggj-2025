@@ -14,31 +14,54 @@ Room load_room(i32 room_id){
     assert(ROOM_WIDTH == width);
     assert(ROOM_HEIGHT == height);
 
+    for(u32 y = 0 ; y < ROOM_HEIGHT+4; ++y){
+        for(u32 x = 0 ; x < ROOM_WIDTH+4; ++x){
+            room.tiles[(ROOM_WIDTH+4) * y + x] = Tile_Wall;
+        }
+    }
+
+
+
     u8* curr = tmp;
-    for (u32 y = 0; y < ROOM_HEIGHT; ++y) {
-        for (u32 x = 0; x < ROOM_WIDTH; ++x) {
-            if(curr[0] == 0 && curr[1] == 0 && curr[2] == 0){
-                room.tiles[ROOM_WIDTH * y + x] = Tile_Wall;
-            }
-            else if(curr[0] == 255 && curr[1] == 255 && curr[2] < 64){
+    for (u32 y = 2; y < ROOM_HEIGHT+2; ++y) {
+        for (u32 x = 2; x < ROOM_WIDTH+2; ++x) {
+            //if(curr[0] == 0 && curr[1] == 0 && curr[2] == 0){
+            //    room.tiles[(ROOM_WIDTH+4) * y + x] = Tile_Wall;
+            //}
+            //else{
+                room.tiles[(ROOM_WIDTH+4) * y + x] = Tile_Empty;
+            //}
+            if(curr[0] == 255 && curr[1] == 255 && curr[2] < 64){
                 Direction direction;
 
-                if (x == 0)
+                if (x == 2)
                 {
                     direction = Direction_Left;
+                    room.tiles[(ROOM_WIDTH+4) * 5 + 0] = Tile_Empty;
+                    room.tiles[(ROOM_WIDTH+4) * 5 + 1] = Tile_Empty;
                 }
-                if (x == ROOM_WIDTH - 1)
+                if (x == ROOM_WIDTH + 1)
                 {
                     direction = Direction_Right;
+                    room.tiles[(ROOM_WIDTH+4) * 5 + ROOM_WIDTH+2] = Tile_Empty;
+                    room.tiles[(ROOM_WIDTH+4) * 5 + ROOM_WIDTH+3] = Tile_Empty;
                 }
 
-                if (y == 0)
+                if (y == 2)
                 {
                     direction = Direction_Up;
+                    room.tiles[(ROOM_WIDTH+4) * 0 + 9] = Tile_Empty;
+                    room.tiles[(ROOM_WIDTH+4) * 1 + 9] = Tile_Empty;
+                    room.tiles[(ROOM_WIDTH+4) * 0 + 10] = Tile_Empty;
+                    room.tiles[(ROOM_WIDTH+4) * 1 + 10] = Tile_Empty;
                 }
-                if (y == ROOM_HEIGHT - 1)
+                if (y == ROOM_HEIGHT + 1)
                 {
                     direction = Direction_Down;
+                    room.tiles[(ROOM_WIDTH+4) * (ROOM_HEIGHT+2) + 9] = Tile_Empty;
+                    room.tiles[(ROOM_WIDTH+4) * (ROOM_HEIGHT+3) + 9] = Tile_Empty;
+                    room.tiles[(ROOM_WIDTH+4) * (ROOM_HEIGHT+2) + 10] = Tile_Empty;
+                    room.tiles[(ROOM_WIDTH+4) * (ROOM_HEIGHT+3) + 10] = Tile_Empty;
                 }
 
                 room.entrances[direction].enabled = true;
@@ -67,11 +90,16 @@ Room load_room(i32 room_id){
                 jellyfish->behavior_frame = 60*room.jellyfish_count;
                 room.jellyfish_count++;
             }
-            else{
-                room.tiles[ROOM_WIDTH * y + x] = Tile_Empty;
-            }
             curr += 3;
         }
+    }
+
+    printf("Printing room \n");
+    for(u32 y = 0 ; y < ROOM_HEIGHT+4; ++y){
+        for(u32 x = 0 ; x < ROOM_WIDTH+4; ++x){
+            printf("%d",room.tiles[(ROOM_WIDTH+4) * y + x]);
+        }
+        printf("\n");
     }
 
     return room;

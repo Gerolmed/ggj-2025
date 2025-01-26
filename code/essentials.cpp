@@ -133,7 +133,7 @@ struct Room
 {
     i32 id;
 
-    Tile tiles[ROOM_WIDTH * ROOM_HEIGHT];
+    Tile tiles[(ROOM_WIDTH+4) * (ROOM_HEIGHT+4)];
 
     Entrance entrances[4];
 
