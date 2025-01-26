@@ -6,7 +6,7 @@ void jelly_death(Jellyfish* fish, GameState* state){
     fish->health.dead = true;
 
     Room* room = state->rooms + state->current_room;
-    configure_collectable(arraddnptr(room->collectables, 1), ItemType_Heart_Full, fish->position);
+    configure_collectable(arraddnptr(room->collectables, 1), ItemType_Heart_Half, fish->position);
 }
 
 void orbit_around_player(Jellyfish* fish, GameState* state){
