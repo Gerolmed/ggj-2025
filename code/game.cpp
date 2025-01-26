@@ -62,7 +62,12 @@ void LoadMusic(){
     dark_music.looping = true;
     SetMusicVolume(calm_music,0.8f);
 
-    bubble_sound1 = LoadMusicStream("asset/sounds/bubbles_1.wav");
+    bubble_sound[0] = LoadMusicStream("asset/sounds/bubbles_1.wav");
+    bubble_sound[0].looping = false;
+    bubble_sound[1] = LoadMusicStream("asset/sounds/bubbles_2.wav");
+    bubble_sound[1].looping = false;
+    bubble_sound[2] = LoadMusicStream("asset/sounds/bubbles_3.wav");
+    bubble_sound[2].looping = false;
 }
 
 void LoadShaders()
@@ -188,8 +193,10 @@ i32 main()
     {
 
         UpdateMusicStream(calm_music); 
-        UpdateMusicStream(dark_music); 
-        UpdateMusicStream(bubble_sound1); 
+        UpdateMusicStream(dark_music);
+        for(i32 i = 0 ; i < 3 ; i++){
+            UpdateMusicStream(bubble_sound[i]); 
+        } 
 
         state.render_entities = {};
         main_camera.zoom = GetRenderWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
