@@ -298,11 +298,7 @@ i32 main()
         // Manage Audio data
         ////////////////////////////////////////////
         {
-            UpdateMusicStream(calm_music);
-            UpdateMusicStream(dark_music);
-            for(i32 i = 0 ; i < 3 ; i++){
-                UpdateMusicStream(bubble_sound[i]);
-            }
+            UpdateAllMusicStreams();
 
             if(shark_alive){
                 ResumeMusicStream(dark_music);

@@ -23,10 +23,12 @@ void fish_death(Pufferfish* fish, GameState* state){
         spike.position = fish->position;
         spike.direction = directions[i];
 
+        StopMusicStream(step);
+        PlayMusicStream(step);
+
         arrput(room->spikes, spike);
     }
 
-    //TODO: Explode and spawn spike projectiles
 }
 
 void fish_pursue_player(Pufferfish* fish, GameState* state){
