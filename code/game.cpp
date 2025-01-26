@@ -29,6 +29,7 @@
 Model models[Model_Count];
 Shader skinned_shader;
 Shader default_shader;
+Shader bubble_shader;
 
 ////////////////////////////////////////////
 // Load Music
@@ -84,6 +85,7 @@ void LoadShaders()
 {
     skinned_shader = LoadShader("asset/skinned.vert", "asset/default.frag");
     default_shader = LoadShader("asset/default.vert", "asset/default.frag");
+    bubble_shader = LoadShader("asset/default.vert", "asset/bubble.frag");
 
     for (u32 i = 0; i < Model_Count; ++i)
     {
@@ -92,6 +94,11 @@ void LoadShaders()
         if (i == Model_Toad)
         {
             shader = skinned_shader;
+        }
+
+        if (i == Model_Bubble)
+        {
+            shader = bubble_shader;
         }
 
         for (u32 j = 0; j < models[i].materialCount; ++j)
