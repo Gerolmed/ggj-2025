@@ -238,6 +238,9 @@ Color color_from_damage(Health *health)
 
 void damage(Health *health, u32 amount)
 {
+    // grant invulnerability if damage indicator still playing
+    if (health->damage_indicator > 0) return;
+
     health->damage_indicator = 1;
     if (health->temp_health > 0)
     {
@@ -264,7 +267,7 @@ void damage(Health *health, u32 amount)
 
 void kill(Health *health)
 {
-    health->dead = false;
+    health->dead = true;
     health->health = 0;
 }
 
