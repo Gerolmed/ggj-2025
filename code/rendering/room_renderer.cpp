@@ -26,10 +26,10 @@ void draw_room(Room *level) {
         }
     }
 
-    level->entrances[Direction_Left].enabled = true;
-    level->entrances[Direction_Right].enabled = true;
-    level->entrances[Direction_Up].enabled = true;
-    level->entrances[Direction_Down].enabled = true;
+    // level->entrances[Direction_Left].enabled = true;
+    // level->entrances[Direction_Right].enabled = true;
+    // level->entrances[Direction_Up].enabled = true;
+    // level->entrances[Direction_Down].enabled = true;
 
     // Floor corners
     DrawTileAt(7, 6, 2, 2);
@@ -119,6 +119,25 @@ void draw_room(Room *level) {
     {
         DrawTexturePro(gradient, {0, 0, 40, 1}, {2 * TILE_SIZE_LOW, 6 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
                        {0.5, 0.5}, 180, WHITE);
+    }
+    if (level->entrances[Direction_Right].enabled)
+    {
+        DrawTexturePro(gradient, {0, 0, 40, 1}, {18 * TILE_SIZE_LOW, 5 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
+                       {0.5, 0.5}, 0, WHITE);
+    }
+    if (level->entrances[Direction_Up].enabled)
+    {
+        DrawTexturePro(gradient, {0, 0, 40, 1}, {10 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
+                       {0.5, 0.5}, 270, WHITE);
+        DrawTexturePro(gradient, {0, 0, 40, 1}, {9 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
+                       {0.5, 0.5}, 270, WHITE);
+    }
+    if (level->entrances[Direction_Down].enabled)
+    {
+        DrawTexturePro(gradient, {0, 0, 40, 1}, {11 * TILE_SIZE_LOW, 9 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
+                       {0.5, 0.5}, 90, WHITE);
+        DrawTexturePro(gradient, {0, 0, 40, 1}, {10 * TILE_SIZE_LOW, 9 * TILE_SIZE_LOW, 2 * TILE_SIZE_LOW, TILE_SIZE_LOW}, 
+                       {0.5, 0.5}, 90, WHITE);
     }
 
     // Render Wall
