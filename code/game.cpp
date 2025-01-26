@@ -154,7 +154,7 @@ i32 main()
         write[0] = 0;
         write[1] = 0;
         write[2] = 0;
-        write[3] = 255 * ((f32) x / 40.0);
+        write[3] = 120 * ((f32) x / 40.0);
         write += 4;
     }
 
