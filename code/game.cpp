@@ -398,11 +398,17 @@ i32 main()
             draw_room(level);
 
             // Render drop shadows
-            // for (u32 i = 0; i < state.render_entities.count; ++i)
-            // {
-            //     EntityDraw *draw = state.render_entities.entities + i;
-            //     DrawTexture(drop_shadow, draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW, WHITE);
-            // }
+            for (u32 i = 0; i < state.render_entities.count; ++i)
+            {
+                EntityDraw *draw = state.render_entities.entities + i;
+
+                if (draw->model == Model_Spike)
+                {
+                    continue;
+                }
+
+                DrawTexture(drop_shadow, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
+            }
 
             // Render entities into room
             for (u32 i = 0; i < state.render_entities.count; ++i)
