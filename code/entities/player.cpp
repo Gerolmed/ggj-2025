@@ -4,9 +4,9 @@ void configure_player(Player* player)
     player->speed = 5;
     player->position = {5, 5};
 
-    player->health.max_health = 10;
+    player->health.max_health = 8;
     player->health.health = player->health.max_health;
-    player->health.temp_health = 5;
+    player->health.temp_health = 0;
 
     for (int i = 0; i < lengthof(player->bubbles); ++i)
     {
@@ -236,7 +236,7 @@ void execute_player_loop(Player* player, GameState* state)
         ProjectileBubble projectile;
         projectile.position = position;
         projectile.radius = bubble_size(player);
-        projectile.damage = player->charge_value * 10;
+        projectile.damage = player->charge_value * 10 + 2;
         projectile.can_collide_with_player = false;
         projectile.velocity = direction * 10;
         PlayMusicStream(bubble_sound[0]);
