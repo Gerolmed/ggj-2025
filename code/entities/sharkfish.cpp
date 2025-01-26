@@ -67,6 +67,7 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
 
 void shark_update(Sharkfish* fish, GameState* state){
     if(fish->health.dead) return;
+    Vector2 old_pos = fish->position;
 
       //Process knockback velocity
     if(fish->knockback_velocity.x != 0 || fish->knockback_velocity.y != 0)
@@ -87,5 +88,6 @@ void shark_update(Sharkfish* fish, GameState* state){
     }
 
     update_health(&fish->health);
+    collide_with_room(state->rooms + state->current_room, fish->position, old_pos, &fish->position);
     RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1, color_from_damage(&fish->health));
 }

@@ -89,7 +89,6 @@ void check_collisions(Player* player, GameState* state)
         if (intersects(&player_collider, &fish_collider))
         {
             damage(&player->health, 1);
-            printf("Damaged player");
         }
     }
 
@@ -103,7 +102,6 @@ void check_collisions(Player* player, GameState* state)
         if (intersects(&player_collider, &fish_collider))
         {
             damage(&player->health, 3);
-            printf("Damaged player");
         }
     }
 
@@ -116,7 +114,6 @@ void check_collisions(Player* player, GameState* state)
 
         if (intersects(&player_collider, &spike_collider))
         {
-            printf("Damaged player");
             damage(&player->health, 1);
             arrdel(room->spikes, i);
             i--;
