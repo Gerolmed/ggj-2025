@@ -161,7 +161,8 @@ struct Room
 
 Music calm_music;
 Music dark_music;
-Music bubble_sound1;
+i32 last_bubble_sound = 0;
+Music bubble_sound[3];
 
 enum ModelType
 {
