@@ -57,7 +57,10 @@ void shark_check_collision(Sharkfish* fish, GameState* state){
             i--;
         }
     }
-    if(hit) fish->health.health -= 1;
+    if(hit)
+    {
+        damage(&fish->health, 1);
+    }
 }
 
 void shark_update(Sharkfish* fish, GameState* state){
@@ -77,9 +80,10 @@ void shark_update(Sharkfish* fish, GameState* state){
 
     pursue_player(fish,state);
     shark_check_collision(fish,state);
-    if(fish->health.health <= 0){
+    if(fish->health.dead){
         shark_death(fish, state);
     }
 
-    RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1);
+    update_health(&fish->health);
+    RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1, color_from_damage(&fish->health));
 }
