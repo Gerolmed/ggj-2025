@@ -1,9 +1,9 @@
 f32 jelly_get_radius(Jellyfish* fish){
-    return ((f32)10/(10+fish->health));
+    return ((f32)10/(10+fish->health.health));
 }
 
 void jelly_death(Jellyfish* fish, GameState* state){
-    fish->dead = true;
+    fish->health.dead = true;
 }
 
 void orbit_around_player(Jellyfish* fish, GameState* state){
@@ -56,7 +56,8 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
         if(bubble.can_collide_with_player) continue;
         SphericalCollider bubble_collider = SphericalCollider(bubble.position, bubble.radius);
         if(intersects(&fish_collider, &bubble_collider)){
-            fish->health -= bubble.damage;
+            fish->health.health -= bubble.damage;
+            fish->health.damage_indicator = 1;
             arrdel(bubble_array,i);
             i--;
         }
@@ -68,7 +69,7 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
         ProjectileSpike spike = spikes_array[i];
         SphericalCollider spike_collider = SphericalCollider(spike.position, SPIKE_RADIUS);
         if(intersects(&fish_collider, &spike_collider)){
-            fish->health -= 5;
+            fish->health.health -= 5;
             arrdel(spikes_array,i);
             i--;
         }
@@ -77,11 +78,11 @@ void jelly_check_collision(Jellyfish* fish, GameState* state){
 
 
 void jellyfish_update(Jellyfish* fish, GameState* state){
-    if(fish->dead) return;
+    if(fish->health.dead) return;
 
     orbit_around_player(fish,state);
     jelly_check_collision(fish,state);
-    if(fish->health <= 0){
+    if(fish->health.health <= 0){
         jelly_death(fish, state);
     }
 }

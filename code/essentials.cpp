@@ -86,20 +86,25 @@ struct Player
     Model model;
 };
 
+struct EnemyHealth
+{
+    i32 health;
+    bool dead;
+    float damage_indicator;
+};
+
 struct Pufferfish
 {
     Vector2 position;
     float rotation;
-    i32 health;
-    bool dead;
+    EnemyHealth health;
 };
 
 struct Sharkfish
 {
     Vector2 position;
     float rotation;
-    i32 health;
-    bool dead;
+    EnemyHealth health;
     Vector2 knockback_velocity;
 
     i32 behavior_frame;
@@ -111,9 +116,7 @@ struct Jellyfish
     Vector2 position;
     float size;
     float rotation;
-    i32 health;
-    bool dead;
-
+    EnemyHealth health;
     i32 behavior_frame;
 };
 

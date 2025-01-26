@@ -10,9 +10,9 @@ void configure_player(Player* player)
     for (int i = 0; i < lengthof(player->bubbles); ++i)
     {
         player->bubbles[i] = Bubble{
-            .radius = 1,
+            .radius = 0.5,
             .min_scale = 1.0f,
-            .max_scale = 1.5f,
+            .max_scale = 2.0f,
         };
     }
 }
@@ -83,8 +83,8 @@ Vector2 get_current_bubble_position(Player* player)
     Bubble* bubble = player->bubbles + player->current_bubble;
 
     Vector2 direction = Vector2Rotate({1, 0}, player->rotation);
-    float scale = bubble->max_scale * player->charge_value + bubble->min_scale * (1 - player->charge_value);
-    direction = Vector2Scale(direction, bubble->radius * scale + 0.2f);
+    float scale = bubble->max_scale * sqrt(player->charge_value) + bubble->min_scale * (1 - sqrt(player->charge_value));
+    direction = Vector2Scale(direction, bubble->radius * scale);
     return Vector2Add(player->position, direction);
 }
 
@@ -111,7 +111,7 @@ void check_collisions(Player* player, GameState* state){
     //Pufferfish Collisions
     for(i32 i = 0 ; i < room->pufferfish_count; i++){
         Pufferfish* fish = room->pufferfishs + i;
-        if(fish->dead) continue;
+        if(fish->health.dead) continue;
         SphericalCollider fish_collider = {fish->position, fish_get_radius(fish)};
 
         if(intersects(&player_collider, &fish_collider))
@@ -126,7 +126,7 @@ void check_collisions(Player* player, GameState* state){
      //Sharkfish Collisions
     for(i32 i = 0 ; i < room->sharkfish_count; i++){
         Sharkfish* fish = room->sharkfishs + i;
-        if(fish->dead) continue;
+        if(fish->health.dead) continue;
         SphericalCollider fish_collider = {fish->position, 1};
 
         if(intersects(&player_collider, &fish_collider))
@@ -237,6 +237,7 @@ void execute_player_loop(Player* player, GameState* state)
         projectile.position = position;
         projectile.radius = bubble_size(player);
         projectile.damage = player->charge_value*10;
+        projectile.can_collide_with_player = false;
         projectile.velocity = direction * 10;
         arrput(room->projectiles, projectile);
 

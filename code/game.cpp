@@ -181,7 +181,7 @@ i32 main()
         for (u32 i = 0; i < level->pufferfish_count; ++i)
         {
             Pufferfish* fish = &level->pufferfishs[i];
-            if(fish->dead) continue;
+            if(fish->health.dead) continue;
             fish_update(fish, &state);
 
             RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish));
@@ -190,7 +190,7 @@ i32 main()
         for (u32 i = 0; i < level->sharkfish_count; ++i)
         {
             Sharkfish* fish = &level->sharkfishs[i];
-            if(fish->dead) continue;
+            if(fish->health.dead) continue;
             shark_update(fish, &state);
 
             RenderEntity(Model_Shark, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 1);
@@ -199,7 +199,7 @@ i32 main()
         for (u32 i = 0; i < level->jellyfish_count; ++i)
         {
             Jellyfish* fish = &level->jellyfishs[i];
-            if(fish->dead) continue;
+            if(fish->health.dead) continue;
             jellyfish_update(fish, &state);
 
             RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish));
