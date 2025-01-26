@@ -2,6 +2,21 @@
 
 void shark_death(Sharkfish* fish, GameState* state){
     fish->health.dead = true;
+
+    Vector2 item_offset[3];
+    item_offset[0] = Vector2(0,0.2);
+    item_offset[1] = Vector2(-0.1,-0.1);
+    item_offset[2] = Vector2(0.1,-0.1);
+
+    for(i32 i = 0 ; i < 3 ; i++){
+        
+        Collectable heart;
+        heart.position = Vector2Add(fish->position, item_offset[i]);
+        heart.type = ItemType_Temp_Full;
+
+        Room* room = state->rooms + state->current_room;
+        arrput(room->collectables, heart);
+    }
 }
 
 void pursue_player(Sharkfish* fish, GameState* state){
