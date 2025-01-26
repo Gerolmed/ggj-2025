@@ -91,7 +91,7 @@ void LoadShaders()
     {
         Shader shader = default_shader;
 
-        if (i == Model_Toad || i == Model_Shark)
+        if (i == Model_Toad || i == Model_Shark || i == Model_Jelly)
         {
             shader = skinned_shader;
         }
@@ -229,6 +229,36 @@ i32 main()
             else if (strcmp(animation->name, "move") == 0)
             {
                 shark_model_animations[SharkAnim_Move] = *animation;
+            }
+            else
+            {
+                assert(false);
+            }
+        }
+    }
+
+     ////////////////////////////////////////////
+    // Prepare Jelly animations
+    ////////////////////////////////////////////
+    {
+        i32 anim_count;
+        ModelAnimation* animation_list = LoadModelAnimations("asset/3d/jellyfish/jellyfish.glb", &anim_count);
+
+        for (int i = 0; i < anim_count; ++i)
+        {
+            ModelAnimation* animation = animation_list + i;
+            assert(animation);
+            if (strcmp(animation->name, "attack") == 0)
+            {
+                jelly_model_animations[JellyAnim0] = *animation;
+            }
+            else if (strcmp(animation->name, "idle") == 0)
+            {
+                jelly_model_animations[JellyAnim1] = *animation;
+            }
+            else if (strcmp(animation->name, "move") == 0)
+            {
+                jelly_model_animations[JellyAnim2] = *animation;
             }
             else
             {

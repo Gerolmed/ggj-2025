@@ -58,6 +58,13 @@ enum SharkAnim
     SharkAnim_Move,
 };
 
+enum JellyAnim
+{
+    JellyAnim0,
+    JellyAnim1,
+    JellyAnim2,
+};
+
 struct Health
 {
     u32 temp_health;
@@ -126,6 +133,8 @@ struct Jellyfish
     float rotation;
     Health health;
     i32 behavior_frame;
+    i32 animation_frame;
+    i32 animation;
 };
 
 struct ProjectileBubble
@@ -257,6 +266,7 @@ struct GameState
 Camera2D main_camera;
 ModelAnimation player_model_animations[4] = {};
 ModelAnimation shark_model_animations[3] = {};
+ModelAnimation jelly_model_animations[3] = {};
 
 Texture texture_ui_heart_full;
 Texture texture_ui_heart_half;

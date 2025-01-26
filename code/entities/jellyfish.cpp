@@ -1,6 +1,12 @@
 f32 jelly_get_radius(Jellyfish* fish){
     return ((f32)10/(10+fish->health.health));
 }
+void set_jelly_animation(Jellyfish* fish, i32 animation){
+    if(animation != fish->animation){
+        fish->animation_frame = 0;
+    }
+    fish->animation = animation;
+}
 
 void jelly_death(Jellyfish* fish, GameState* state){
     fish->health.dead = true;
@@ -20,6 +26,9 @@ void orbit_around_player(Jellyfish* fish, GameState* state){
     f32 orthogonal_speed = 4;
     if(fish->behavior_frame < 90){
         orthogonal_speed = 1;
+        set_jelly_animation(fish, JellyAnim1);
+    }else{
+        set_jelly_animation(fish, JellyAnim0);
     }
     Vector2 orthogonal = {-orthogonal_speed* direction.y , orthogonal_speed* direction.x};
     fish->rotation = -Vector2Angle(direction, {1,0});
@@ -120,5 +129,10 @@ void jellyfish_update(Jellyfish* fish, GameState* state){
 
     update_health(&fish->health);
     collide_with_room(state->rooms + state->current_room, fish->position, old_pos, &fish->position);
-    RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish), color_from_damage(&fish->health));
+    
+    fish->animation_frame++;    
+    ModelAnimation* animation = &jelly_model_animations[fish->animation];
+    RenderAnimatedEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish), animation, fish->animation_frame % animation->frameCount , color_from_damage(&fish->health));
+
+    //RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish), color_from_damage(&fish->health));
 }
