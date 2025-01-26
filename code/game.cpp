@@ -236,66 +236,84 @@ i32 main()
         // RenderEntity(Model_Fish, {2, 2}, 0);
         // for rendering
         ///////////////////////////////////////////
+
         {
+            execute_player_loop(player, &state);
+
+            for (u32 i = 0; i < level->pufferfish_count; ++i)
             {
-                execute_player_loop(player, &state);
-
-                for (u32 i = 0; i < level->pufferfish_count; ++i)
-                {
-                    Pufferfish* fish = &level->pufferfishs[i];
-                    fish_update(fish, &state);
-                }
-
-                for (u32 i = 0; i < level->sharkfish_count; ++i)
-                {
-                    Sharkfish* fish = &level->sharkfishs[i];
-                    shark_update(fish, &state);
-
-                    if (!fish->health.dead) shark_alive = true;
-                }
-
-                for (u32 i = 0; i < level->jellyfish_count; ++i)
-                {
-                    Jellyfish* fish = &level->jellyfishs[i];
-                    jellyfish_update(fish, &state);
-                }
+                Pufferfish* fish = &level->pufferfishs[i];
+                fish_update(fish, &state);
             }
 
-
-            ///////////////////////////////////////////
-            // Manage Projectiles
-            ///////////////////////////////////////////
-            for (u32 i = 0; i < arrlen(level->projectiles); i++)
+            for (u32 i = 0; i < level->sharkfish_count; ++i)
             {
-                ProjectileBubble* projectile = &level->projectiles[i];
-                projectile->position.x += GetFrameTime() * projectile->velocity.x;
-                projectile->position.y += GetFrameTime() * projectile->velocity.y;
+                Sharkfish* fish = &level->sharkfishs[i];
+                shark_update(fish, &state);
 
-                if (abs_squared(projectile->position) > 10000)
-                {
-                    arrdel(level->projectiles, i);
-                    i--;
-                }
-
-                RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0,
-                             projectile->radius, WHITE);
+                if (!fish->health.dead) shark_alive = true;
             }
-            for (u32 i = 0; i < arrlen(level->spikes); i++)
+
+            for (u32 i = 0; i < level->jellyfish_count; ++i)
             {
-                i32 SPIKE_SPEED = 10;
-                ProjectileSpike* spike = &level->spikes[i];
-                spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
-                spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
-
-                if (abs_squared(spike->position) > 10000)
-                {
-                    arrdel(level->spikes, i);
-                    i--;
-                }
-
-                RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
+                Jellyfish* fish = &level->jellyfishs[i];
+                jellyfish_update(fish, &state);
             }
         }
+
+
+        ///////////////////////////////////////////
+        // Manage Projectiles
+        ///////////////////////////////////////////
+        for (u32 i = 0; i < arrlen(level->projectiles); i++)
+        {
+            ProjectileBubble* projectile = &level->projectiles[i];
+            Vector2 old_pos = projectile->position;
+            projectile->position.x += GetFrameTime() * projectile->velocity.x;
+            projectile->position.y += GetFrameTime() * projectile->velocity.y;
+
+            if (abs_squared(projectile->position) > 10000)
+            {
+                arrdel(level->projectiles, i);
+                i--;
+                continue;
+            }
+
+            if (collide_with_room(level, projectile->position, old_pos, &projectile->position))
+            {
+                arrdel(level->projectiles, i);
+                i--;
+                continue;
+            }
+
+            RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0,
+                         projectile->radius, WHITE);
+        }
+        for (u32 i = 0; i < arrlen(level->spikes); i++)
+        {
+            i32 SPIKE_SPEED = 10;
+            ProjectileSpike* spike = &level->spikes[i];
+            Vector2 old_pos = spike->position;
+            spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
+            spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
+
+            if (abs_squared(spike->position) > 10000)
+            {
+                arrdel(level->spikes, i);
+                i--;
+                continue;
+            }
+
+            if (collide_with_room(level, spike->position, old_pos, &spike->position))
+            {
+                arrdel(level->spikes, i);
+                i--;
+                continue;
+            }
+
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
+        }
+
 
         ////////////////////////////////////////////
         // Manage Audio data
