@@ -116,6 +116,8 @@ void spawn_pufferfish(Vector2 position, GameState* state){
 
 
 void fish_update(Pufferfish* fish, GameState* state){
+    fish->animation = 2;
+
     if(fish->health.dead){
         return;
     }
@@ -131,5 +133,11 @@ void fish_update(Pufferfish* fish, GameState* state){
 
     collide_with_room(state->rooms + state->current_room, fish->position, old_pos, &fish->position);
 
-    RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish), color_from_damage(&fish->health));
+    fish->animation_frame++;    
+    ModelAnimation* animation = &pufferfish_model_animations[fish->animation];
+    RenderAnimatedEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish), animation, fish->animation_frame % animation->frameCount , color_from_damage(&fish->health));
+
+
+
+    //RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish), color_from_damage(&fish->health));
 }

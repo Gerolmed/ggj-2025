@@ -91,7 +91,7 @@ void LoadShaders()
     {
         Shader shader = default_shader;
 
-        if (i == Model_Toad || i == Model_Shark || i == Model_Jelly)
+        if (i == Model_Toad || i == Model_Shark || i == Model_Jelly || i == Model_Fish)
         {
             shader = skinned_shader;
         }
@@ -267,6 +267,36 @@ i32 main()
         }
     }
 
+
+     ////////////////////////////////////////////
+    // Prepare Pufferfish animations
+    ////////////////////////////////////////////
+    {
+        i32 anim_count;
+        ModelAnimation* animation_list = LoadModelAnimations("asset/3d/pufferfish/Pufferfish.glb", &anim_count);
+
+        for (int i = 0; i < anim_count; ++i)
+        {
+            ModelAnimation* animation = animation_list + i;
+            assert(animation);
+            if (strcmp(animation->name, "pump_up") == 0)
+            {
+                pufferfish_model_animations[0] = *animation;
+            }
+            else if (strcmp(animation->name, "idle") == 0)
+            {
+                pufferfish_model_animations[1] = *animation;
+            }
+            else if (strcmp(animation->name, "move") == 0)
+            {
+                pufferfish_model_animations[2] = *animation;
+            }
+            else
+            {
+                assert(false);
+            }
+        }
+    }
 
 
 

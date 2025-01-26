@@ -109,6 +109,8 @@ struct Pufferfish
     Vector2 position;
     float rotation;
     Health health;
+    i32 animation_frame;
+    i32 animation;
 };
 
 struct Sharkfish
@@ -267,6 +269,7 @@ Camera2D main_camera;
 ModelAnimation player_model_animations[4] = {};
 ModelAnimation shark_model_animations[3] = {};
 ModelAnimation jelly_model_animations[3] = {};
+ModelAnimation pufferfish_model_animations[3] = {};
 
 Texture texture_ui_heart_full;
 Texture texture_ui_heart_half;
