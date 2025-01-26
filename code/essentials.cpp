@@ -1,6 +1,6 @@
-#include <math.h>
-
-Camera2D main_camera;
+///////////////////////////////////////////
+// Data Type Definitions
+///////////////////////////////////////////
 
 typedef uint8_t u8;
 typedef uint32_t u32;
@@ -12,6 +12,8 @@ typedef float f32;
 #define TILE_SIZE_HIGH 80
 #define TILE_SIZE_LOW 20
 #define RENDER_ATLAS_SIZE 8
+#define RENDER_HIGH_CELL_SIZE 256.0f
+#define RENDER_LOW_CELL_SIZE (RENDER_HIGH_CELL_SIZE / 4.0f)
 
 enum Tile
 {
@@ -48,13 +50,6 @@ enum PlayerAnim
     PlayerAnim_Charge,
     PlayerAnim_PostShoot,
 };
-ModelAnimation player_model_animations[4] = {};
-
-Texture texture_ui_heart_full;
-Texture texture_ui_heart_half;
-Texture texture_ui_heart_empty;
-Texture texture_ui_heart_temporary_full;
-Texture texture_ui_heart_temporary_half;
 
 
 struct Health
@@ -74,6 +69,7 @@ struct Player
     Vector2 position;
     f32 rotation;
 
+
     Health health;
 
     Vector2 knockback_velocity;
@@ -92,6 +88,7 @@ struct Player
 
     Model model;
 };
+
 
 struct Pufferfish
 {
@@ -138,7 +135,7 @@ struct Room
 {
     i32 id;
 
-    Tile tiles[ROOM_WIDTH * ROOM_HEIGHT];
+    Tile tiles[(ROOM_WIDTH+4) * (ROOM_HEIGHT+4)];
 
     Entrance entrances[4];
 
@@ -157,12 +154,6 @@ struct Room
 
 
 };
-
-
-Music calm_music;
-Music dark_music;
-i32 last_bubble_sound = 0;
-Music bubble_sound[3];
 
 enum ModelType
 {
@@ -226,9 +217,35 @@ struct GameState
 
 };
 
+///////////////////////////////////////////
+// Global Data
+///////////////////////////////////////////
+
+Camera2D main_camera;
+ModelAnimation player_model_animations[4] = {};
+
+Texture texture_ui_heart_full;
+Texture texture_ui_heart_half;
+Texture texture_ui_heart_empty;
+Texture texture_ui_heart_temporary_full;
+Texture texture_ui_heart_temporary_half;
+
+Texture2D tileset;
+
+Music calm_music;
+Music dark_music;
+Music bubble_sound[3];
+Music cry;
+Music jump[3];
+Music step;
+
 GameState state = {};
 
 
+
+///////////////////////////////////////////
+// Utility Functions
+///////////////////////////////////////////
 Color color_from_damage(Health *health)
 {
     float t = 1 - health->damage_indicator;
@@ -238,6 +255,9 @@ Color color_from_damage(Health *health)
 
 void damage(Health *health, u32 amount)
 {
+    // grant invulnerability if damage indicator still playing
+    if (health->damage_indicator > 0) return;
+
     health->damage_indicator = 1;
     if (health->temp_health > 0)
     {
@@ -252,7 +272,7 @@ void damage(Health *health, u32 amount)
         }
     }
 
-    if (amount > health->health)
+    if (amount >= health->health)
     {
         health->health = 0;
         health->dead = true;
@@ -264,7 +284,7 @@ void damage(Health *health, u32 amount)
 
 void kill(Health *health)
 {
-    health->dead = false;
+    health->dead = true;
     health->health = 0;
 }
 
