@@ -67,6 +67,7 @@ struct Player
     i32 current_bubble;
 
     Vector2 position;
+    Vector2 last_delta_pos;
     f32 rotation;
 
 

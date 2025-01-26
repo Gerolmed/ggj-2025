@@ -277,6 +277,8 @@ void execute_player_loop(Player* player, GameState* state)
     // Correct player position based on wall collisions
     collide_with_room(state->rooms + state->current_room, player->position, old_pos, &player->position);
 
+    player->last_delta_pos = player->position - old_pos;
+
     update_charge_ball(player);
     update_player_animation(player);
     update_health(&player->health);
