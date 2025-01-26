@@ -130,9 +130,22 @@ void jellyfish_update(Jellyfish* fish, GameState* state){
     update_health(&fish->health);
     collide_with_room(state->rooms + state->current_room, fish->position, old_pos, &fish->position);
     
-    fish->animation_frame++;    
+    fish->animation_frame++;
+
+    ShadowSize shadow_size;
+    if (jelly_get_radius(fish) < .4) shadow_size = ShadowSize_Smaller;
+    else if (jelly_get_radius(fish) < .5) shadow_size = ShadowSize_Small;
+    else if (jelly_get_radius(fish) < .7) shadow_size = ShadowSize_Medium;
+    else shadow_size = ShadowSize_Large;
+
     ModelAnimation* animation = &jelly_model_animations[fish->animation];
-    RenderAnimatedEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish), animation, fish->animation_frame % animation->frameCount , color_from_damage(&fish->health));
+    RenderAnimatedEntity(
+        Model_Jelly, Vector2(fish->position.x, fish->position.y),
+        180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish),
+        animation, fish->animation_frame % animation->frameCount ,
+        color_from_damage(&fish->health),
+        shadow_size
+    );
 
     //RenderEntity(Model_Jelly, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*jelly_get_radius(fish), color_from_damage(&fish->health));
 }

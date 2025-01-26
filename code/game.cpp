@@ -140,12 +140,12 @@ i32 main()
     texture_ui_heart_temporary_full = LoadTexture("asset/ui/heart_temporary_full.png");
     texture_ui_heart_temporary_half = LoadTexture("asset/ui/heart_temporary_half.png");
 
-    drop_shadow_micro = LoadTexture("asset/dropshadow_micro.png");
-    drop_shadow_tiny = LoadTexture("asset/dropshadow_tiny.png");
-    drop_shadow_smaller = LoadTexture("asset/dropshadow_smaller.png");
-    drop_shadow_small = LoadTexture("asset/dropshadow_small.png");
-    drop_shadow_medium = LoadTexture("asset/dropshadow_medium.png");
-    drop_shadow_large = LoadTexture("asset/dropshadow_large.png");
+    drop_shadow[ShadowSize_Micro] = LoadTexture("asset/dropshadow_micro.png");
+    drop_shadow[ShadowSize_Tiny] = LoadTexture("asset/dropshadow_tiny.png");
+    drop_shadow[ShadowSize_Smaller] = LoadTexture("asset/dropshadow_smaller.png");
+    drop_shadow[ShadowSize_Small] = LoadTexture("asset/dropshadow_small.png");
+    drop_shadow[ShadowSize_Medium] = LoadTexture("asset/dropshadow_medium.png");
+    drop_shadow[ShadowSize_Large] = LoadTexture("asset/dropshadow_large.png");
 
     ////////////////////////////////////////////
     // Load Models
@@ -436,7 +436,7 @@ i32 main()
                 continue;
             }
 
-            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
+            RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE, ShadowSize_Micro);
         }
 
         ////////////////////////////////////////////
@@ -514,13 +514,9 @@ i32 main()
             for (u32 i = 0; i < state.render_entities.count; ++i)
             {
                 EntityDraw *draw = state.render_entities.entities + i;
+                if (draw->shadow_size >= ShadowSize_Count) continue;
 
-                if (draw->model == Model_Spike)
-                {
-                    continue;
-                }
-
-                DrawTexture(drop_shadow_medium, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
+                DrawTexture(drop_shadow[draw->shadow_size], (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
             }
 
             draw_collectables(level);

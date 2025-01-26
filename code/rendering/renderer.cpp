@@ -22,7 +22,7 @@ void AllocateRenderSlot(EntityDraw *draw)
 
 // 
 
-void RenderEntity(ModelType model, Vector2 pos, f32 rot, f32 scale, Color color)
+void RenderEntity(ModelType model, Vector2 pos, f32 rot, f32 scale, Color color, ShadowSize shadow_size = ShadowSize_Medium)
 {
     assert(state.render_entities.count < lengthof(state.render_entities.entities));
     EntityDraw *draw = state.render_entities.entities + state.render_entities.count++;
@@ -33,12 +33,13 @@ void RenderEntity(ModelType model, Vector2 pos, f32 rot, f32 scale, Color color)
     draw->x = pos.x;
     draw->y = pos.y;
     draw->model = model;
+    draw->shadow_size = shadow_size;
     draw->rot = rot;
     draw->scale = scale;
     draw->color = color;
 }
 
-void RenderAnimatedEntity(ModelType model, Vector2 pos, f32 rot, f32 scale, ModelAnimation *animation, u32 frame, Color color)
+void RenderAnimatedEntity(ModelType model, Vector2 pos, f32 rot, f32 scale, ModelAnimation *animation, u32 frame, Color color, ShadowSize shadow_size = ShadowSize_Medium)
 {
     assert(state.render_entities.count < lengthof(state.render_entities.entities));
     EntityDraw *draw = state.render_entities.entities + state.render_entities.count++;
@@ -49,6 +50,7 @@ void RenderAnimatedEntity(ModelType model, Vector2 pos, f32 rot, f32 scale, Mode
     draw->x = pos.x;
     draw->y = pos.y;
     draw->model = model;
+    draw->shadow_size = shadow_size;
     draw->rot = rot;
     draw->scale = scale;
     draw->animation = animation;

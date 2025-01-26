@@ -35,6 +35,18 @@ struct Entrance
     u32 target_room;
 };
 
+enum ShadowSize
+{
+    ShadowSize_Micro,
+    ShadowSize_Tiny,
+    ShadowSize_Smaller,
+    ShadowSize_Small,
+    ShadowSize_Medium,
+    ShadowSize_Large,
+
+    ShadowSize_Count,
+};
+
 struct Bubble
 {
     // unscaled radius (of model)
@@ -219,6 +231,7 @@ struct EntityDraw
     u32 atlas_y;
 
     ModelType model;
+    ShadowSize shadow_size;
 
     f32 x;
     f32 y;
@@ -276,12 +289,8 @@ Texture texture_ui_heart_half;
 Texture texture_ui_heart_empty;
 Texture texture_ui_heart_temporary_full;
 Texture texture_ui_heart_temporary_half;
-Texture2D drop_shadow_micro;
-Texture2D drop_shadow_tiny;
-Texture2D drop_shadow_smaller;
-Texture2D drop_shadow_small;
-Texture2D drop_shadow_medium;
-Texture2D drop_shadow_large;
+
+Texture2D drop_shadow[ShadowSize_Count];
 
 Texture2D tileset;
 
