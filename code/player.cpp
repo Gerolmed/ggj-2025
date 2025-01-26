@@ -168,15 +168,21 @@ void check_collisions(Player* player, GameState* state){
         }
     }
 
-    // Transition Tiles
-    for(i32 i = 0 ; i < room->transition_tile_count; ++i){
-        TransitionTile tile = room->transition_tiles[i];
-        SphericalCollider tile_collider = {Vector2(tile.pos_x, tile.pos_y), 0.5};
-        if(intersects(&player_collider,&tile_collider)) 
-        {
-            transition_to_room(player, state->current_room, tile.new_room_id);
-            return;
-        }
+    if (room->entrances[Direction_Left].enabled && player->position.x < 0)
+    {
+        transition_to_room(player, state->current_room, room->entrances[Direction_Left].target_room);
+    }
+    if (room->entrances[Direction_Right].enabled && player->position.x > ROOM_WIDTH + 4)
+    {
+        transition_to_room(player, state->current_room, room->entrances[Direction_Right].target_room);
+    }
+    if (room->entrances[Direction_Up].enabled && player->position.y < 0)
+    {
+        transition_to_room(player, state->current_room, room->entrances[Direction_Up].target_room);
+    }
+    if (room->entrances[Direction_Down].enabled && player->position.y > ROOM_HEIGHT + 4)
+    {
+        transition_to_room(player, state->current_room, room->entrances[Direction_Down].target_room);
     }
 }
 

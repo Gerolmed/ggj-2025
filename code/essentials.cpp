@@ -27,13 +27,10 @@ enum Direction
     Direction_Right,
 };
 
-struct TransitionTile
+struct Entrance
 {
-    i32 pos_x;
-    i32 pos_y;
-    // Direction dir;
-    // u32 offset;
-    i32 new_room_id;
+    bool enabled;
+    u32 target_room;
 };
 
 struct Bubble
@@ -143,8 +140,7 @@ struct Room
 
     Tile tiles[ROOM_WIDTH * ROOM_HEIGHT];
 
-    i32 transition_tile_count;
-    TransitionTile transition_tiles[64];
+    Entrance entrances[4];
 
     i32 pufferfish_count;
     Pufferfish pufferfishs[64];
