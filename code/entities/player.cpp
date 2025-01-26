@@ -76,22 +76,22 @@ inline void RoomTransition(Player* player, i32 new_room_id, Direction direction)
 {
     if (direction == Direction_Right)
     {
-        player->position.x = 0;
+        player->position.x = 1;
     }
 
     if (direction == Direction_Left)
     {
-        player->position.x = ROOM_WIDTH + 4;
+        player->position.x = ROOM_WIDTH + 3;
     }
 
     if (direction == Direction_Up)
     {
-        player->position.y = ROOM_HEIGHT + 4;
+        player->position.y = ROOM_HEIGHT + 3;
     }
 
     if (direction == Direction_Down)
     {
-        player->position.y = 0;
+        player->position.y = 1;
     }
 
     state.current_room = new_room_id;
