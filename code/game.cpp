@@ -32,14 +32,15 @@ Shader default_shader;
 ////////////////////////////////////////////
 // Load Music
 ////////////////////////////////////////////
-void LoadMusic(){
+void LoadMusic()
+{
     calm_music = LoadMusicStream("asset/sounds/calm_music.wav");
     calm_music.looping = true;
-    SetMusicVolume(calm_music,1.0f);
-    
+    SetMusicVolume(calm_music, 1.0f);
+
     dark_music = LoadMusicStream("asset/sounds/Background_theme.wav");
     dark_music.looping = true;
-    SetMusicVolume(calm_music,0.8f);
+    SetMusicVolume(calm_music, 0.8f);
 
     bubble_sound[0] = LoadMusicStream("asset/sounds/bubbles_1.wav");
     bubble_sound[0].looping = false;
@@ -61,7 +62,8 @@ void LoadMusic(){
     step.looping = false;
 }
 
-void UpdateAllMusicStreams(){
+void UpdateAllMusicStreams()
+{
     UpdateMusicStream(calm_music);
     UpdateMusicStream(dark_music);
     UpdateMusicStream(bubble_sound[0]);
@@ -106,8 +108,8 @@ i32 main()
 {
     // Configure device and window
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
-    InitWindow(1600, 900, "Divegame"); 
-    InitAudioDevice(); 
+    InitWindow(1600, 900, "Divegame");
+    InitAudioDevice();
     SetTargetFPS(60);
 
     ////////////////////////////////////////////
@@ -126,7 +128,8 @@ i32 main()
 
     // model.transform = model.transform * MatrixTranslate(0,1,1) * MatrixScale(1.0f, 1.0f, 1.0f);
     models[Model_Toad] = LoadModel("asset/3d/toad/Toad.glb");
-    models[Model_Toad].transform = models[Model_Toad].transform * MatrixTranslate(0, 0, 0) * MatrixScale(1.2f, 1.2f, 1.2f);
+    models[Model_Toad].transform = models[Model_Toad].transform * MatrixTranslate(0, 0, 0) * MatrixScale(
+        1.2f, 1.2f, 1.2f);
 
     models[Model_Fish] = LoadModel("asset/3d/pufferfish/Pufferfish.glb");
     models[Model_Fish].transform = models[Model_Fish].transform * MatrixTranslate(0, 1, 0.6);
@@ -182,8 +185,10 @@ i32 main()
     configure_player(player);
 
     RenderEntities render_entities = {};
-    RenderTexture entities_high = LoadRenderTexture(128 * RENDER_ATLAS_SIZE, 128 * RENDER_ATLAS_SIZE);
-    RenderTexture entities_low = LoadRenderTexture(32 * RENDER_ATLAS_SIZE, 32 * RENDER_ATLAS_SIZE);
+    RenderTexture entities_high = LoadRenderTexture(
+        RENDER_HIGH_CELL_SIZE * RENDER_ATLAS_SIZE, RENDER_HIGH_CELL_SIZE * RENDER_ATLAS_SIZE);
+    RenderTexture entities_low = LoadRenderTexture(RENDER_LOW_CELL_SIZE * RENDER_ATLAS_SIZE,
+                                                   RENDER_LOW_CELL_SIZE * RENDER_ATLAS_SIZE);
 
     tileset = LoadTexture("asset/tileset.png");
 
@@ -218,12 +223,12 @@ i32 main()
 
     while (!WindowShouldClose())
     {
-        Room *level = state.rooms + state.current_room;
+        Room* level = state.rooms + state.current_room;
         bool shark_alive = false;
         state.render_entities = {};
 
         // Configure camera zoom
-        main_camera.zoom = GetRenderWidth() / (f32) ((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
+        main_camera.zoom = GetRenderWidth() / (f32)((ROOM_WIDTH + 4) * TILE_SIZE_LOW);
 
 
         ///////////////////////////////////////////
@@ -239,7 +244,6 @@ i32 main()
                 {
                     Pufferfish* fish = &level->pufferfishs[i];
                     fish_update(fish, &state);
-
                 }
 
                 for (u32 i = 0; i < level->sharkfish_count; ++i)
@@ -247,7 +251,7 @@ i32 main()
                     Sharkfish* fish = &level->sharkfishs[i];
                     shark_update(fish, &state);
 
-                    if(!fish->health.dead) shark_alive = true;
+                    if (!fish->health.dead) shark_alive = true;
                 }
 
                 for (u32 i = 0; i < level->jellyfish_count; ++i)
@@ -267,30 +271,29 @@ i32 main()
                 projectile->position.x += GetFrameTime() * projectile->velocity.x;
                 projectile->position.y += GetFrameTime() * projectile->velocity.y;
 
-                if(abs_squared(projectile->position) > 10000)
+                if (abs_squared(projectile->position) > 10000)
                 {
                     arrdel(level->projectiles, i);
                     i--;
                 }
 
-                RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0, projectile->radius, WHITE);
-
+                RenderEntity(Model_Bubble, Vector2(projectile->position.x, projectile->position.y), 0,
+                             projectile->radius, WHITE);
             }
-            for(u32 i = 0; i < arrlen(level->spikes); i++)
+            for (u32 i = 0; i < arrlen(level->spikes); i++)
             {
                 i32 SPIKE_SPEED = 10;
                 ProjectileSpike* spike = &level->spikes[i];
                 spike->position.x += GetFrameTime() * SPIKE_SPEED * spike->direction.x;
                 spike->position.y += GetFrameTime() * SPIKE_SPEED * spike->direction.y;
 
-                if(abs_squared(spike->position) > 10000)
+                if (abs_squared(spike->position) > 10000)
                 {
                     arrdel(level->spikes, i);
                     i--;
                 }
 
                 RenderEntity(Model_Spike, Vector2(spike->position.x, spike->position.y), 0, 1, WHITE);
-
             }
         }
 
@@ -300,10 +303,13 @@ i32 main()
         {
             UpdateAllMusicStreams();
 
-            if(shark_alive){
+            if (shark_alive)
+            {
                 ResumeMusicStream(dark_music);
                 PauseMusicStream(calm_music);
-            }else{
+            }
+            else
+            {
                 PauseMusicStream(dark_music);
                 ResumeMusicStream(calm_music);
             }
@@ -323,15 +329,20 @@ i32 main()
             {
                 EntityDraw* draw = state.render_entities.entities + i;
 
-                rlViewport(draw->atlas_x * 128, draw->atlas_y * 128, 128, 128);
+                rlViewport(draw->atlas_x * RENDER_HIGH_CELL_SIZE, draw->atlas_y * RENDER_HIGH_CELL_SIZE,
+                           RENDER_HIGH_CELL_SIZE, RENDER_HIGH_CELL_SIZE);
 
                 if (draw->animation)
                 {
                     UpdateModelAnimationBones(models[draw->model], *draw->animation, draw->frame);
                 }
 
-                DrawModelEx(models[draw->model], {}, {0,1,0}, draw->rot, {draw->scale,draw->scale,draw->scale}, draw->color);
-                // DrawCube({0,0}, 1, 1, 1, WHITE);
+                DrawModelEx(
+                    models[draw->model],
+                    {}, {0, 1, 0}, draw->rot,
+                    Vector3{draw->scale, draw->scale, draw->scale} * (32 / RENDER_LOW_CELL_SIZE),
+                    draw->color
+                );
             }
 
             EndMode3D();
@@ -361,8 +372,18 @@ i32 main()
             for (u32 i = 0; i < state.render_entities.count; ++i)
             {
                 EntityDraw* draw = state.render_entities.entities + i;
-                DrawTextureRec(entities_low.texture, {(f32)draw->atlas_x * 32, (f32)draw->atlas_y * 32, 32, 32},
-                               {draw->x * TILE_SIZE_LOW, draw->y * TILE_SIZE_LOW}, WHITE);
+                DrawTextureRec(
+                    entities_low.texture,
+                    {
+                        (f32)draw->atlas_x * RENDER_LOW_CELL_SIZE, (f32)draw->atlas_y * RENDER_LOW_CELL_SIZE,
+                        RENDER_LOW_CELL_SIZE, RENDER_LOW_CELL_SIZE
+                    },
+                    {
+                        draw->x * TILE_SIZE_LOW - RENDER_LOW_CELL_SIZE / 2,
+                        draw->y * TILE_SIZE_LOW - RENDER_LOW_CELL_SIZE / 2
+                    },
+                    WHITE
+                );
             }
 
             EndMode2D();
