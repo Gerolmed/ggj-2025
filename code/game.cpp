@@ -29,6 +29,7 @@
 Model models[Model_Count];
 Shader skinned_shader;
 Shader default_shader;
+Shader bubble_shader;
 
 ////////////////////////////////////////////
 // Load Music
@@ -84,6 +85,7 @@ void LoadShaders()
 {
     skinned_shader = LoadShader("asset/skinned.vert", "asset/default.frag");
     default_shader = LoadShader("asset/default.vert", "asset/default.frag");
+    bubble_shader = LoadShader("asset/default.vert", "asset/bubble.frag");
 
     for (u32 i = 0; i < Model_Count; ++i)
     {
@@ -92,6 +94,11 @@ void LoadShaders()
         if (i == Model_Toad || i == Model_Shark)
         {
             shader = skinned_shader;
+        }
+
+        if (i == Model_Bubble)
+        {
+            shader = bubble_shader;
         }
 
         for (u32 j = 0; j < models[i].materialCount; ++j)
@@ -133,7 +140,12 @@ i32 main()
     texture_ui_heart_temporary_full = LoadTexture("asset/ui/heart_temporary_full.png");
     texture_ui_heart_temporary_half = LoadTexture("asset/ui/heart_temporary_half.png");
 
-    Texture2D drop_shadow = LoadTexture("asset/dropshadow.png");
+    drop_shadow_micro = LoadTexture("asset/dropshadow_micro.png");
+    drop_shadow_tiny = LoadTexture("asset/dropshadow_tiny.png");
+    drop_shadow_smaller = LoadTexture("asset/dropshadow_smaller.png");
+    drop_shadow_small = LoadTexture("asset/dropshadow_small.png");
+    drop_shadow_medium = LoadTexture("asset/dropshadow_medium.png");
+    drop_shadow_large = LoadTexture("asset/dropshadow_large.png");
 
     ////////////////////////////////////////////
     // Load Models
@@ -446,7 +458,7 @@ i32 main()
                     continue;
                 }
 
-                DrawTexture(drop_shadow, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
+                DrawTexture(drop_shadow_medium, (draw->x - 0.5) * TILE_SIZE_LOW, (draw->y - 0.4) * TILE_SIZE_LOW, WHITE);
             }
 
             draw_collectables(level);

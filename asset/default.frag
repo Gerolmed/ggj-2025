@@ -39,12 +39,12 @@ void main()
     light += clamp(dot(sun_dir, n), 0.0, 1.0);
 
     float lum = lumen(light);
-    vec3 t = 0.9f * sun_color;
-    if (lum > 0.6f) 
+    vec3 t = 0.9 * sun_color;
+    if (lum > 0.6)
     {
         t = 1.1 * sun_color;
     }
-    if (lum > 1.0f)
+    if (lum > 1.0)
     {
         t = 1.3 * sun_color;
     }
