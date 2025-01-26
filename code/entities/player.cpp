@@ -157,6 +157,8 @@ void check_collisions(Player* player, GameState* state)
         if (intersects(&player_collider, &bubble_collider))
         {
             damage(&player->health, bubble.damage);
+            player->knockback_velocity = Vector2Scale(Vector2Normalize(bubble.velocity),2);
+       
             arrdel(room->projectiles, i);
             i--;
         }
