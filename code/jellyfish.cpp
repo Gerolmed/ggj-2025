@@ -29,6 +29,7 @@ void orbit_around_player(Jellyfish* fish, GameState* state){
         projectile.damage = 1;
         projectile.can_collide_with_player = true;
         projectile.velocity = direction * 10;
+        PlayMusicStream(bubble_sound[1]);
         arrput(room->projectiles, projectile);
     }
 
@@ -81,7 +82,7 @@ void jellyfish_update(Jellyfish* fish, GameState* state){
 
     orbit_around_player(fish,state);
     jelly_check_collision(fish,state);
-    if(fish->health.dead){
+     if(fish->health.dead){
         jelly_death(fish, state);
     }
 

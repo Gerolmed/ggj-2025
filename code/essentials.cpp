@@ -55,8 +55,6 @@ Texture texture_ui_heart_half;
 Texture texture_ui_heart_empty;
 Texture texture_ui_heart_temporary_full;
 Texture texture_ui_heart_temporary_half;
-
-
 struct Health
 {
     u32 temp_health;
@@ -74,6 +72,7 @@ struct Player
     Vector2 position;
     f32 rotation;
 
+    
     Health health;
 
     Vector2 knockback_velocity;
@@ -92,6 +91,7 @@ struct Player
 
     Model model;
 };
+
 
 struct Pufferfish
 {
@@ -162,6 +162,9 @@ struct Room
 Music calm_music;
 Music dark_music;
 Music bubble_sound[3];
+Music cry;
+Music jump[3];
+Music step;
 
 enum ModelType
 {
@@ -226,6 +229,7 @@ struct GameState
 };
 
 GameState state = {};
+
 
 
 Color color_from_damage(Health *health)
