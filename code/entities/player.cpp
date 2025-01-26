@@ -2,6 +2,7 @@ void configure_player(Player* player)
 {
     *player = {};
     player->speed = 5;
+    player->position = {5, 5};
 
     player->health.max_health = 10;
     player->health.health = player->health.max_health;
@@ -56,7 +57,8 @@ Vector2 get_current_bubble_position(Player* player)
     return Vector2Add(player->position, direction);
 }
 
-f32 bubble_size(Player* player){
+f32 bubble_size(Player* player)
+{
     return sqrt(player->charge_value * 4);
 }
 
@@ -71,67 +73,64 @@ void update_charge_ball(Player* player)
 }
 
 
-void check_collisions(Player* player, GameState* state){
-    SphericalCollider player_collider = SphericalCollider(player->position,0.5);
+void check_collisions(Player* player, GameState* state)
+{
+    SphericalCollider player_collider = SphericalCollider(player->position, 0.5);
 
-    Room *room = state->rooms + state->current_room;
+    Room* room = state->rooms + state->current_room;
 
     //Pufferfish Collisions
-    for(i32 i = 0 ; i < room->pufferfish_count; i++){
+    for (i32 i = 0; i < room->pufferfish_count; i++)
+    {
         Pufferfish* fish = room->pufferfishs + i;
-        if(fish->health.dead) continue;
+        if (fish->health.dead) continue;
         SphericalCollider fish_collider = {fish->position, fish_get_radius(fish)};
 
-        if(intersects(&player_collider, &fish_collider))
+        if (intersects(&player_collider, &fish_collider))
         {
             damage(&player->health, 1);
-            player->knockback_velocity = Vector2Scale(Vector2Normalize(Vector2Subtract(player->position,fish->position)),8);
-            printf("Damaged player");
-
         }
     }
 
-     //Sharkfish Collisions
-    for(i32 i = 0 ; i < room->sharkfish_count; i++){
+    //Sharkfish Collisions
+    for (i32 i = 0; i < room->sharkfish_count; i++)
+    {
         Sharkfish* fish = room->sharkfishs + i;
-        if(fish->health.dead) continue;
+        if (fish->health.dead) continue;
         SphericalCollider fish_collider = {fish->position, 1};
 
-        if(intersects(&player_collider, &fish_collider))
+        if (intersects(&player_collider, &fish_collider))
         {
             damage(&player->health, 3);
-            player->knockback_velocity = Vector2Scale(Vector2Normalize(Vector2Subtract(player->position,fish->position)),15);
-            printf("Damaged player");
         }
     }
 
     //Spike Collisions
-    for(i32 i = 0 ; i < arrlen(room->spikes); i++){
+    for (i32 i = 0; i < arrlen(room->spikes); i++)
+    {
         ProjectileSpike spike = room->spikes[i];
 
         SphericalCollider spike_collider = {spike.position, SPIKE_RADIUS};
 
-        if(intersects(&player_collider, &spike_collider))
+        if (intersects(&player_collider, &spike_collider))
         {
-            printf("Damaged player");
-            player->knockback_velocity = spike.direction * 10;
             damage(&player->health, 1);
-            arrdel(room->spikes,i);
+            arrdel(room->spikes, i);
             i--;
         }
     }
 
-     //Bubble Collisions
-    for(i32 i = 0 ; i < arrlen(room->projectiles); i++){
+    //Bubble Collisions
+    for (i32 i = 0; i < arrlen(room->projectiles); i++)
+    {
         ProjectileBubble bubble = room->projectiles[i];
-        if(!bubble.can_collide_with_player) continue;
+        if (!bubble.can_collide_with_player) continue;
 
         SphericalCollider bubble_collider = {bubble.position, bubble.radius};
 
-        if(intersects(&player_collider, &bubble_collider))
+        if (intersects(&player_collider, &bubble_collider))
         {
-            player->knockback_velocity = bubble.velocity;
-            arrdel(room->projectiles,i);
+            arrdel(room->projectiles, i);
             i--;
         }
     }
@@ -157,18 +156,24 @@ void check_collisions(Player* player, GameState* state){
 
 void execute_player_loop(Player* player, GameState* state)
 {
-    check_collisions(player,state);
+    Vector2 old_pos = player->position;
+
+
+    check_collisions(player, state);
 
     Room* room = state->rooms + state->current_room;
 
-     //Process knockback velocity
-    if(player->knockback_velocity.x != 0 || player->knockback_velocity.y != 0)
+    //Process knockback velocity
+    if (player->knockback_velocity.x != 0 || player->knockback_velocity.y != 0)
     {
         player->position = Vector2Add(player->position, Vector2Scale(player->knockback_velocity, GetFrameTime()));
-        Vector2 friction = Vector2Scale(Vector2Normalize(player->knockback_velocity), 10* GetFrameTime());
-        if(abs_squared(friction) > abs_squared(player->knockback_velocity)){
-            player->knockback_velocity = {0,0};
-        }else{
+        Vector2 friction = Vector2Scale(Vector2Normalize(player->knockback_velocity), 10 * GetFrameTime());
+        if (abs_squared(friction) > abs_squared(player->knockback_velocity))
+        {
+            player->knockback_velocity = {0, 0};
+        }
+        else
+        {
             player->knockback_velocity = Vector2Subtract(player->knockback_velocity, friction);
         }
     }
@@ -204,7 +209,7 @@ void execute_player_loop(Player* player, GameState* state)
         ProjectileBubble projectile;
         projectile.position = position;
         projectile.radius = bubble_size(player);
-        projectile.damage = player->charge_value*10;
+        projectile.damage = player->charge_value * 10;
         projectile.can_collide_with_player = false;
         projectile.velocity = direction * 10;
         PlayMusicStream(bubble_sound[0]);
@@ -218,7 +223,6 @@ void execute_player_loop(Player* player, GameState* state)
         player->frame = 0;
         player->animation = PlayerAnim_PostShoot;
     }
-
 
     try_change_player_anim(player, PlayerAnim_Idle);
     if (IsKeyDown(KEY_W))
@@ -243,15 +247,20 @@ void execute_player_loop(Player* player, GameState* state)
         try_change_player_anim(player, PlayerAnim_Walk);
     }
 
+    // Correct player position based on wall collisions
+    collide_with_room(state->rooms + state->current_room, player->position, old_pos, &player->position);
+
     update_charge_ball(player);
     update_player_animation(player);
     update_health(&player->health);
 
-    RenderAnimatedEntity(Model_Toad, player->position, 180 + player->rotation * 180/PI, 1, player_model_animations + player->animation, player->frame, color_from_damage(&player->health));
+    RenderAnimatedEntity(Model_Toad, player->position, 180 + player->rotation * 180 / PI, 1,
+                         player_model_animations + player->animation, player->frame,
+                         color_from_damage(&player->health));
     // RenderEntity(Model_Toad, player->position, 0);
 }
 
-void draw_player_hud(const Player *player)
+void draw_player_hud(const Player* player)
 {
     Vector2 offset = {20, 20};
     float scale = 6;
@@ -268,7 +277,7 @@ void draw_player_hud(const Player *player)
         DrawTextureEx(texture_ui_heart_half, offset, 0, scale, WHITE);
         offset += {sprite_size + padding, 0};
     }
-    for (int i = 0; i < (player->health.max_health - player->health.health)/2; i++)
+    for (int i = 0; i < (player->health.max_health - player->health.health) / 2; i++)
     {
         DrawTextureEx(texture_ui_heart_empty, offset, 0, scale, WHITE);
         offset += {sprite_size + padding, 0};

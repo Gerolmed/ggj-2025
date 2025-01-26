@@ -80,6 +80,16 @@ Room load_room(i32 room_id){
                 sharkfish->health.health = 3;
                 sharkfish->health.damage_indicator = 0;
                 sharkfish->behavior_frame = 360 * room.sharkfish_count;
+                sharkfish->upgraded = false;
+                room.sharkfish_count++;
+            }
+            else if(curr[0] == 100 && curr[1] == 100 && curr[2] == 101){
+                Sharkfish* sharkfish = &room.sharkfishs[room.sharkfish_count];
+                sharkfish->position = Vector2(x,y);
+                sharkfish->health.health = 5;
+                sharkfish->health.damage_indicator = 0;
+                sharkfish->behavior_frame = 300;
+                sharkfish->upgraded = true;
                 room.sharkfish_count++;
             }
             else if(curr[0] == 0 && curr[1] == 255 && curr[2] == 255){
@@ -94,13 +104,18 @@ Room load_room(i32 room_id){
         }
     }
 
-    printf("Printing room \n");
-    for(u32 y = 0 ; y < ROOM_HEIGHT+4; ++y){
-        for(u32 x = 0 ; x < ROOM_WIDTH+4; ++x){
-            printf("%d",room.tiles[(ROOM_WIDTH+4) * y + x]);
-        }
-        printf("\n");
-    }
+//    for(i32 j = 0 ; j < ROOM_HEIGHT+4; j++){
+//        for(i32 i= 0 ; i < ROOM_WIDTH+4; i++){
+//            if(room.tiles[(ROOM_WIDTH+4) * j + i] == Tile_Wall){
+//                printf("1");
+//            }else if(room.tiles[(ROOM_WIDTH+4) * j + i] == Tile_Empty){
+//                printf("0");
+//            }else{
+//                printf("2");
+//            }
+//        }
+//        printf("\n");
+//    }
 
     return room;
 }

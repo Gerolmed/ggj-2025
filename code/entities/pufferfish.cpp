@@ -69,6 +69,18 @@ void fish_check_collision(Pufferfish* fish, GameState* state){
     }
 }
 
+Pufferfish* get_living_pufferfish(GameState* state){
+    Room* room = state->rooms + state->current_room;
+    for(i32 i = 0; i < room->pufferfish_count; i++)
+    {
+        if(!room->pufferfishs[i].health.dead){
+            return room->pufferfishs + i;
+        }
+    }
+
+    return NULL;
+}
+
 void spawn_pufferfish(Vector2 position, GameState* state){
     Pufferfish* new_fish;
     
@@ -99,6 +111,7 @@ void fish_update(Pufferfish* fish, GameState* state){
     if(fish->health.dead){
         return;
     }
+    Vector2 old_pos = fish->position;
 
     fish_pursue_player(fish, state);
     fish_check_collision(fish, state);
@@ -107,5 +120,8 @@ void fish_update(Pufferfish* fish, GameState* state){
     }
 
     update_health(&fish->health);
+
+    collide_with_room(state->rooms + state->current_room, fish->position, old_pos, &fish->position);
+
     RenderEntity(Model_Fish, Vector2(fish->position.x, fish->position.y), 180 + fish->rotation * 180/PI, 2*fish_get_radius(fish), color_from_damage(&fish->health));
 }
