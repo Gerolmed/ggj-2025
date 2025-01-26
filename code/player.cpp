@@ -10,7 +10,7 @@ void configure_player(Player* player)
     for (int i = 0; i < lengthof(player->bubbles); ++i)
     {
         player->bubbles[i] = Bubble{
-            .radius = 1,
+            .radius = 0.5,
             .min_scale = 1.0f,
             .max_scale = 1.5f,
         };
@@ -226,6 +226,7 @@ void execute_player_loop(Player* player, GameState* state)
         projectile.position = position;
         projectile.radius = bubble_size(player);
         projectile.damage = player->charge_value*10;
+        projectile.can_collide_with_player = false;
         projectile.velocity = direction * 10;
         arrput(state->room.projectiles, projectile);
 
